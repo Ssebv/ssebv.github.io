@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ceasar Cipher</title>
+    <link href="index.css" rel="stylesheet " />
+    <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/1792/1792193.png" type="image/icon type">
+    <script src="index.js" type="text/javascript" defer></script>
+    
+</head>
+<body>
+    <main>
+        <h1 id= "titulo">CEASAR CIPHER</h1>
+        <form id="cifrador" autocomplete="off">
+            <div class = "contenedor-formulario">
+                <input id="input-original" spellcheck="false" placeholder="Ingrese el texto" type="text" name="text">
+                <button type="submit" class="boton-formulario" >Cifrar</button>
+            </div>
+            
+        </form>
+        <div id="resultado"></div>
+        <div class="rango">
+            <input id="rango" type="range" value="10" min="1" max="20" oninput="this.nextElementSibling.value = this.value">
+            <output>10</output>
+        </div>
+    </main>
+</body>
+</html>

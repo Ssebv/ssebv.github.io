@@ -1,30 +1,406 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ceasar Cipher</title>
-    <link href="index.css" rel="stylesheet " />
-    <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/1792/1792193.png" type="image/icon type">
-    <script src="index.js" type="text/javascript" defer></script>
-    
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sebastián Allende — Software &amp; ERP Engineer</title>
+<meta name="description" content="Software and ERP engineer. Odoo, Python, PostgreSQL and multi-country financial systems across Chile, Colombia and Peru.">
+<style>
+  :root {
+    --bg: #ffffff;
+    --fg: #16181d;
+    --muted: #5c6270;
+    --line: #e3e6ec;
+    --accent: #2f5bd7;
+    --card: #f7f8fa;
+    --chip: #eef1f6;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f1115;
+      --fg: #e7e9ee;
+      --muted: #98a0b0;
+      --line: #232833;
+      --accent: #7aa2ff;
+      --card: #161a21;
+      --chip: #1c212b;
+    }
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--fg);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Roboto, Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 72px 24px 96px;
+  }
+
+  header { margin-bottom: 56px; }
+
+  h1 {
+    font-size: clamp(30px, 5vw, 40px);
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+    margin: 0 0 10px;
+  }
+
+  .role { font-size: 18px; color: var(--muted); margin: 0 0 6px; }
+  .loc  { font-size: 15px; color: var(--muted); margin: 0 0 22px; }
+
+  .links { display: flex; flex-wrap: wrap; gap: 10px; }
+
+  .links a {
+    display: inline-block;
+    padding: 7px 14px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    color: var(--fg);
+    text-decoration: none;
+    font-size: 14.5px;
+    transition: border-color .15s, color .15s;
+  }
+
+  .links a:hover { border-color: var(--accent); color: var(--accent); }
+
+  section { margin-bottom: 52px; }
+
+  h2 {
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+    font-weight: 600;
+    margin: 0 0 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--line);
+  }
+
+  p { margin: 0 0 14px; }
+  .lead { font-size: 17px; }
+
+  .job {
+    display: grid;
+    grid-template-columns: 130px 1fr;
+    gap: 4px 22px;
+    padding: 18px 0;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .job:last-child { border-bottom: 0; }
+
+  .when {
+    color: var(--muted);
+    font-size: 14px;
+    font-variant-numeric: tabular-nums;
+    padding-top: 2px;
+  }
+
+  .what h3 { margin: 0 0 2px; font-size: 16.5px; font-weight: 600; }
+  .org { color: var(--muted); font-size: 14.5px; margin: 0 0 8px; }
+  .what p { margin: 0; font-size: 15px; }
+
+  @media (max-width: 560px) {
+    .job { grid-template-columns: 1fr; gap: 6px; }
+    .when { order: 2; }
+  }
+
+  .proj {
+    display: block;
+    padding: 16px 18px;
+    margin-bottom: 12px;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    text-decoration: none;
+    color: inherit;
+    transition: border-color .15s, transform .15s;
+  }
+
+  .proj:hover { border-color: var(--accent); transform: translateY(-1px); }
+
+  .proj-top {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 5px;
+  }
+
+  .proj-name { font-weight: 600; font-size: 16px; }
+
+  .tag {
+    font-size: 12px;
+    color: var(--muted);
+    background: var(--chip);
+    padding: 2px 9px;
+    border-radius: 999px;
+    white-space: nowrap;
+  }
+
+  .proj p { margin: 0; font-size: 14.5px; color: var(--muted); }
+
+  .skill-row { margin-bottom: 16px; }
+  .skill-row strong { display: block; font-size: 14.5px; margin-bottom: 6px; }
+  .chips { display: flex; flex-wrap: wrap; gap: 7px; }
+
+  .chips span {
+    font-size: 13.5px;
+    background: var(--chip);
+    color: var(--fg);
+    padding: 4px 11px;
+    border-radius: 6px;
+  }
+
+  footer {
+    padding-top: 26px;
+    border-top: 1px solid var(--line);
+    color: var(--muted);
+    font-size: 14px;
+  }
+
+  footer a { color: var(--accent); }
+</style>
 </head>
 <body>
-    <main>
-        <h1 id= "titulo">CEASAR CIPHER</h1>
-        <form id="cifrador" autocomplete="off">
-            <div class = "contenedor-formulario">
-                <input id="input-original" spellcheck="false" placeholder="Ingrese el texto" type="text" name="text">
-                <button type="submit" class="boton-formulario" >Cifrar</button>
-            </div>
-            
-        </form>
-        <div id="resultado"></div>
-        <div class="rango">
-            <input id="rango" type="range" value="10" min="1" max="20" oninput="this.nextElementSibling.value = this.value">
-            <output>10</output>
-        </div>
-    </main>
+<div class="wrap">
+
+  <header>
+    <h1>Sebastián Allende Cuello</h1>
+    <p class="role">Software &amp; ERP Engineer — backend, data and financial systems</p>
+    <p class="loc">Santiago, Chile · Working across Chile, Colombia &amp; Peru</p>
+    <div class="links">
+      <a href="mailto:sallendec@outlook.com">Email</a>
+      <a href="https://www.linkedin.com/in/sebastianallende/" target="_blank" rel="noopener">LinkedIn</a>
+      <a href="https://github.com/Ssebv" target="_blank" rel="noopener">GitHub</a>
+    </div>
+  </header>
+
+  <section>
+    <h2>About</h2>
+    <p class="lead">
+      I build and run the systems a business actually depends on: ERP, inventory, accounting and
+      electronic invoicing across four companies in three countries. My work sits where correctness of
+      financial data and continuity of service are not features but the whole job.
+    </p>
+    <p>
+      Most recently I led a full ERP platform migration (Odoo 14 → 19) end to end, with no data loss,
+      and built an automated monitoring system that reconciles inventory against the general ledger and
+      surfaces failures before users notice them. I work mainly in Python, SQL and PostgreSQL, with
+      regulated electronic invoicing for the tax authorities of Chile, Colombia and Peru.
+    </p>
+  </section>
+
+  <section>
+    <h2>Experience</h2>
+
+    <div class="job">
+      <div class="when">Dec 2025 — Present</div>
+      <div class="what">
+        <h3>IT Manager &amp; ERP Administrator</h3>
+        <p class="org">Toyng — Santiago, Chile</p>
+        <p>
+          Administration and development of Odoo ERP (14 → 19) on Odoo.sh for operations in Chile,
+          Colombia, Peru and China. Custom modules for consignment and mass reporting, electronic
+          invoicing (SII, DIAN, SUNAT), cloud and PostgreSQL infrastructure, e-commerce integrations,
+          and support to accounting, warehouse and sales teams across four countries.
+        </p>
+      </div>
+    </div>
+
+    <div class="job">
+      <div class="when">Aug — Dec 2025</div>
+      <div class="what">
+        <h3>Identity &amp; Access Management — Security</h3>
+        <p class="org">Banco BICE — Chile</p>
+        <p>
+          Access governance across Active Directory, Salesforce and critical banking systems. Integration
+          of users from a banking merger, full identity lifecycle management, and proofs of concept for
+          fixed-term deposit products.
+        </p>
+      </div>
+    </div>
+
+    <div class="job">
+      <div class="when">2024 — 2025</div>
+      <div class="what">
+        <h3>Independent Consulting &amp; Digital Solutions</h3>
+        <p class="org">Various clients — Chile</p>
+        <p>
+          Rebuilt a logistics system from the ground up with a client/administrator architecture on
+          Docker, including SAP query integration. Infrastructure optimization and customer experience
+          work for smaller clients.
+        </p>
+      </div>
+    </div>
+
+    <div class="job">
+      <div class="when">2024</div>
+      <div class="what">
+        <h3>Business Transformation Consultant — CX Analyst</h3>
+        <p class="org">Imppulsor — Ireland / Remote</p>
+        <p>
+          Owned the customer experience function, designing strategies and mapping the user journey while
+          coordinating with international teams.
+        </p>
+      </div>
+    </div>
+
+    <div class="job">
+      <div class="when">2023</div>
+      <div class="what">
+        <h3>Professional Internship</h3>
+        <p class="org">Gtd Manquehue — Santiago, Chile</p>
+        <p>
+          Worked with IBM Service on a BPMN model replacing a manual IT license deprovisioning process,
+          plus a document summarization flow with Power Apps connected to OpenAI.
+        </p>
+      </div>
+    </div>
+
+    <div class="job">
+      <div class="when">2022</div>
+      <div class="what">
+        <h3>Teaching Assistant — Advanced Programming &amp; Databases</h3>
+        <p class="org">Universidad Finis Terrae — Santiago, Chile</p>
+        <p>Tutoring, teaching assistance and lab grading.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Selected Projects</h2>
+
+    <a class="proj" href="https://github.com/Ssebv/systematic-trading-showcase" target="_blank" rel="noopener">
+      <div class="proj-top">
+        <span class="proj-name">systematic-trading-showcase</span>
+        <span class="tag">Architecture</span>
+      </div>
+      <p>Systematic trading research platform — architecture, risk design and engineering writeup.</p>
+    </a>
+
+    <a class="proj" href="https://github.com/Ssebv/TBSimAlgoritmoGenetico_HPC_LOCAL" target="_blank" rel="noopener">
+      <div class="proj-top">
+        <span class="proj-name">Parallel Genetic Algorithm — HPC</span>
+        <span class="tag">Java</span>
+      </div>
+      <p>
+        Parallel genetic algorithm (Jenetics) integrated with TeamBots/TBSim to optimise robot football
+        teams, with a computational scalability study on Apple M1. Undergraduate thesis.
+      </p>
+    </a>
+
+    <a class="proj" href="https://github.com/Ssebv/AI-Analizer-Llama" target="_blank" rel="noopener">
+      <div class="proj-top">
+        <span class="proj-name">AI News Analyzer</span>
+        <span class="tag">Python · LangChain</span>
+      </div>
+      <p>
+        Intelligent news analysis system built with LangChain and LangGraph, using specialised agents
+        behind a Streamlit interface.
+      </p>
+    </a>
+
+    <a class="proj" href="https://github.com/Ssebv/ecommerce-fastapi-rest" target="_blank" rel="noopener">
+      <div class="proj-top">
+        <span class="proj-name">ecommerce-fastapi-rest</span>
+        <span class="tag">Python · FastAPI</span>
+      </div>
+      <p>E-commerce REST API built with FastAPI.</p>
+    </a>
+
+    <a class="proj" href="https://github.com/Ssebv/introduccion-linux" target="_blank" rel="noopener">
+      <div class="proj-top">
+        <span class="proj-name">introduccion-linux</span>
+        <span class="tag">Guide</span>
+      </div>
+      <p>Step-by-step Linux guide, from environment setup through to bash scripting.</p>
+    </a>
+
+    <a class="proj" href="./caesar/">
+      <div class="proj-top">
+        <span class="proj-name">Caesar Cipher</span>
+        <span class="tag">JavaScript</span>
+      </div>
+      <p>Small browser implementation of the Caesar cipher with an adjustable shift.</p>
+    </a>
+  </section>
+
+  <section>
+    <h2>Skills</h2>
+
+    <div class="skill-row">
+      <strong>Backend &amp; ERP</strong>
+      <div class="chips">
+        <span>Python</span><span>Odoo 14–19</span><span>Odoo.sh</span><span>REST APIs</span>
+        <span>FastAPI</span><span>Java</span><span>JavaScript</span>
+      </div>
+    </div>
+
+    <div class="skill-row">
+      <strong>Data</strong>
+      <div class="chips">
+        <span>PostgreSQL</span><span>SQL / PL-SQL</span><span>Migrations</span><span>ETL</span>
+        <span>SAP S/4HANA</span>
+      </div>
+    </div>
+
+    <div class="skill-row">
+      <strong>Infrastructure</strong>
+      <div class="chips">
+        <span>Linux</span><span>Docker</span><span>Git</span><span>AWS</span><span>Azure</span>
+        <span>HPC</span>
+      </div>
+    </div>
+
+    <div class="skill-row">
+      <strong>Compliance &amp; Security</strong>
+      <div class="chips">
+        <span>SII (CL)</span><span>DIAN (CO)</span><span>SUNAT (PE)</span><span>Active Directory</span>
+        <span>IAM</span>
+      </div>
+    </div>
+
+    <div class="skill-row">
+      <strong>AI</strong>
+      <div class="chips">
+        <span>LLM APIs</span><span>LangChain</span><span>Prompt engineering</span><span>NLP</span>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Education</h2>
+
+    <div class="job">
+      <div class="when">2024</div>
+      <div class="what">
+        <h3>Computer &amp; Telecommunications Engineering</h3>
+        <p class="org">Universidad Finis Terrae — Santiago, Chile</p>
+        <p>Coursework completed.</p>
+      </div>
+    </div>
+
+    <div class="job">
+      <div class="when">2020 — 2021</div>
+      <div class="what">
+        <h3>English as a Second Language</h3>
+        <p class="org">Mississauga Secondary Academy — Ontario, Canada</p>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    Get in touch at <a href="mailto:sallendec@outlook.com">sallendec@outlook.com</a>.
+  </footer>
+
+</div>
 </body>
 </html>
