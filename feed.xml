@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Sebastián Allende — Writing</title>
+    <link>https://ssebv.github.io/writing/</link>
+    <description>Notes on running ERP and financial systems in production.</description>
+    <language>en</language>
+    <atom:link href="https://ssebv.github.io/feed.xml" rel="self" type="application/rss+xml"/>
+    <item>
+      <title>The bugs that survive an ERP upgrade are the quiet ones</title>
+      <link>https://ssebv.github.io/writing/erp-migration.html</link>
+      <guid isPermaLink="true">https://ssebv.github.io/writing/erp-migration.html</guid>
+      <pubDate>Tue, 28 Jul 2026 12:00:00 GMT</pubDate>
+      <description>Migrating five major versions forward across four companies and three countries. The failures that raised errors were fixed in days; the ones that changed behaviour without raising anything lasted weeks.</description>
+    </item>
+    <item>
+      <title>Alert quality beats alert count</title>
+      <link>https://ssebv.github.io/writing/health-check.html</link>
+      <guid isPermaLink="true">https://ssebv.github.io/writing/health-check.html</guid>
+      <pubDate>Tue, 28 Jul 2026 12:00:00 GMT</pubDate>
+      <description>Building a health check that reconciles inventory against the general ledger every six hours, what it found that no report showed, and why an alert nobody acts on is a defect rather than a nuisance.</description>
+    </item>
+  </channel>
+</rss>
