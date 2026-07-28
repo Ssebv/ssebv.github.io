@@ -371,5 +371,49 @@
   });
 })();
 </script>
+<script>
+(function(){
+  if (window.innerWidth < 1280) return;
+  var heads = [].slice.call(document.querySelectorAll('main h2[id], article h2[id]'));
+  if (heads.length < 3) return;
+
+  var nav = document.createElement('nav');
+  nav.className = 'toc';
+  nav.setAttribute('aria-label', document.documentElement.lang === 'es' ? 'Secciones' : 'Sections');
+  nav.innerHTML = '<div class="toc-label">' +
+    (document.documentElement.lang === 'es' ? 'Secciones' : 'Sections') + '</div><ol></ol>';
+  var ol = nav.querySelector('ol');
+
+  heads.forEach(function(h){
+    var text = (h.textContent || '').replace(/#$/, '').trim();
+    var li = document.createElement('li');
+    var a = document.createElement('a');
+    a.href = '#' + h.id;
+    a.textContent = text;
+    a.dataset.target = h.id;
+    li.appendChild(a); ol.appendChild(li);
+  });
+  document.body.appendChild(nav);
+  requestAnimationFrame(function(){ nav.classList.add('ready'); });
+
+  var links = {};
+  [].slice.call(nav.querySelectorAll('a')).forEach(function(a){ links[a.dataset.target] = a; });
+
+  function setActive(id){
+    for (var k in links) links[k].classList.toggle('active', k === id);
+  }
+
+  var obs = new IntersectionObserver(function(entries){
+    var visible = entries.filter(function(e){ return e.isIntersecting; });
+    if (visible.length) {
+      visible.sort(function(a,b){ return a.boundingClientRect.top - b.boundingClientRect.top; });
+      setActive(visible[0].target.id);
+    }
+  }, { rootMargin: '-15% 0px -70% 0px', threshold: 0 });
+
+  heads.forEach(function(h){ obs.observe(h); });
+  setActive(heads[0].id);
+})();
+</script>
 </body>
 </html>

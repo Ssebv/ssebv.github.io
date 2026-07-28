@@ -112,10 +112,10 @@
     <section aria-labelledby="escritos">
       <h2 id="escritos">Escritos</h2>
 
-      <a class="proj" href="../writing/erp-migration.html" hreflang="en">
+      <a class="proj" href="./writing/erp-migration.html">
         <div class="proj-top">
-          <span class="proj-name">The bugs that survive an ERP upgrade are the quiet ones</span>
-          <span class="tag">Caso · EN</span>
+          <span class="proj-name">Los errores que sobreviven a una actualización de ERP son los silenciosos</span>
+          <span class="tag">Caso</span>
         </div>
         <p>
           Migrar cinco versiones mayores en cuatro empresas y tres países — y por qué las fallas que no
@@ -123,10 +123,10 @@
         </p>
       </a>
 
-      <a class="proj" href="../writing/health-check.html" hreflang="en">
+      <a class="proj" href="./writing/health-check.html">
         <div class="proj-top">
-          <span class="proj-name">Alert quality beats alert count</span>
-          <span class="tag">Caso · EN</span>
+          <span class="proj-name">La calidad de las alertas le gana a la cantidad</span>
+          <span class="tag">Caso</span>
         </div>
         <p>
           Construir un monitoreo que cuadra inventario contra contabilidad, lo que encontró que ningún
@@ -360,6 +360,50 @@
     document.documentElement.setAttribute('data-theme',next);
     try{localStorage.setItem('theme',next);}catch(e){}
   });
+})();
+</script>
+<script>
+(function(){
+  if (window.innerWidth < 1280) return;
+  var heads = [].slice.call(document.querySelectorAll('main h2[id], article h2[id]'));
+  if (heads.length < 3) return;
+
+  var nav = document.createElement('nav');
+  nav.className = 'toc';
+  nav.setAttribute('aria-label', document.documentElement.lang === 'es' ? 'Secciones' : 'Sections');
+  nav.innerHTML = '<div class="toc-label">' +
+    (document.documentElement.lang === 'es' ? 'Secciones' : 'Sections') + '</div><ol></ol>';
+  var ol = nav.querySelector('ol');
+
+  heads.forEach(function(h){
+    var text = (h.textContent || '').replace(/#$/, '').trim();
+    var li = document.createElement('li');
+    var a = document.createElement('a');
+    a.href = '#' + h.id;
+    a.textContent = text;
+    a.dataset.target = h.id;
+    li.appendChild(a); ol.appendChild(li);
+  });
+  document.body.appendChild(nav);
+  requestAnimationFrame(function(){ nav.classList.add('ready'); });
+
+  var links = {};
+  [].slice.call(nav.querySelectorAll('a')).forEach(function(a){ links[a.dataset.target] = a; });
+
+  function setActive(id){
+    for (var k in links) links[k].classList.toggle('active', k === id);
+  }
+
+  var obs = new IntersectionObserver(function(entries){
+    var visible = entries.filter(function(e){ return e.isIntersecting; });
+    if (visible.length) {
+      visible.sort(function(a,b){ return a.boundingClientRect.top - b.boundingClientRect.top; });
+      setActive(visible[0].target.id);
+    }
+  }, { rootMargin: '-15% 0px -70% 0px', threshold: 0 });
+
+  heads.forEach(function(h){ obs.observe(h); });
+  setActive(heads[0].id);
 })();
 </script>
 </body>

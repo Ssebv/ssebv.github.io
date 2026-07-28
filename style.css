@@ -507,3 +507,53 @@ blockquote p { margin-bottom: 0; font-size: inherit; }
 }
 
 @media print { .lang-switch { display: none; } }
+
+/* ---------------- Section navigation (wide screens only) ---------------- */
+
+.toc {
+  position: fixed;
+  top: 140px;
+  left: calc(50% - 360px - 214px);
+  width: 178px;
+  z-index: 15;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .25s ease;
+}
+
+.toc.ready { opacity: 1; pointer-events: auto; }
+
+.toc-label {
+  font-size: 10.5px;
+  text-transform: uppercase;
+  letter-spacing: .14em;
+  font-weight: 600;
+  color: var(--faint);
+  margin-bottom: 12px;
+  padding-left: 13px;
+}
+
+.toc ol { list-style: none; margin: 0; padding: 0; }
+
+.toc a {
+  display: block;
+  padding: 5px 0 5px 13px;
+  font-size: 13px;
+  line-height: 1.4;
+  color: var(--faint);
+  text-decoration: none;
+  border-left: 2px solid var(--line);
+  transition: color .15s ease, border-color .15s ease;
+}
+
+.toc a:hover { color: var(--fg); border-left-color: var(--muted); }
+
+.toc a.active {
+  color: var(--accent);
+  border-left-color: var(--accent);
+  font-weight: 600;
+}
+
+/* Only when there is genuinely room to spare */
+@media (max-width: 1279px) { .toc { display: none; } }
+@media print { .toc { display: none; } }
