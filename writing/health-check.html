@@ -9,33 +9,35 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <title>Alert quality beats alert count — Sebastián Allende</title>
-<meta name="description" content="Building a health check for an ERP across three countries: reconciling inventory against the general ledger, and why every alert has to earn its place.">
+<meta name="description" content="Building a health check that reconciles inventory against the general ledger every six hours, what it found that no report showed, and why an alert nobody acts on is a defect rather than a nuisance.">
 <link rel="canonical" href="https://ssebv.github.io/writing/health-check.html">
+<link rel="alternate" hreflang="en" href="https://ssebv.github.io/writing/health-check.html">
+<link rel="alternate" hreflang="es" href="https://ssebv.github.io/es/writing/health-check.html">
 
 <meta property="og:type" content="article">
+<meta property="og:locale" content="en_US">
 <meta property="og:title" content="Alert quality beats alert count">
-<meta property="og:description" content="Building a health check that finds problems before users do — and why an alert nobody acts on is worse than no alert.">
+<meta property="og:description" content="Building a health check that reconciles inventory against the general ledger every six hours, what it found that no report showed, and why an alert nobody acts on is a defect rather than a nuisance.">
 <meta property="og:url" content="https://ssebv.github.io/writing/health-check.html">
 <meta property="og:image" content="https://ssebv.github.io/og-health-check.png">
 <meta name="twitter:card" content="summary_large_image">
 <meta property="article:published_time" content="2026-07-28">
 
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%232f5bd7'/%3E%3Ctext x='50' y='68' font-family='Helvetica,Arial,sans-serif' font-size='48' font-weight='700' fill='%23fff' text-anchor='middle'%3ESA%3C/text%3E%3C/svg%3E">
+
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
   "@type": "BlogPosting",
   "headline": "Alert quality beats alert count",
-  "description": "Building a health check that reconciles inventory against the general ledger.",
+  "description": "Building a health check that reconciles inventory against the general ledger every six hours, what it found that no report showed, and why an alert nobody acts on is a defect rather than a nuisance.",
   "datePublished": "2026-07-28",
   "author": { "@type": "Person", "name": "Sebastián Allende Cuello", "url": "https://ssebv.github.io/" },
-  "publisher": { "@type": "Person", "name": "Sebastián Allende Cuello" },
   "inLanguage": "en"
 }
 </script>
+
 <link rel="alternate" type="application/rss+xml" title="Sebastián Allende — Writing" href="/feed.xml">
-<link rel="alternate" hreflang="en" href="https://ssebv.github.io/writing/health-check.html">
-<link rel="alternate" hreflang="es" href="https://ssebv.github.io/es/writing/health-check.html">
 <link rel="stylesheet" href="../style.css">
 </head>
 <body>
@@ -44,13 +46,10 @@
   <a href="./health-check.html" hreflang="en" aria-current="true">EN</a>
   <a href="../es/writing/health-check.html" hreflang="es">ES</a>
 </nav>
-
-
 <button class="theme-toggle" id="themeToggle" type="button" aria-label="Switch colour theme" title="Switch colour theme">
   <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
   <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
 </button>
-
 
 <a class="skip" href="#main">Skip to content</a>
 
@@ -63,163 +62,47 @@
     <h1>Alert quality beats alert count</h1>
     <p class="meta"><time datetime="2026-07-28">28 July 2026</time><span class="dot">·</span>Building a health check for an ERP running four companies in three countries<span class="dot">·</span>5 min read</p>
 
-    <p>
-      For a long time, the way we found out that something was wrong with our ERP was that somebody
-      complained.
-    </p>
+<p>For a long time, the way we found out that something was wrong with our ERP was that somebody complained.</p>
+<p>An accountant would notice, closing the month, that inventory and the general ledger disagreed. A salesperson would find that an electronic invoice had been rejected by the tax authority weeks earlier and had been sitting in a queue ever since. Someone would discover on a Wednesday that the authorised range of invoice numbers for a document type had run out — which in a regulated invoicing regime means you simply cannot invoice until the regulator issues more.</p>
+<p>Every one of those was findable in advance. None of them was found in advance, because nothing was looking.</p>
+<h2 id="chasing-bugs-versus-building-the-thing-that-finds-them">Chasing bugs versus building the thing that finds them<a class="anchor" href="#chasing-bugs-versus-building-the-thing-that-finds-them" aria-label="Link to this section">#</a></h2>
+<p>My first instinct was to fix each problem as it appeared. That is satisfying and it does not scale. Each fix addressed one instance of a class of failure I could not enumerate, and the interval between the failure happening and anyone noticing stayed exactly the same — weeks.</p>
+<p>So I stopped fixing individual cases and built a health check instead: a scheduled routine that interrogates the system on a fixed cadence and reports what it finds to the people who can act on it. It now runs around forty-six detectors every six hours, with a smaller urgent subset every thirty minutes.</p>
+<p>What the detectors look at falls into four groups:</p>
+<ul><li><strong>Reconciliation.</strong> The inventory ledger and the accounting must tell the same story. For each country and each relevant account, the detector computes both sides and compares them against a threshold appropriate to that currency. Divergence is reported with the transactions that caused it, not just a number.</li></ul>
+<ul><li><strong>Regulatory state.</strong> Documents rejected by a tax authority, documents stuck waiting to be sent, and the projected exhaustion date of each authorised numbering range — so that "we run out of invoice numbers in nine days" is something we learn nine days early rather than on the day.</li></ul>
+<ul><li><strong>System health.</strong> Real errors in the server log, separated from noise, plus the scheduled jobs that have started failing.</li></ul>
+<ul><li><strong>Business pulse.</strong> A per-country digest of what actually moved. Not for alerting — for context, so that an anomaly can be read against a normal day.</li></ul>
+<h2 id="the-thing-it-found">The thing it found<a class="anchor" href="#the-thing-it-found" aria-label="Link to this section">#</a></h2>
+<p>The first meaningful run surfaced something nobody knew about: inventory cost was being recorded twice for one category of transaction. Two independent parts of the system — a physical stock movement and a settlement process — were each doing their honest job, and both were crediting the same accounting entry.</p>
+<p>It had been accumulating for more than a year. No report showed it, because every individual report was internally consistent; the discrepancy only existed <em>between</em> two views that nobody had ever put side by side. That is precisely the class of problem a human reviewer never finds, because finding it requires comparing two things that each look correct.</p>
+<p>Two things came out of that. The historical figures were corrected, and — more importantly — the reconciliation became permanent. The same comparison now runs every six hours, so if the conditions that allowed it ever return, we find out that day instead of the following year.</p>
+<h2 id="the-rule-that-made-it-work">The rule that made it work<a class="anchor" href="#the-rule-that-made-it-work" aria-label="Link to this section">#</a></h2>
+<p>The temptation with a system like this is to measure it by coverage: how many detectors, how many alerts. That is the wrong metric, and following it produces something worse than nothing.</p>
+<blockquote></blockquote>
+<p>Every alert has to produce an action. If an alert fires and the correct response is to ignore it, that is a defect in my detector — not a nuisance to be tolerated.</p>
+<p>I enforced this literally. Any detector that produced an alert nobody acted on got rewritten or deleted. The reasoning is simple: a channel that cries wolf trains people to ignore it, and the cost is not the wasted attention — it's the one real alert that gets ignored along with the noise. A monitoring system with a hundred detectors that people skim is strictly worse than one with ten they read.</p>
+<h2 id="where-i-was-wrong">Where I was wrong<a class="anchor" href="#where-i-was-wrong" aria-label="Link to this section">#</a></h2>
+<p>One of my own detectors was the best argument for this rule.</p>
+<p>I built one to find duplicated inventory records, using the identifying key that the platform uses as standard. It reported thousands of duplicates. I was convinced I had found something large.</p>
+<p>I was wrong, and dangerously so. Our consignment warehouses separate stock by dimensions the standard key does not include — which customer's premises it sits in, and which company owns it. Records that looked identical under the standard key were legitimately distinct records for different stores. Acting on my own alert would have merged inventory belonging to different customers into a single pile: a far worse problem than the one I thought I was fixing.</p>
+<p>When I re-ran the comparison with the correct key, the count was zero. There had never been a problem. The detector was rewritten, and the constraint was written down in bold so that nobody — including future me — repeats it.</p>
+<p>I keep coming back to this one, because I did everything right procedurally: I noticed an anomaly, quantified it, and prepared a fix. What saved us was a colleague pushing back and my checking before acting. Confidence in a finding is not evidence for it.</p>
+<h2 id="what-success-actually-looks-like">What success actually looks like<a class="anchor" href="#what-success-actually-looks-like" aria-label="Link to this section">#</a></h2>
+<p>Not a dashboard. The measurable outcome is unglamorous: the reconciliation between inventory and the general ledger stays within threshold in each country, the digest arrives and is mostly boring, and when it isn't, someone acts on it that morning.</p>
+<p>The signal I trust most is behavioural. People now check the alert before they check the system. The discovery mechanism stopped being a user noticing something odd weeks later — and that shift, not the detector count, is the whole point.</p>
 
-    <p>
-      An accountant would notice, closing the month, that inventory and the general ledger disagreed. A
-      salesperson would find that an electronic invoice had been rejected by the tax authority weeks
-      earlier and had been sitting in a queue ever since. Someone would discover on a Wednesday that the
-      authorised range of invoice numbers for a document type had run out — which in a regulated invoicing
-      regime means you simply cannot invoice until the regulator issues more.
-    </p>
-
-    <p>
-      Every one of those was findable in advance. None of them was found in advance, because nothing was
-      looking.
-    </p>
-
-    <h2 id="chasing-bugs-versus-building-the-thing-that-finds-them">Chasing bugs versus building the thing that finds them<a class="anchor" href="#chasing-bugs-versus-building-the-thing-that-finds-them" aria-label="Link to this section">#</a></h2>
-
-    <p>
-      My first instinct was to fix each problem as it appeared. That is satisfying and it does not scale.
-      Each fix addressed one instance of a class of failure I could not enumerate, and the interval
-      between the failure happening and anyone noticing stayed exactly the same — weeks.
-    </p>
-
-    <p>
-      So I stopped fixing individual cases and built a health check instead: a scheduled routine that
-      interrogates the system on a fixed cadence and reports what it finds to the people who can act on
-      it. It now runs around forty-six detectors every six hours, with a smaller urgent subset every
-      thirty minutes.
-    </p>
-
-    <p>What the detectors look at falls into four groups:</p>
-
-    <ul>
-      <li>
-        <strong>Reconciliation.</strong> The inventory ledger and the accounting must tell the same story.
-        For each country and each relevant account, the detector computes both sides and compares them
-        against a threshold appropriate to that currency. Divergence is reported with the transactions
-        that caused it, not just a number.
-      </li>
-      <li>
-        <strong>Regulatory state.</strong> Documents rejected by a tax authority, documents stuck waiting
-        to be sent, and the projected exhaustion date of each authorised numbering range — so that "we run
-        out of invoice numbers in nine days" is something we learn nine days early rather than on the day.
-      </li>
-      <li>
-        <strong>System health.</strong> Real errors in the server log, separated from noise, plus the
-        scheduled jobs that have started failing.
-      </li>
-      <li>
-        <strong>Business pulse.</strong> A per-country digest of what actually moved. Not for alerting —
-        for context, so that an anomaly can be read against a normal day.
-      </li>
-    </ul>
-
-    <h2 id="the-thing-it-found">The thing it found<a class="anchor" href="#the-thing-it-found" aria-label="Link to this section">#</a></h2>
-
-    <p>
-      The first meaningful run surfaced something nobody knew about: inventory cost was being recorded
-      twice for one category of transaction. Two independent parts of the system — a physical stock
-      movement and a settlement process — were each doing their honest job, and both were crediting the
-      same accounting entry.
-    </p>
-
-    <p>
-      It had been accumulating for more than a year. No report showed it, because every individual report
-      was internally consistent; the discrepancy only existed <em>between</em> two views that nobody had
-      ever put side by side. That is precisely the class of problem a human reviewer never finds, because
-      finding it requires comparing two things that each look correct.
-    </p>
-
-    <p>
-      Two things came out of that. The historical figures were corrected, and — more importantly — the
-      reconciliation became permanent. The same comparison now runs every six hours, so if the conditions
-      that allowed it ever return, we find out that day instead of the following year.
-    </p>
-
-    <h2 id="the-rule-that-made-it-work">The rule that made it work<a class="anchor" href="#the-rule-that-made-it-work" aria-label="Link to this section">#</a></h2>
-
-    <p>
-      The temptation with a system like this is to measure it by coverage: how many detectors, how many
-      alerts. That is the wrong metric, and following it produces something worse than nothing.
-    </p>
-
-    <blockquote>
-      <p>
-        Every alert has to produce an action. If an alert fires and the correct response is to ignore it,
-        that is a defect in my detector — not a nuisance to be tolerated.
-      </p>
-    </blockquote>
-
-    <p>
-      I enforced this literally. Any detector that produced an alert nobody acted on got rewritten or
-      deleted. The reasoning is simple: a channel that cries wolf trains people to ignore it, and the cost
-      is not the wasted attention — it's the one real alert that gets ignored along with the noise. A
-      monitoring system with a hundred detectors that people skim is strictly worse than one with ten they
-      read.
-    </p>
-
-    <h2 id="where-i-was-wrong">Where I was wrong<a class="anchor" href="#where-i-was-wrong" aria-label="Link to this section">#</a></h2>
-
-    <p>
-      One of my own detectors was the best argument for this rule.
-    </p>
-
-    <p>
-      I built one to find duplicated inventory records, using the identifying key that the platform uses
-      as standard. It reported thousands of duplicates. I was convinced I had found something large.
-    </p>
-
-    <p>
-      I was wrong, and dangerously so. Our consignment warehouses separate stock by dimensions the standard
-      key does not include — which customer's premises it sits in, and which company owns it. Records that
-      looked identical under the standard key were legitimately distinct records for different stores.
-      Acting on my own alert would have merged inventory belonging to different customers into a single
-      pile: a far worse problem than the one I thought I was fixing.
-    </p>
-
-    <p>
-      When I re-ran the comparison with the correct key, the count was zero. There had never been a
-      problem. The detector was rewritten, and the constraint was written down in bold so that nobody —
-      including future me — repeats it.
-    </p>
-
-    <p>
-      I keep coming back to this one, because I did everything right procedurally: I noticed an anomaly,
-      quantified it, and prepared a fix. What saved us was a colleague pushing back and my checking before
-      acting. Confidence in a finding is not evidence for it.
-    </p>
-
-    <h2 id="what-success-actually-looks-like">What success actually looks like<a class="anchor" href="#what-success-actually-looks-like" aria-label="Link to this section">#</a></h2>
-
-    <p>
-      Not a dashboard. The measurable outcome is unglamorous: the reconciliation between inventory and the
-      general ledger stays within threshold in each country, the digest arrives and is mostly boring, and
-      when it isn't, someone acts on it that morning.
-    </p>
-
-    <p>
-      The signal I trust most is behavioural. People now check the alert before they check the system.
-      The discovery mechanism stopped being a user noticing something odd weeks later — and that shift,
-      not the detector count, is the whole point.
-    </p>
-
-
-    <nav class="next-up" aria-label="Next article">
+    <nav class="next-up" aria-label="Read next">
       <div class="label">Read next</div>
       <a class="proj" href="./erp-migration.html">
         <div class="proj-top">
           <span class="proj-name">The bugs that survive an ERP upgrade are the quiet ones</span>
           <span class="tag">Case study</span>
         </div>
-        <p>Migrating five major versions forward across four companies and three countries — and why the failures that raised no error were the expensive ones.</p>
+        <p>Migrating five major versions forward across four companies and three countries. The failures that raised errors were fixed in days; the ones that changed behaviour without raising anything lasted weeks.</p>
       </a>
     </nav>
+
   </article>
   </main>
 
@@ -245,41 +128,27 @@
   if (window.innerWidth < 1280) return;
   var heads = [].slice.call(document.querySelectorAll('main h2[id], article h2[id]'));
   if (heads.length < 3) return;
-
   var nav = document.createElement('nav');
   nav.className = 'toc';
-  nav.setAttribute('aria-label', document.documentElement.lang === 'es' ? 'Secciones' : 'Sections');
-  nav.innerHTML = '<div class="toc-label">' +
-    (document.documentElement.lang === 'es' ? 'Secciones' : 'Sections') + '</div><ol></ol>';
+  nav.setAttribute('aria-label','Sections');
+  nav.innerHTML = '<div class="toc-label">Sections</div><ol></ol>';
   var ol = nav.querySelector('ol');
-
   heads.forEach(function(h){
     var text = (h.textContent || '').replace(/#$/, '').trim();
-    var li = document.createElement('li');
-    var a = document.createElement('a');
-    a.href = '#' + h.id;
-    a.textContent = text;
-    a.dataset.target = h.id;
+    var li = document.createElement('li'), a = document.createElement('a');
+    a.href = '#' + h.id; a.textContent = text; a.dataset.target = h.id;
     li.appendChild(a); ol.appendChild(li);
   });
   document.body.appendChild(nav);
   requestAnimationFrame(function(){ nav.classList.add('ready'); });
-
   var links = {};
   [].slice.call(nav.querySelectorAll('a')).forEach(function(a){ links[a.dataset.target] = a; });
-
-  function setActive(id){
-    for (var k in links) links[k].classList.toggle('active', k === id);
-  }
-
+  function setActive(id){ for (var k in links) links[k].classList.toggle('active', k === id); }
   var obs = new IntersectionObserver(function(entries){
-    var visible = entries.filter(function(e){ return e.isIntersecting; });
-    if (visible.length) {
-      visible.sort(function(a,b){ return a.boundingClientRect.top - b.boundingClientRect.top; });
-      setActive(visible[0].target.id);
-    }
+    var v = entries.filter(function(e){ return e.isIntersecting; });
+    if (v.length) { v.sort(function(a,b){ return a.boundingClientRect.top - b.boundingClientRect.top; });
+      setActive(v[0].target.id); }
   }, { rootMargin: '-15% 0px -70% 0px', threshold: 0 });
-
   heads.forEach(function(h){ obs.observe(h); });
   setActive(heads[0].id);
 })();
@@ -287,81 +156,36 @@
 <script>
 (function(){
   var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  var root = document.documentElement;
-
-  /* --- reveal on scroll (marca el html solo si vamos a animar) --- */
   if (!reduce && 'IntersectionObserver' in window) {
-    root.classList.add('js-reveal');
-    var targets = [].slice.call(document.querySelectorAll(
-      'header > *, section > h2, section > p, .job, .proj, .skill-row, .stats, .post, article > *'));
-    targets.forEach(function(el, i){ el.setAttribute('data-reveal',''); });
-
+    document.documentElement.classList.add('js-reveal');
+    var targets = [].slice.call(document.querySelectorAll('article > *, .post, section > *'));
+    targets.forEach(function(el){ el.setAttribute('data-reveal',''); });
     var io = new IntersectionObserver(function(entries){
       entries.forEach(function(e){
         if (!e.isIntersecting) return;
-        var idx = +(e.target.dataset.i || 0);
-        e.target.style.transitionDelay = Math.min(idx * 45, 180) + 'ms';
-        e.target.classList.add('shown');
-        io.unobserve(e.target);
+        e.target.style.transitionDelay = Math.min((+e.target.dataset.i||0)*45,180)+'ms';
+        e.target.classList.add('shown'); io.unobserve(e.target);
       });
     }, { rootMargin: '0px 0px -8% 0px', threshold: 0.05 });
-
-    /* escalona por grupo de hermanos */
     var groups = {};
     targets.forEach(function(el){
-      var key = el.parentNode;
-      groups[key] = groups[key] || 0;
-      el.dataset.i = groups[key]++;
-      io.observe(el);
+      var k = el.parentNode; groups[k] = groups[k] || 0; el.dataset.i = groups[k]++; io.observe(el);
     });
-
-    /* lo que ya está en pantalla aparece de inmediato */
     setTimeout(function(){
       targets.forEach(function(el){
         if (el.getBoundingClientRect().top < window.innerHeight) el.classList.add('shown');
       });
     }, 30);
   }
-
-  /* --- contadores del bloque de cifras --- */
-  var nums = [].slice.call(document.querySelectorAll('.stat-n[data-to]'));
-  var box = document.querySelector('.stats');
-  function settle(){ nums.forEach(function(n){ n.textContent = n.dataset.to; }); }
-
-  if (nums.length && !reduce && box && 'IntersectionObserver' in window) {
-    var started = false;
-    new IntersectionObserver(function(es){
-      if (!es[0].isIntersecting || started) return;
-      started = true;
-      /* red de seguridad: si rAF está limitado, el valor real aparece igual */
-      var guard = setTimeout(settle, 1400);
-      nums.forEach(function(n){
-        var to = +n.dataset.to, t0 = null, dur = 900;
-        n.textContent = '0';
-        function step(ts){
-          if (!t0) t0 = ts;
-          var p = Math.min((ts - t0) / dur, 1);
-          n.textContent = Math.round(to * (1 - Math.pow(1 - p, 3)));
-          if (p < 1) { requestAnimationFrame(step); }
-          else { clearTimeout(guard); settle(); }
-        }
-        requestAnimationFrame(step);
-      });
-    }, { threshold: 0.4 }).observe(box);
-  }
-
-  /* --- barra de progreso de lectura (solo artículos) --- */
   if (!reduce && document.querySelector('article')) {
-    var bar = document.createElement('div');
-    bar.className = 'progress';
+    var bar = document.createElement('div'); bar.className = 'progress';
     document.body.appendChild(bar);
     var tick = function(){
       var h = document.documentElement.scrollHeight - window.innerHeight;
       bar.style.width = (h > 0 ? (window.scrollY / h) * 100 : 0) + '%';
     };
     window.addEventListener('scroll', tick, { passive: true });
-    window.addEventListener('resize', tick);
-    tick();
+    window.addEventListener('resize', tick); tick();
   }
 })();
 </script>

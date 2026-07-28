@@ -15,28 +15,8 @@
   </url>
   <url><loc>https://ssebv.github.io/writing/</loc><priority>0.8</priority></url>
   <url><loc>https://ssebv.github.io/es/writing/</loc><priority>0.8</priority></url>
-  <url>
-    <loc>https://ssebv.github.io/writing/erp-migration.html</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://ssebv.github.io/writing/erp-migration.html"/>
-    <xhtml:link rel="alternate" hreflang="es" href="https://ssebv.github.io/es/writing/erp-migration.html"/>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://ssebv.github.io/es/writing/erp-migration.html</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://ssebv.github.io/writing/erp-migration.html"/>
-    <xhtml:link rel="alternate" hreflang="es" href="https://ssebv.github.io/es/writing/erp-migration.html"/>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://ssebv.github.io/writing/health-check.html</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://ssebv.github.io/writing/health-check.html"/>
-    <xhtml:link rel="alternate" hreflang="es" href="https://ssebv.github.io/es/writing/health-check.html"/>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://ssebv.github.io/es/writing/health-check.html</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://ssebv.github.io/writing/health-check.html"/>
-    <xhtml:link rel="alternate" hreflang="es" href="https://ssebv.github.io/es/writing/health-check.html"/>
-    <priority>0.8</priority>
-  </url>
+  <url><loc>https://ssebv.github.io/es/writing/erp-migration.html</loc><priority>0.8</priority></url>
+  <url><loc>https://ssebv.github.io/es/writing/health-check.html</loc><priority>0.8</priority></url>
+  <url><loc>https://ssebv.github.io/writing/erp-migration.html</loc><priority>0.8</priority></url>
+  <url><loc>https://ssebv.github.io/writing/health-check.html</loc><priority>0.8</priority></url>
 </urlset>

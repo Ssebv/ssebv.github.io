@@ -9,15 +9,15 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <title>Los errores que sobreviven a una actualización de ERP son los silenciosos — Sebastián Allende</title>
-<meta name="description" content="Migrar un ERP cinco versiones mayores en cuatro empresas y tres países. Las fallas que importaron fueron las que no lanzaron ningún error.">
+<meta name="description" content="Migrar cinco versiones mayores en cuatro empresas y tres países. Las fallas que lanzaron errores se arreglaron en días; las que cambiaron el comportamiento sin lanzar nada duraron semanas.">
 <link rel="canonical" href="https://ssebv.github.io/es/writing/erp-migration.html">
-<link rel="alternate" hreflang="en" href="https://ssebv.github.io/writing/erp-migration.html">
 <link rel="alternate" hreflang="es" href="https://ssebv.github.io/es/writing/erp-migration.html">
+<link rel="alternate" hreflang="en" href="https://ssebv.github.io/writing/erp-migration.html">
 
 <meta property="og:type" content="article">
 <meta property="og:locale" content="es_CL">
 <meta property="og:title" content="Los errores que sobreviven a una actualización de ERP son los silenciosos">
-<meta property="og:description" content="Migrar un ERP cinco versiones mayores en cuatro empresas y tres países. Las fallas que importaron no lanzaron ningún error.">
+<meta property="og:description" content="Migrar cinco versiones mayores en cuatro empresas y tres países. Las fallas que lanzaron errores se arreglaron en días; las que cambiaron el comportamiento sin lanzar nada duraron semanas.">
 <meta property="og:url" content="https://ssebv.github.io/es/writing/erp-migration.html">
 <meta property="og:image" content="https://ssebv.github.io/og-erp-migration.png">
 <meta name="twitter:card" content="summary_large_image">
@@ -30,7 +30,7 @@
   "@context": "https://schema.org",
   "@type": "BlogPosting",
   "headline": "Los errores que sobreviven a una actualización de ERP son los silenciosos",
-  "description": "Migrar un ERP cinco versiones mayores en cuatro empresas y tres países.",
+  "description": "Migrar cinco versiones mayores en cuatro empresas y tres países. Las fallas que lanzaron errores se arreglaron en días; las que cambiaron el comportamiento sin lanzar nada duraron semanas.",
   "datePublished": "2026-07-28",
   "author": { "@type": "Person", "name": "Sebastián Allende Cuello", "url": "https://ssebv.github.io/" },
   "inLanguage": "es"
@@ -46,7 +46,6 @@
   <a href="../../writing/erp-migration.html" hreflang="en">EN</a>
   <a href="./erp-migration.html" hreflang="es" aria-current="true">ES</a>
 </nav>
-
 <button class="theme-toggle" id="themeToggle" type="button" aria-label="Cambiar tema de color" title="Cambiar tema de color">
   <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
   <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
@@ -63,186 +62,45 @@
     <h1>Los errores que sobreviven a una actualización de ERP son los silenciosos</h1>
     <p class="meta"><time datetime="2026-07-28">28 de julio de 2026</time><span class="dot">·</span>Migrar cinco versiones mayores en cuatro empresas y tres países<span class="dot">·</span>6 min de lectura</p>
 
-    <p>
-      El ERP del que soy responsable hace funcionar cuatro empresas en Chile, Colombia y Perú. Contiene
-      el inventario, la contabilidad, las órdenes de compra y venta, y la facturación electrónica que
-      tres autoridades tributarias distintas exigen por ley. Cuando se detiene, las bodegas dejan de
-      despachar y las facturas dejan de emitirse — lo que, en países donde facturar es un acto regulado,
-      no es una molestia sino un problema de cumplimiento.
-    </p>
+<p>El ERP del que soy responsable hace funcionar cuatro empresas en Chile, Colombia y Perú. Contiene el inventario, la contabilidad, las órdenes de compra y venta, y la facturación electrónica que tres autoridades tributarias distintas exigen por ley. Cuando se detiene, las bodegas dejan de despachar y las facturas dejan de emitirse — lo que, en países donde facturar es un acto regulado, no es una molestia sino un problema de cumplimiento.</p>
+<p>Ese sistema iba cinco versiones mayores atrasado. Ponerlo al día significaba migrar la base de datos, reescribir el código custom contra una API distinta y recertificar la facturación electrónica ante tres reguladores — sin perder un registro y sin una ventana lo bastante larga como para que alguien lo notara.</p>
+<p>La migración en sí salió bien. De lo que quiero escribir es de lo que vino después, porque ahí estuvo la lección real.</p>
+<h2 id="la-forma-del-problema">La forma del problema<a class="anchor" href="#la-forma-del-problema" aria-label="Enlace a esta sección">#</a></h2>
+<p>La instalación tenía unos 228 módulos, de los cuales 41 eran código custom escrito durante años por varias manos. Buena parte del trabajo previo a tocar nada fue arqueología: leer cada módulo custom para decidir qué seguía sosteniendo la operación, qué estaba muerto y qué se había convertido en un duplicado de algo que la plataforma ya hacía de forma nativa. Cuarenta y un módulos custom quedaron en dieciocho.</p>
+<p>La consolidación no fue orden por el orden. Cada módulo custom que sobrescribe un modelo estándar es una apuesta a que ese modelo no va a cambiar por debajo. Cinco versiones son muchos cambios. Mientras menos apuestas abiertas haya en el cutover, menos formas tiene la actualización de sorprenderte.</p>
+<p>El cutover corrió por la ruta nativa de actualización, primero contra una copia de producción y después de verdad. La identidad de la base de datos se preservó, no se perdió nada y no hubo vuelta atrás.</p>
+<h2 id="entonces-empezaron-las-fallas-silenciosas">Entonces empezaron las fallas silenciosas<a class="anchor" href="#entonces-empezaron-las-fallas-silenciosas" aria-label="Enlace a esta sección">#</a></h2>
+<p>Me había preparado para que la actualización rompiera cosas ruidosamente — un traceback, un módulo que se niega a cargar, una factura que no publica. Esas son las fallas fáciles. Se anuncian solas, las arreglas y sigues. Casi ninguno de los problemas reales se comportó así.</p>
+<p>El ejemplo más claro fue un solo campo. En la versión antigua, una línea de factura que representaba un producto real tenía el <code>display_type</code> vacío; los encabezados de sección y las notas llevaban un valor. Así que el código escrito a lo largo del sistema filtraba las líneas de producto de la forma obvia: <em>toma las líneas donde display_type está vacío</em>. En la versión nueva, las líneas de producto dejaron de estar vacías y pasaron a llevar un valor propio y explícito.</p>
+<p>Nada falló. Los filtros siguieron corriendo. Simplemente dejaron de devolver nada, para siempre. Código que llevaba años funcionando siguió ejecutándose, siguió reportando éxito y procesó cero registros.</p>
+<p>Ese único cambio produjo tres errores distintos antes de que entendiera el patrón: un PDF que dejó de compactar sus líneas en silencio, una rutina de consolidación para documentos que superan el límite de líneas del regulador y que dejó de consolidar, y un formato de ticket que perdió su contenido. Tres síntomas, tres áreas, una causa — y ninguno lanzó una excepción.</p>
+<p>Una vez reconocido, el arreglo fue mecánico: auditar <em>cada</em> filtro heredado de la versión anterior que tocara ese campo, y hacer que acepte ambas formas. Lo caro no fue el arreglo. Fueron las semanas entre la actualización y el momento en que supe dónde mirar.</p>
+<h2 id="otras-cuatro-formas-de-quedarse-callado">Otras cuatro formas de quedarse callado<a class="anchor" href="#otras-cuatro-formas-de-quedarse-callado" aria-label="Enlace a esta sección">#</a></h2>
+<p>El mismo patrón — sin error, comportamiento equivocado — apareció en formas que no había anticipado:</p>
+<ul><li><strong>Tareas programadas que sobrevivieron a su código.</strong> Definiciones de trabajos de la versión anterior sobrevivieron a la actualización aunque el método que llamaban ya no existiera. Cada corrida fallaba en silencio. Solo se veían buscando trabajos con contador de fallos mayor que cero; nada los sacaba a la superficie por sí solo.</li></ul>
+<ul><li><strong>Campos computados almacenados que se desincronizaron sin avisar.</strong> Algunos campos cachean un valor copiado desde otro lado. La actualización cambió varias de esas fuentes sin recalcular las copias, así que ambas discrepaban. Todo se veía normal hasta que un informe cruzó las dos.</li></ul>
+<ul><li><strong>Comportamiento nuevo de la plataforma chocando con supuestos viejos.</strong> Una rutina nocturna estándar ganó un paso que "repara" las reservas de inventario. Nuestras bodegas de consignación violan ese invariante a propósito, por buenas razones. El choque solo corría de noche, así que el primer síntoma apareció más de veinticuatro horas después del cambio que lo causó — que es exactamente el tiempo suficiente para dejar de sospechar del cambio.</li></ul>
+<ul><li><strong>Código que nunca se estaba ejecutando.</strong> Dos módulos de nuestro repositorio compartían nombre con módulos que la plataforma ahora incluye. Gana la versión de la plataforma. Así que un módulo que yo podía leer, editar y commitear no tenía efecto alguno sobre el sistema en ejecución. Antes de arreglar nada, verifica que el archivo que estás leyendo sea el que realmente se ejecuta.</li></ul>
+<h2 id="el-que-mas-me-enseno">El que más me enseñó<a class="anchor" href="#el-que-mas-me-enseno" aria-label="Enlace a esta sección">#</a></h2>
+<p>Una vista de lista nueva que agregué para un país se convirtió, sin que nadie la tocara, en la vista de lista por defecto de ese tipo de registro en todo el sistema — en las cuatro compañías.</p>
+<p>La razón es casi graciosa. Las vistas se ordenan por prioridad y luego por nombre. Mi vista nueva tenía la misma prioridad que la estándar, y su nombre resultó ordenar antes alfabéticamente. Ese fue todo el mecanismo. Usuarios de otros dos países empezaron a ver columnas de un tipo de documento que no existe en su país, y como la lista era editable, un clic perdido podía modificar un registro.</p>
+<p>No hay arreglo ingenioso. Se le pone una prioridad baja explícita a toda vista nueva que no deba convertirse en la por defecto. Pero jamás habría predicho que un desempate alfabético pudiera reasignar una pantalla usada por cuatro compañías, y ninguna cantidad de pruebas sobre mi propia funcionalidad lo habría detectado, porque desde donde yo estaba la funcionalidad andaba perfecta.</p>
+<blockquote></blockquote>
+<div class="note"><p><strong>La lección generalizable:</strong> después de una actualización mayor, las fallas que lanzan errores se arreglan en días porque el sistema te avisa. Las que cambian el comportamiento sin lanzar nada pueden durar meses, porque el modelo mental de todos dice que el código "funciona" — y sí corre, solo que ya no hace lo que dice. Tras una actualización, la pregunta correcta no es "¿qué se rompió?" sino "¿qué sigue corriendo y ahora significa otra cosa?".</p></div>
+<h2 id="que-hago-distinto-ahora">Qué hago distinto ahora<a class="anchor" href="#que-hago-distinto-ahora" aria-label="Enlace a esta sección">#</a></h2>
+<p><strong>Trato el silencio como no verificado, no como éxito.</strong> Si una rutina reporta que procesó registros, reviso el conteo. Un trabajo que dice "listo" sin haber hecho nada es el estado más caro en el que puede estar un sistema.</p>
+<p><strong>Reviso los logs del día siguiente, no los de la hora siguiente.</strong> Cualquier cosa que corra de noche va a fallar un día más tarde que el cambio que la causó, y para entonces todos pasaron a otra cosa.</p>
+<p><strong>Documento cada hallazgo como regla, no como anécdota.</strong> Cada uno de estos quedó escrito en el repositorio, redactado como algo que hay que revisar y no como algo que pasó. Quien herede este sistema no debería tener que redescubrir que un desempate alfabético puede secuestrar una pantalla.</p>
+<p><strong>Y construí el monitoreo que habría atrapado la mayoría.</strong> Ese es el <a href="./health-check.html">otro trabajo</a> — un conjunto de detectores que cuadran lo que el sistema cree contra lo que dice la contabilidad, de forma programada, para que el mecanismo de descubrimiento deje de ser un usuario notando algo raro semanas después.</p>
 
-    <p>
-      Ese sistema iba cinco versiones mayores atrasado. Ponerlo al día significaba migrar la base de
-      datos, reescribir el código custom contra una API distinta y recertificar la facturación
-      electrónica ante tres reguladores — sin perder un registro y sin una ventana lo bastante larga
-      como para que alguien lo notara.
-    </p>
-
-    <p>
-      La migración en sí salió bien. De lo que quiero escribir es de lo que vino después, porque ahí
-      estuvo la lección real.
-    </p>
-
-    <h2 id="la-forma-del-problema">La forma del problema<a class="anchor" href="#la-forma-del-problema" aria-label="Enlace a esta sección">#</a></h2>
-
-    <p>
-      La instalación tenía unos 228 módulos, de los cuales 41 eran código custom escrito durante años
-      por varias manos. Buena parte del trabajo previo a tocar nada fue arqueología: leer cada módulo
-      custom para decidir qué seguía sosteniendo la operación, qué estaba muerto y qué se había
-      convertido en un duplicado de algo que la plataforma ya hacía de forma nativa. Cuarenta y un
-      módulos custom quedaron en dieciocho.
-    </p>
-
-    <p>
-      La consolidación no fue orden por el orden. Cada módulo custom que sobrescribe un modelo estándar
-      es una apuesta a que ese modelo no va a cambiar por debajo. Cinco versiones son muchos cambios.
-      Mientras menos apuestas abiertas haya en el cutover, menos formas tiene la actualización de
-      sorprenderte.
-    </p>
-
-    <p>
-      El cutover corrió por la ruta nativa de actualización, primero contra una copia de producción y
-      después de verdad. La identidad de la base de datos se preservó, no se perdió nada y no hubo
-      vuelta atrás.
-    </p>
-
-    <h2 id="entonces-empezaron-las-fallas-silenciosas">Entonces empezaron las fallas silenciosas<a class="anchor" href="#entonces-empezaron-las-fallas-silenciosas" aria-label="Enlace a esta sección">#</a></h2>
-
-    <p>
-      Me había preparado para que la actualización rompiera cosas ruidosamente — un traceback, un módulo
-      que se niega a cargar, una factura que no publica. Esas son las fallas fáciles. Se anuncian solas,
-      las arreglas y sigues. Casi ninguno de los problemas reales se comportó así.
-    </p>
-
-    <p>
-      El ejemplo más claro fue un solo campo. En la versión antigua, una línea de factura que
-      representaba un producto real tenía el <code>display_type</code> vacío; los encabezados de sección
-      y las notas llevaban un valor. Así que el código escrito a lo largo del sistema filtraba las
-      líneas de producto de la forma obvia: <em>toma las líneas donde display_type está vacío</em>. En
-      la versión nueva, las líneas de producto dejaron de estar vacías y pasaron a llevar un valor
-      propio y explícito.
-    </p>
-
-    <p>
-      Nada falló. Los filtros siguieron corriendo. Simplemente dejaron de devolver nada, para siempre.
-      Código que llevaba años funcionando siguió ejecutándose, siguió reportando éxito y procesó cero
-      registros.
-    </p>
-
-    <p>
-      Ese único cambio produjo tres errores distintos antes de que entendiera el patrón: un PDF que dejó
-      de compactar sus líneas en silencio, una rutina de consolidación para documentos que superan el
-      límite de líneas del regulador y que dejó de consolidar, y un formato de ticket que perdió su
-      contenido. Tres síntomas, tres áreas, una causa — y ninguno lanzó una excepción.
-    </p>
-
-    <p>
-      Una vez reconocido, el arreglo fue mecánico: auditar <em>cada</em> filtro heredado de la versión
-      anterior que tocara ese campo, y hacer que acepte ambas formas. Lo caro no fue el arreglo. Fueron
-      las semanas entre la actualización y el momento en que supe dónde mirar.
-    </p>
-
-    <h2 id="otras-cuatro-formas-de-quedarse-callado">Otras cuatro formas de quedarse callado<a class="anchor" href="#otras-cuatro-formas-de-quedarse-callado" aria-label="Enlace a esta sección">#</a></h2>
-
-    <p>El mismo patrón — sin error, comportamiento equivocado — apareció en formas que no había anticipado:</p>
-
-    <ul>
-      <li>
-        <strong>Tareas programadas que sobrevivieron a su código.</strong> Definiciones de trabajos de
-        la versión anterior sobrevivieron a la actualización aunque el método que llamaban ya no
-        existiera. Cada corrida fallaba en silencio. Solo se veían buscando trabajos con contador de
-        fallos mayor que cero; nada los sacaba a la superficie por sí solo.
-      </li>
-      <li>
-        <strong>Campos computados almacenados que se desincronizaron sin avisar.</strong> Algunos campos
-        cachean un valor copiado desde otro lado. La actualización cambió varias de esas fuentes sin
-        recalcular las copias, así que ambas discrepaban. Todo se veía normal hasta que un informe cruzó
-        las dos.
-      </li>
-      <li>
-        <strong>Comportamiento nuevo de la plataforma chocando con supuestos viejos.</strong> Una rutina
-        nocturna estándar ganó un paso que "repara" las reservas de inventario. Nuestras bodegas de
-        consignación violan ese invariante a propósito, por buenas razones. El choque solo corría de
-        noche, así que el primer síntoma apareció más de veinticuatro horas después del cambio que lo
-        causó — que es exactamente el tiempo suficiente para dejar de sospechar del cambio.
-      </li>
-      <li>
-        <strong>Código que nunca se estaba ejecutando.</strong> Dos módulos de nuestro repositorio
-        compartían nombre con módulos que la plataforma ahora incluye. Gana la versión de la plataforma.
-        Así que un módulo que yo podía leer, editar y commitear no tenía efecto alguno sobre el sistema
-        en ejecución. Antes de arreglar nada, verifica que el archivo que estás leyendo sea el que
-        realmente se ejecuta.
-      </li>
-    </ul>
-
-    <h2 id="el-que-mas-me-enseno">El que más me enseñó<a class="anchor" href="#el-que-mas-me-enseno" aria-label="Enlace a esta sección">#</a></h2>
-
-    <p>
-      Una vista de lista nueva que agregué para un país se convirtió, sin que nadie la tocara, en la
-      vista de lista por defecto de ese tipo de registro en todo el sistema — en las cuatro compañías.
-    </p>
-
-    <p>
-      La razón es casi graciosa. Las vistas se ordenan por prioridad y luego por nombre. Mi vista nueva
-      tenía la misma prioridad que la estándar, y su nombre resultó ordenar antes alfabéticamente. Ese
-      fue todo el mecanismo. Usuarios de otros dos países empezaron a ver columnas de un tipo de
-      documento que no existe en su país, y como la lista era editable, un clic perdido podía modificar
-      un registro.
-    </p>
-
-    <p>
-      No hay arreglo ingenioso. Se le pone una prioridad baja explícita a toda vista nueva que no deba
-      convertirse en la por defecto. Pero jamás habría predicho que un desempate alfabético pudiera
-      reasignar una pantalla usada por cuatro compañías, y ninguna cantidad de pruebas sobre mi propia
-      funcionalidad lo habría detectado, porque desde donde yo estaba la funcionalidad andaba perfecta.
-    </p>
-
-    <div class="note">
-      <p>
-        <strong>La lección generalizable:</strong> después de una actualización mayor, las fallas que
-        lanzan errores se arreglan en días porque el sistema te avisa. Las que cambian el comportamiento
-        sin lanzar nada pueden durar meses, porque el modelo mental de todos dice que el código
-        "funciona" — y sí corre, solo que ya no hace lo que dice. Tras una actualización, la pregunta
-        correcta no es "¿qué se rompió?" sino "¿qué sigue corriendo y ahora significa otra cosa?".
-      </p>
-    </div>
-
-    <h2 id="que-hago-distinto-ahora">Qué hago distinto ahora<a class="anchor" href="#que-hago-distinto-ahora" aria-label="Enlace a esta sección">#</a></h2>
-
-    <p>
-      <strong>Trato el silencio como no verificado, no como éxito.</strong> Si una rutina reporta que
-      procesó registros, reviso el conteo. Un trabajo que dice "listo" sin haber hecho nada es el estado
-      más caro en el que puede estar un sistema.
-    </p>
-
-    <p>
-      <strong>Reviso los logs del día siguiente, no los de la hora siguiente.</strong> Cualquier cosa
-      que corra de noche va a fallar un día más tarde que el cambio que la causó, y para entonces todos
-      pasaron a otra cosa.
-    </p>
-
-    <p>
-      <strong>Documento cada hallazgo como regla, no como anécdota.</strong> Cada uno de estos quedó
-      escrito en el repositorio, redactado como algo que hay que revisar y no como algo que pasó. Quien
-      herede este sistema no debería tener que redescubrir que un desempate alfabético puede secuestrar
-      una pantalla.
-    </p>
-
-    <p>
-      <strong>Y construí el monitoreo que habría atrapado la mayoría.</strong> Ese es el
-      <a href="./health-check.html">otro trabajo</a> — un conjunto de detectores que cuadran lo que el
-      sistema cree contra lo que dice la contabilidad, de forma programada, para que el mecanismo de
-      descubrimiento deje de ser un usuario notando algo raro semanas después.
-    </p>
-
-    <nav class="next-up" aria-label="Siguiente artículo">
+    <nav class="next-up" aria-label="Sigue leyendo">
       <div class="label">Sigue leyendo</div>
       <a class="proj" href="./health-check.html">
         <div class="proj-top">
           <span class="proj-name">La calidad de las alertas le gana a la cantidad</span>
           <span class="tag">Caso</span>
         </div>
-        <p>Construir un monitoreo que cuadra el inventario contra la contabilidad, y el detector propio que estaba seguro y equivocado.</p>
+        <p>Construir un monitoreo que cuadra el inventario contra la contabilidad cada seis horas, lo que encontró que ningún informe mostraba, y por qué una alerta que nadie acciona es un defecto y no una molestia.</p>
       </a>
     </nav>
 
@@ -299,81 +157,36 @@
 <script>
 (function(){
   var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  var root = document.documentElement;
-
-  /* --- reveal on scroll (marca el html solo si vamos a animar) --- */
   if (!reduce && 'IntersectionObserver' in window) {
-    root.classList.add('js-reveal');
-    var targets = [].slice.call(document.querySelectorAll(
-      'header > *, section > h2, section > p, .job, .proj, .skill-row, .stats, .post, article > *'));
-    targets.forEach(function(el, i){ el.setAttribute('data-reveal',''); });
-
+    document.documentElement.classList.add('js-reveal');
+    var targets = [].slice.call(document.querySelectorAll('article > *, .post, section > *'));
+    targets.forEach(function(el){ el.setAttribute('data-reveal',''); });
     var io = new IntersectionObserver(function(entries){
       entries.forEach(function(e){
         if (!e.isIntersecting) return;
-        var idx = +(e.target.dataset.i || 0);
-        e.target.style.transitionDelay = Math.min(idx * 45, 180) + 'ms';
-        e.target.classList.add('shown');
-        io.unobserve(e.target);
+        e.target.style.transitionDelay = Math.min((+e.target.dataset.i||0)*45,180)+'ms';
+        e.target.classList.add('shown'); io.unobserve(e.target);
       });
     }, { rootMargin: '0px 0px -8% 0px', threshold: 0.05 });
-
-    /* escalona por grupo de hermanos */
     var groups = {};
     targets.forEach(function(el){
-      var key = el.parentNode;
-      groups[key] = groups[key] || 0;
-      el.dataset.i = groups[key]++;
-      io.observe(el);
+      var k = el.parentNode; groups[k] = groups[k] || 0; el.dataset.i = groups[k]++; io.observe(el);
     });
-
-    /* lo que ya está en pantalla aparece de inmediato */
     setTimeout(function(){
       targets.forEach(function(el){
         if (el.getBoundingClientRect().top < window.innerHeight) el.classList.add('shown');
       });
     }, 30);
   }
-
-  /* --- contadores del bloque de cifras --- */
-  var nums = [].slice.call(document.querySelectorAll('.stat-n[data-to]'));
-  var box = document.querySelector('.stats');
-  function settle(){ nums.forEach(function(n){ n.textContent = n.dataset.to; }); }
-
-  if (nums.length && !reduce && box && 'IntersectionObserver' in window) {
-    var started = false;
-    new IntersectionObserver(function(es){
-      if (!es[0].isIntersecting || started) return;
-      started = true;
-      /* red de seguridad: si rAF está limitado, el valor real aparece igual */
-      var guard = setTimeout(settle, 1400);
-      nums.forEach(function(n){
-        var to = +n.dataset.to, t0 = null, dur = 900;
-        n.textContent = '0';
-        function step(ts){
-          if (!t0) t0 = ts;
-          var p = Math.min((ts - t0) / dur, 1);
-          n.textContent = Math.round(to * (1 - Math.pow(1 - p, 3)));
-          if (p < 1) { requestAnimationFrame(step); }
-          else { clearTimeout(guard); settle(); }
-        }
-        requestAnimationFrame(step);
-      });
-    }, { threshold: 0.4 }).observe(box);
-  }
-
-  /* --- barra de progreso de lectura (solo artículos) --- */
   if (!reduce && document.querySelector('article')) {
-    var bar = document.createElement('div');
-    bar.className = 'progress';
+    var bar = document.createElement('div'); bar.className = 'progress';
     document.body.appendChild(bar);
     var tick = function(){
       var h = document.documentElement.scrollHeight - window.innerHeight;
       bar.style.width = (h > 0 ? (window.scrollY / h) * 100 : 0) + '%';
     };
     window.addEventListener('scroll', tick, { passive: true });
-    window.addEventListener('resize', tick);
-    tick();
+    window.addEventListener('resize', tick); tick();
   }
 })();
 </script>

@@ -10,14 +10,14 @@
       <title>The bugs that survive an ERP upgrade are the quiet ones</title>
       <link>https://ssebv.github.io/writing/erp-migration.html</link>
       <guid isPermaLink="true">https://ssebv.github.io/writing/erp-migration.html</guid>
-      <pubDate>Tue, 28 Jul 2026 12:00:00 GMT</pubDate>
+      <pubDate>28 Jul 2026 12:00:00 GMT</pubDate>
       <description>Migrating five major versions forward across four companies and three countries. The failures that raised errors were fixed in days; the ones that changed behaviour without raising anything lasted weeks.</description>
     </item>
     <item>
       <title>Alert quality beats alert count</title>
       <link>https://ssebv.github.io/writing/health-check.html</link>
       <guid isPermaLink="true">https://ssebv.github.io/writing/health-check.html</guid>
-      <pubDate>Tue, 28 Jul 2026 12:00:00 GMT</pubDate>
+      <pubDate>28 Jul 2026 12:00:00 GMT</pubDate>
       <description>Building a health check that reconciles inventory against the general ledger every six hours, what it found that no report showed, and why an alert nobody acts on is a defect rather than a nuisance.</description>
     </item>
   </channel>
