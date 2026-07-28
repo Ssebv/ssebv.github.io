@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>The bugs that survive an ERP upgrade are the quiet ones — Sebastián Allende</title>
+<meta name="description" content="Migrating an ERP five major versions forward across four companies and three countries. The failures that mattered were the ones that raised no error at all.">
+<link rel="canonical" href="https://ssebv.github.io/writing/erp-migration.html">
+
+<meta property="og:type" content="article">
+<meta property="og:title" content="The bugs that survive an ERP upgrade are the quiet ones">
+<meta property="og:description" content="Migrating an ERP five major versions forward across four companies and three countries. The failures that mattered raised no error at all.">
+<meta property="og:url" content="https://ssebv.github.io/writing/erp-migration.html">
+<meta property="og:image" content="https://ssebv.github.io/og.png">
+<meta name="twitter:card" content="summary_large_image">
+
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%232f5bd7'/%3E%3Ctext x='50' y='68' font-family='Helvetica,Arial,sans-serif' font-size='48' font-weight='700' fill='%23fff' text-anchor='middle'%3ESA%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<a class="skip" href="#main">Skip to content</a>
+
+<div class="wrap">
+  <a class="back" href="../">← Sebastián Allende</a>
+
+  <main id="main">
+  <article>
+
+    <h1>The bugs that survive an ERP upgrade are the quiet ones</h1>
+    <p class="meta">Migrating five major versions forward across four companies and three countries</p>
+
+    <p>
+      The ERP I look after runs four operating companies in Chile, Colombia and Peru. It holds the
+      inventory, the accounting, the purchase and sales orders, and the electronic invoicing that three
+      different tax authorities require by law. When it stops, warehouses stop dispatching and invoices
+      stop being issued — which, in countries where invoicing is a regulated act, is not an inconvenience
+      but a compliance problem.
+    </p>
+
+    <p>
+      That system was five major versions behind. Moving it forward meant migrating the database,
+      rewriting the custom code against a changed API, and re-certifying the electronic invoicing for
+      three regulators — without losing a record and without a window long enough for anyone to notice.
+    </p>
+
+    <p>
+      The migration itself went well. What I want to write about is what came after, because that is
+      where the real lesson was.
+    </p>
+
+    <h2>The shape of the problem</h2>
+
+    <p>
+      The installation had around 228 modules, of which 41 were custom code written over several years by
+      several hands. A good part of the work before touching anything was archaeology: reading every
+      custom module to decide what was still load-bearing, what was dead, and what had quietly become a
+      duplicate of something the platform now did natively. Forty-one custom modules became eighteen.
+    </p>
+
+    <p>
+      Consolidation was not tidiness for its own sake. Every custom module that overrides a standard model
+      is a bet that the standard model will not change underneath it. Five versions is a lot of change.
+      The fewer bets outstanding at cutover, the fewer ways the upgrade can surprise you.
+    </p>
+
+    <p>
+      The cutover ran on the platform's native upgrade path against a copy of production, then for real.
+      The database identity was preserved, nothing was lost, and there was no rollback.
+    </p>
+
+    <h2>Then the quiet failures started</h2>
+
+    <p>
+      I had prepared for the upgrade to break things loudly — a traceback, a module that refuses to load,
+      an invoice that won't post. Those are the easy failures. They announce themselves, you fix them, you
+      move on. Almost none of the real problems behaved that way.
+    </p>
+
+    <p>
+      The clearest example was a single field. In the old version, a line on an invoice that represented an
+      actual product had an empty <code>display_type</code>; section headers and notes had a value. So
+      code written across the system filtered product lines the obvious way: <em>take the lines where
+      display_type is empty</em>. In the new version, product lines stopped being empty and started
+      carrying an explicit value of their own.
+    </p>
+
+    <p>
+      Nothing errored. The filters still ran. They simply returned nothing, forever. Code that had worked
+      for years kept executing, kept reporting success, and processed zero records.
+    </p>
+
+    <p>
+      That one change produced three separate bugs before I understood the pattern: a PDF that silently
+      stopped compacting its lines, a consolidation routine for documents over the regulator's line limit
+      that quietly stopped consolidating, and a ticket format that lost its content. Three symptoms, three
+      areas, one cause — and not one of them raised an exception.
+    </p>
+
+    <p>
+      Once I recognised it, the fix was mechanical: audit <em>every</em> filter inherited from the old
+      version that tested that field, and make it accept both shapes. The expensive part wasn't the fix.
+      It was the weeks between the upgrade and the moment I knew to look.
+    </p>
+
+    <h2>Four other ways it stayed quiet</h2>
+
+    <p>The same pattern — no error, wrong behaviour — showed up in shapes I had not anticipated:</p>
+
+    <ul>
+      <li>
+        <strong>Scheduled jobs that outlived their code.</strong> Job definitions from the old version
+        survived the upgrade even when the method they called no longer existed. Every run failed
+        silently. They were only visible by looking for jobs with a non-zero failure count — nothing
+        surfaced them on its own.
+      </li>
+      <li>
+        <strong>Stored computed fields that quietly desynchronised.</strong> Some fields cache a value
+        copied from somewhere else. The upgrade changed several of those sources without recomputing the
+        copies, so the two disagreed. Everything looked normal until a report cross-referenced both.
+      </li>
+      <li>
+        <strong>New platform behaviour colliding with old assumptions.</strong> A standard nightly routine
+        gained a new step that "repairs" inventory reservations. Our consignment warehouses deliberately
+        violate the invariant that step enforces, for good reasons. The collision only ran at night, so
+        the first symptom appeared more than twenty-four hours after the change that caused it — which is
+        exactly long enough to stop suspecting the change.
+      </li>
+      <li>
+        <strong>Code that was never running at all.</strong> Two modules in our repository shared a name
+        with modules the platform now ships. The platform's version wins. So a module I could read, edit
+        and commit to had no effect whatsoever on the running system. Before fixing anything, verify that
+        the file you are reading is the file being executed.
+      </li>
+    </ul>
+
+    <h2>The one that taught me the most</h2>
+
+    <p>
+      A new list view I added for one country became, without anyone touching it, the default list view
+      for that record type across the entire system — in all four companies.
+    </p>
+
+    <p>
+      The reason is almost funny. Views are ordered by priority, then by name. My new view had the same
+      priority as the standard one, and its name happened to sort earlier alphabetically. That was the
+      entire mechanism. Users in two other countries began seeing columns belonging to a document type
+      that does not exist in their country, and because the list was editable, a stray click could modify
+      a record.
+    </p>
+
+    <p>
+      There is no clever fix. You set an explicit low priority on any new view that is not meant to become
+      the default. But I would never have predicted that an alphabetical tiebreak could reassign a screen
+      used by four companies, and no amount of testing my own feature would have caught it, because from
+      where I sat the feature worked perfectly.
+    </p>
+
+    <div class="note">
+      <p>
+        <strong>The generalisable lesson:</strong> after a major upgrade, the failures that raise errors
+        get fixed in days because the system tells you about them. The failures that change behaviour
+        without raising anything can persist for months, because everyone's mental model says the code
+        "works" — and it does run, it just no longer does what it says. After an upgrade, the right
+        question is not "what broke?" but "what is still running and now means something different?"
+      </p>
+    </div>
+
+    <h2>What I do differently now</h2>
+
+    <p>
+      <strong>I treat silence as unverified, not as success.</strong> If a routine reports that it
+      processed records, I check the count. A job that says "done" having done nothing is the single most
+      expensive state a system can be in.
+    </p>
+
+    <p>
+      <strong>I check the day-after logs, not the hour-after logs.</strong> Anything that runs on a
+      nightly schedule will fail a day later than the change that caused it, by which time everyone has
+      moved on.
+    </p>
+
+    <p>
+      <strong>I document each discovery as a rule, not as an anecdote.</strong> Every one of these became
+      a written note in the repository, phrased as something to check rather than something that happened.
+      Whoever inherits this system should not have to rediscover that an alphabetical tiebreak can hijack
+      a screen.
+    </p>
+
+    <p>
+      <strong>And I built the monitoring that would have caught most of them.</strong> That is the
+      <a href="./health-check.html">other piece of work</a> — a set of detectors that reconcile what the
+      system believes against what the accounting says, on a schedule, so that the discovery mechanism
+      stops being a user noticing something odd weeks later.
+    </p>
+
+  </article>
+  </main>
+
+  <footer>
+    <span><a href="../">← Back to portfolio</a></span>
+    <span>sallendec@outlook.com</span>
+  </footer>
+</div>
+</body>
+</html>
