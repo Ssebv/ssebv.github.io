@@ -466,3 +466,44 @@ blockquote p { margin-bottom: 0; font-size: inherit; }
   a { text-decoration: none; }
   article h2 .anchor, .proj-name::after { display: none; }
 }
+
+/* ---------------- Language switch ---------------- */
+
+.lang-switch {
+  position: fixed;
+  top: 20px; right: 68px;
+  display: flex;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  overflow: hidden;
+  background: var(--bg);
+  z-index: 20;
+  font-size: 12.5px;
+  font-weight: 600;
+  letter-spacing: .03em;
+}
+
+.lang-switch a {
+  padding: 0 10px;
+  height: 36px;
+  display: flex; align-items: center;
+  color: var(--faint);
+  text-decoration: none;
+  transition: color .15s ease, background .15s ease;
+}
+
+.lang-switch a:hover { color: var(--accent); background: var(--accent-lo); }
+
+.lang-switch a[aria-current="true"] {
+  color: var(--bg);
+  background: var(--accent);
+}
+
+.lang-switch a + a { border-left: 1px solid var(--line); }
+
+@media (max-width: 640px) {
+  .lang-switch { top: 14px; right: 58px; }
+  .lang-switch a { height: 32px; padding: 0 9px; font-size: 12px; }
+}
+
+@media print { .lang-switch { display: none; } }
