@@ -557,3 +557,121 @@ blockquote p { margin-bottom: 0; font-size: inherit; }
 /* Only when there is genuinely room to spare */
 @media (max-width: 1279px) { .toc { display: none; } }
 @media print { .toc { display: none; } }
+
+/* ================= Motion & depth ================= */
+
+/* Hero glow — subtle, breathing */
+.wrap::before {
+  content: "";
+  position: fixed;
+  top: -280px; left: 50%;
+  width: 900px; height: 620px;
+  margin-left: -450px;
+  background: radial-gradient(ellipse at center,
+              color-mix(in srgb, var(--accent) 13%, transparent) 0%,
+              transparent 66%);
+  pointer-events: none;
+  z-index: -1;
+  animation: breathe 14s ease-in-out infinite;
+}
+
+@keyframes breathe {
+  0%, 100% { opacity: .75; transform: scale(1); }
+  50%      { opacity: 1;   transform: scale(1.08); }
+}
+
+/* Reveal on scroll — only applied when JS is present, so no-JS keeps content visible */
+.js-reveal [data-reveal] {
+  opacity: 0;
+  transform: translateY(14px);
+}
+
+.js-reveal [data-reveal].shown {
+  opacity: 1;
+  transform: none;
+  transition: opacity .55s cubic-bezier(.22,.61,.36,1),
+              transform .55s cubic-bezier(.22,.61,.36,1);
+}
+
+/* Stat row */
+.stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--s3);
+  margin: var(--s5) 0 0;
+  padding: var(--s4) 0 0;
+  border-top: 1px solid var(--line-soft);
+}
+
+.stat-n {
+  font-size: 27px;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+  font-variant-numeric: tabular-nums;
+  color: var(--fg);
+}
+
+.stat-l {
+  font-size: 12.5px;
+  line-height: 1.35;
+  color: var(--faint);
+  margin-top: 3px;
+}
+
+@media (max-width: 560px) {
+  .stats { grid-template-columns: repeat(2, 1fr); gap: var(--s4) var(--s3); }
+  .stat-n { font-size: 24px; }
+}
+
+/* Experience rows come alive on hover */
+.job {
+  transition: background .18s ease;
+  border-radius: 8px;
+  margin-left: -12px;
+  padding-left: 12px;
+  padding-right: 12px;
+  margin-right: -12px;
+}
+.job:hover { background: var(--surface); }
+.job:hover .when { color: var(--accent); }
+
+/* Reading progress on articles */
+.progress {
+  position: fixed;
+  top: 0; left: 0;
+  height: 2px;
+  width: 0;
+  background: var(--accent);
+  z-index: 40;
+  transition: width .08s linear;
+}
+
+/* Section headers: the accent bar grows in */
+h2 { position: relative; }
+
+/* Chips and tags lift slightly on hover */
+.chips span {
+  transition: background .15s ease, color .15s ease, transform .15s ease;
+}
+.chips span:hover {
+  background: var(--accent-lo);
+  color: var(--accent);
+  transform: translateY(-1px);
+}
+
+/* Contact buttons: icon nudges */
+.links a svg { transition: transform .15s ease; }
+.links a:hover svg { transform: translateY(-1px); }
+
+@media (prefers-reduced-motion: reduce) {
+  .wrap::before { animation: none; }
+  .js-reveal [data-reveal] { opacity: 1; transform: none; }
+  .progress { display: none; }
+  .chips span:hover, .links a:hover svg { transform: none; }
+}
+
+@media print {
+  .wrap::before, .progress { display: none; }
+  .js-reveal [data-reveal] { opacity: 1; transform: none; }
+}

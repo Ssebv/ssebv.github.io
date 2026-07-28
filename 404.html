@@ -51,5 +51,86 @@
   });
 })();
 </script>
+<script>
+(function(){
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var root = document.documentElement;
+
+  /* --- reveal on scroll (marca el html solo si vamos a animar) --- */
+  if (!reduce && 'IntersectionObserver' in window) {
+    root.classList.add('js-reveal');
+    var targets = [].slice.call(document.querySelectorAll(
+      'header > *, section > h2, section > p, .job, .proj, .skill-row, .stats, .post, article > *'));
+    targets.forEach(function(el, i){ el.setAttribute('data-reveal',''); });
+
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if (!e.isIntersecting) return;
+        var idx = +(e.target.dataset.i || 0);
+        e.target.style.transitionDelay = Math.min(idx * 45, 180) + 'ms';
+        e.target.classList.add('shown');
+        io.unobserve(e.target);
+      });
+    }, { rootMargin: '0px 0px -8% 0px', threshold: 0.05 });
+
+    /* escalona por grupo de hermanos */
+    var groups = {};
+    targets.forEach(function(el){
+      var key = el.parentNode;
+      groups[key] = groups[key] || 0;
+      el.dataset.i = groups[key]++;
+      io.observe(el);
+    });
+
+    /* lo que ya está en pantalla aparece de inmediato */
+    setTimeout(function(){
+      targets.forEach(function(el){
+        if (el.getBoundingClientRect().top < window.innerHeight) el.classList.add('shown');
+      });
+    }, 30);
+  }
+
+  /* --- contadores del bloque de cifras --- */
+  var nums = [].slice.call(document.querySelectorAll('.stat-n[data-to]'));
+  var box = document.querySelector('.stats');
+  function settle(){ nums.forEach(function(n){ n.textContent = n.dataset.to; }); }
+
+  if (nums.length && !reduce && box && 'IntersectionObserver' in window) {
+    var started = false;
+    new IntersectionObserver(function(es){
+      if (!es[0].isIntersecting || started) return;
+      started = true;
+      /* red de seguridad: si rAF está limitado, el valor real aparece igual */
+      var guard = setTimeout(settle, 1400);
+      nums.forEach(function(n){
+        var to = +n.dataset.to, t0 = null, dur = 900;
+        n.textContent = '0';
+        function step(ts){
+          if (!t0) t0 = ts;
+          var p = Math.min((ts - t0) / dur, 1);
+          n.textContent = Math.round(to * (1 - Math.pow(1 - p, 3)));
+          if (p < 1) { requestAnimationFrame(step); }
+          else { clearTimeout(guard); settle(); }
+        }
+        requestAnimationFrame(step);
+      });
+    }, { threshold: 0.4 }).observe(box);
+  }
+
+  /* --- barra de progreso de lectura (solo artículos) --- */
+  if (!reduce && document.querySelector('article')) {
+    var bar = document.createElement('div');
+    bar.className = 'progress';
+    document.body.appendChild(bar);
+    var tick = function(){
+      var h = document.documentElement.scrollHeight - window.innerHeight;
+      bar.style.width = (h > 0 ? (window.scrollY / h) * 100 : 0) + '%';
+    };
+    window.addEventListener('scroll', tick, { passive: true });
+    window.addEventListener('resize', tick);
+    tick();
+  }
+})();
+</script>
 </body>
 </html>
