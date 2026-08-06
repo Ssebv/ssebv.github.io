@@ -1,0 +1,38 @@
+# Publishes the site as-is.
+#
+# The legacy Pages builder started failing with nothing but "Page build
+# failed" — no log, no line, no file — on a commit that changed four lines of
+# markup. This path replaces it: the site is plain HTML and CSS, so there is
+# nothing to build, and when something does go wrong it says what.
+name: Deploy site
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Never two deploys at once; let a newer push win rather than queue behind an
+# older one.
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: .
+      - id: deployment
+        uses: actions/deploy-pages@v4
