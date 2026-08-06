@@ -99,10 +99,10 @@
     </nav>
 
     <div class="stats">
-      <div><div class="stat-n" data-to="4">4</div><div class="stat-l">companies<br>supported</div></div>
-      <div><div class="stat-n" data-to="3">3</div><div class="stat-l">countries,<br>3 tax regimes</div></div>
-      <div><div class="stat-n" data-to="228">228</div><div class="stat-l">modules<br>migrated</div></div>
-      <div><div class="stat-n" data-to="5">5</div><div class="stat-l">major versions,<br>zero data loss</div></div>
+      <div><div class="stat-n">4</div><div class="stat-l">companies<br>supported</div></div>
+      <div><div class="stat-n">3</div><div class="stat-l">countries,<br>3 tax regimes</div></div>
+      <div><div class="stat-n">228</div><div class="stat-l">modules migrated,<br>41 custom</div></div>
+      <div><div class="stat-n">5</div><div class="stat-l">major versions,<br>zero data loss</div></div>
     </div>
   </header>
 
@@ -461,43 +461,11 @@
     }, 30);
   }
 
-  /* --- contadores del bloque de cifras --- */
-  var nums = [].slice.call(document.querySelectorAll('.stat-n[data-to]'));
-  var box = document.querySelector('.stats');
-  function settle(){ nums.forEach(function(n){ n.textContent = n.dataset.to; }); }
-
-  if (nums.length && !reduce && box && 'IntersectionObserver' in window) {
-    var started = false;
-    new IntersectionObserver(function(es){
-      if (!es[0].isIntersecting || started) return;
-      started = true;
-      /* Solo animamos si rAF está realmente vivo. Si está limitado (pestaña de
-         fondo, ahorro de energía, headless), los números reales se quedan como
-         están y nadie ve un cero. */
-      var t0probe = performance.now();
-      requestAnimationFrame(function(){
-        requestAnimationFrame(function(){
-          if (performance.now() - t0probe > 120) return;   // rAF no es fiable: no tocar
-          animate();
-        });
-      });
-      function animate(){
-      var guard = setTimeout(settle, 1200);
-      nums.forEach(function(n){
-        var to = +n.dataset.to, t0 = null, dur = 900;
-        n.textContent = '0';
-        function step(ts){
-          if (!t0) t0 = ts;
-          var p = Math.min((ts - t0) / dur, 1);
-          n.textContent = Math.round(to * (1 - Math.pow(1 - p, 3)));
-          if (p < 1) { requestAnimationFrame(step); }
-          else { clearTimeout(guard); settle(); }
-        }
-        requestAnimationFrame(step);
-      });
-      }
-    }, { threshold: 0.4 }).observe(box);
-  }
+  /* Las cifras no se animan a propósito. El bloque .stats ya entra con el
+     fade de [data-reveal]; contar desde cero encima significaba que durante
+     ~900 ms la página afirmaba "1 companies supported" y "1 major versions".
+     Son las afirmaciones más fuertes del sitio, y quien mira de reojo — o
+     hace una captura — se lleva la versión falsa. El adorno no valía eso. */
 
   /* --- barra de progreso de lectura (solo artículos) --- */
   if (!reduce && document.querySelector('article')) {
