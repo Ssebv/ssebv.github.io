@@ -36,3 +36,10 @@ jobs:
           path: .
       - id: deployment
         uses: actions/deploy-pages@v4
+        with:
+          # The default is ten minutes, and this repository has taken longer
+          # than that — the action gave up, reported `failure`, and GitHub
+          # published the site anyway a while later. A run that says it failed
+          # while the site is live is worse than a slow run: it teaches you to
+          # distrust the only signal you have.
+          timeout: 1800000
