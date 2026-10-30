@@ -9,7 +9,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <title>La calidad de las alertas le gana a la cantidad — Sebastián Allende</title>
-<meta name="description" content="Construir un monitoreo que cuadra el inventario contra la contabilidad cada seis horas, lo que encontró que ningún informe mostraba, y por qué una alerta que nadie acciona es un defecto y no una molestia.">
+<meta name="description" content="Construir un monitoreo que cuadra el inventario contra la contabilidad todos los días, lo que encontró que ningún informe mostraba, y por qué una alerta que nadie acciona es un defecto y no una molestia.">
 <link rel="canonical" href="https://ssebv.github.io/es/writing/health-check.html">
 <link rel="alternate" hreflang="es" href="https://ssebv.github.io/es/writing/health-check.html">
 <link rel="alternate" hreflang="en" href="https://ssebv.github.io/writing/health-check.html">
@@ -17,7 +17,7 @@
 <meta property="og:type" content="article">
 <meta property="og:locale" content="es_CL">
 <meta property="og:title" content="La calidad de las alertas le gana a la cantidad">
-<meta property="og:description" content="Construir un monitoreo que cuadra el inventario contra la contabilidad cada seis horas, lo que encontró que ningún informe mostraba, y por qué una alerta que nadie acciona es un defecto y no una molestia.">
+<meta property="og:description" content="Construir un monitoreo que cuadra el inventario contra la contabilidad todos los días, lo que encontró que ningún informe mostraba, y por qué una alerta que nadie acciona es un defecto y no una molestia.">
 <meta property="og:url" content="https://ssebv.github.io/es/writing/health-check.html">
 <meta property="og:image" content="https://ssebv.github.io/og-health-check.png">
 <meta name="twitter:card" content="summary_large_image">
@@ -30,7 +30,7 @@
   "@context": "https://schema.org",
   "@type": "BlogPosting",
   "headline": "La calidad de las alertas le gana a la cantidad",
-  "description": "Construir un monitoreo que cuadra el inventario contra la contabilidad cada seis horas, lo que encontró que ningún informe mostraba, y por qué una alerta que nadie acciona es un defecto y no una molestia.",
+  "description": "Construir un monitoreo que cuadra el inventario contra la contabilidad todos los días, lo que encontró que ningún informe mostraba, y por qué una alerta que nadie acciona es un defecto y no una molestia.",
   "datePublished": "2026-07-28",
   "author": { "@type": "Person", "name": "Sebastián Allende Cuello", "url": "https://ssebv.github.io/" },
   "inLanguage": "es"
@@ -67,7 +67,7 @@
 <p>Todos esos casos eran detectables con anticipación. Ninguno se detectó con anticipación, porque nada estaba mirando.</p>
 <h2 id="perseguir-errores-versus-construir-lo-que-los-encuentra">Perseguir errores versus construir lo que los encuentra<a class="anchor" href="#perseguir-errores-versus-construir-lo-que-los-encuentra" aria-label="Enlace a esta sección">#</a></h2>
 <p>Mi primer instinto fue arreglar cada problema a medida que aparecía. Eso es satisfactorio y no escala. Cada arreglo atendía una instancia de una clase de falla que yo no era capaz de enumerar, y el intervalo entre que la falla ocurría y alguien la notaba seguía siendo exactamente el mismo: semanas.</p>
-<p>Así que dejé de arreglar casos individuales y construí un health check: una rutina programada que interroga al sistema con una cadencia fija y reporta lo que encuentra a quienes pueden actuar. Hoy corre unos cuarenta y seis detectores cada seis horas, con un subconjunto urgente cada treinta minutos.</p>
+<p>Así que dejé de arreglar casos individuales y construí un health check: una rutina programada que interroga al sistema con una cadencia fija y reporta lo que encuentra a quienes pueden actuar. Hoy corre unos cuarenta y seis detectores todos los días, con un subconjunto urgente cada treinta minutos.</p>
 <p>Lo que miran los detectores cae en cuatro grupos:</p>
 <ul><li><strong>Cuadratura.</strong> El kardex de inventario y la contabilidad tienen que contar la misma historia. Para cada país y cada cuenta relevante, el detector calcula ambos lados y los compara contra un umbral apropiado a esa moneda. La divergencia se reporta con las transacciones que la causaron, no solo con un número.</li></ul>
 <ul><li><strong>Estado regulatorio.</strong> Documentos rechazados por una autoridad tributaria, documentos atascados esperando envío, y la fecha proyectada de agotamiento de cada rango de folios autorizado — de modo que "nos quedamos sin folios en nueve días" es algo que sabemos nueve días antes y no el mismo día.</li></ul>
@@ -76,7 +76,7 @@
 <h2 id="lo-que-encontro">Lo que encontró<a class="anchor" href="#lo-que-encontro" aria-label="Enlace a esta sección">#</a></h2>
 <p>La primera corrida significativa sacó a la luz algo que nadie sabía: el costo de inventario se estaba registrando dos veces para una categoría de transacción. Dos partes independientes del sistema — un movimiento físico de stock y un proceso de liquidación — hacían cada una su trabajo honesto, y ambas acreditaban el mismo asiento contable.</p>
 <p>Llevaba más de un año acumulándose. Ningún informe lo mostraba, porque cada informe individual era internamente consistente; la discrepancia solo existía <em>entre</em> dos vistas que nadie había puesto lado a lado. Esa es precisamente la clase de problema que un revisor humano nunca encuentra, porque encontrarlo exige comparar dos cosas que por separado se ven correctas.</p>
-<p>De ahí salieron dos cosas. Las cifras históricas se corrigieron y, más importante, la cuadratura quedó permanente. La misma comparación corre ahora cada seis horas, así que si las condiciones que lo permitieron vuelven alguna vez, nos enteramos ese día y no al año siguiente.</p>
+<p>De ahí salieron dos cosas. Las cifras históricas se corrigieron y, más importante, la cuadratura quedó permanente. La misma comparación corre ahora todos los días, así que si las condiciones que lo permitieron vuelven alguna vez, nos enteramos ese día y no al año siguiente.</p>
 <h2 id="la-regla-que-lo-hizo-funcionar">La regla que lo hizo funcionar<a class="anchor" href="#la-regla-que-lo-hizo-funcionar" aria-label="Enlace a esta sección">#</a></h2>
 <p>La tentación con un sistema así es medirlo por cobertura: cuántos detectores, cuántas alertas. Esa es la métrica equivocada, y seguirla produce algo peor que nada.</p>
 <blockquote></blockquote>

@@ -4,7 +4,7 @@ subtitle: Construir un monitoreo para un ERP que hace funcionar cuatro empresas 
 date: 2026-07-28
 lang: es
 slug: health-check
-summary: Construir un monitoreo que cuadra el inventario contra la contabilidad cada seis horas, lo que encontró que ningún informe mostraba, y por qué una alerta que nadie acciona es un defecto y no una molestia.
+summary: Construir un monitoreo que cuadra el inventario contra la contabilidad todos los días, lo que encontró que ningún informe mostraba, y por qué una alerta que nadie acciona es un defecto y no una molestia.
 tags: monitoreo, erp, observabilidad
 ---
 
@@ -23,7 +23,7 @@ Todos esos casos eran detectables con anticipación. Ninguno se detectó con ant
 Mi primer instinto fue arreglar cada problema a medida que aparecía. Eso es satisfactorio y no escala. Cada arreglo atendía una instancia de una clase de falla que yo no era capaz de enumerar, y el intervalo entre que la falla ocurría y alguien la notaba seguía siendo exactamente el mismo: semanas.
 
     
-Así que dejé de arreglar casos individuales y construí un health check: una rutina programada que interroga al sistema con una cadencia fija y reporta lo que encuentra a quienes pueden actuar. Hoy corre unos cuarenta y seis detectores cada seis horas, con un subconjunto urgente cada treinta minutos.
+Así que dejé de arreglar casos individuales y construí un health check: una rutina programada que interroga al sistema con una cadencia fija y reporta lo que encuentra a quienes pueden actuar. Hoy corre unos cuarenta y seis detectores todos los días, con un subconjunto urgente cada treinta minutos.
 
     
 Lo que miran los detectores cae en cuatro grupos:
@@ -47,7 +47,7 @@ La primera corrida significativa sacó a la luz algo que nadie sabía: el costo 
 Llevaba más de un año acumulándose. Ningún informe lo mostraba, porque cada informe individual era internamente consistente; la discrepancia solo existía *entre* dos vistas que nadie había puesto lado a lado. Esa es precisamente la clase de problema que un revisor humano nunca encuentra, porque encontrarlo exige comparar dos cosas que por separado se ven correctas.
 
     
-De ahí salieron dos cosas. Las cifras históricas se corrigieron y, más importante, la cuadratura quedó permanente. La misma comparación corre ahora cada seis horas, así que si las condiciones que lo permitieron vuelven alguna vez, nos enteramos ese día y no al año siguiente.
+De ahí salieron dos cosas. Las cifras históricas se corrigieron y, más importante, la cuadratura quedó permanente. La misma comparación corre ahora todos los días, así que si las condiciones que lo permitieron vuelven alguna vez, nos enteramos ese día y no al año siguiente.
 
     
 ## La regla que lo hizo funcionar

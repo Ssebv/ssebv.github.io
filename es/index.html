@@ -8,7 +8,7 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<title>Sebastián Allende — Ingeniero de Software y ERP</title>
+<title>Sebastián Allende — Ingeniero de Software, ERP e IA Aplicada</title>
 <meta name="description" content="Ingeniero de software y ERP en Santiago de Chile. Construyo y opero sistemas financieros, de inventario y de facturación electrónica en Chile, Colombia y Perú — Odoo, Python, PostgreSQL.">
 <meta name="author" content="Sebastián Allende Cuello">
 <link rel="canonical" href="https://ssebv.github.io/es/">
@@ -18,7 +18,7 @@
 
 <meta property="og:type" content="profile">
 <meta property="og:locale" content="es_CL">
-<meta property="og:title" content="Sebastián Allende — Ingeniero de Software y ERP">
+<meta property="og:title" content="Sebastián Allende — Ingeniero de Software, ERP e IA Aplicada">
 <meta property="og:description" content="Construyo y opero sistemas financieros, de inventario y de facturación electrónica en Chile, Colombia y Perú.">
 <meta property="og:url" content="https://ssebv.github.io/es/">
 <meta property="og:image" content="https://ssebv.github.io/og.png">
@@ -31,7 +31,7 @@
   "@context": "https://schema.org",
   "@type": "Person",
   "name": "Sebastián Allende Cuello",
-  "jobTitle": "Ingeniero de Software y ERP",
+  "jobTitle": "Ingeniero de Software, ERP e IA Aplicada",
   "url": "https://ssebv.github.io/es/",
   "email": "mailto:sallendec@outlook.com",
   "address": { "@type": "PostalAddress", "addressLocality": "Santiago", "addressCountry": "CL" },
@@ -42,6 +42,7 @@
 </script>
 
 <link rel="alternate" type="application/rss+xml" title="Sebastián Allende — Writing" href="/feed.xml">
+<script src="../term.js" defer></script>
 <link rel="stylesheet" href="../style.css">
 </head>
 <body>
@@ -63,7 +64,7 @@
   <header>
     <div class="status"><span class="dot" aria-hidden="true"></span>Abierto a nuevas oportunidades</div>
     <h1>Sebastián Allende Cuello</h1>
-    <p class="role">Ingeniero de Software y ERP — backend, datos y sistemas financieros</p>
+    <p class="role">Ingeniero de software — ERP, backend e IA aplicada</p>
     <p class="loc">Santiago, Chile · Operaciones en Chile, Colombia y Perú</p>
 
     <nav class="links" aria-label="Contacto">
@@ -95,6 +96,11 @@
       <div><div class="stat-n">228</div><div class="stat-l">módulos migrados,<br>41 propios</div></div>
       <div><div class="stat-n">5</div><div class="stat-l">versiones mayores,<br>cero pérdida</div></div>
     </div>
+  <a class="mosaic" href="#proyectos" aria-label="Ver los proyectos">
+      <img src="../img/flagforge-dark.webp" alt="" width="1400" height="875">
+      <img src="../img/modomax-product.webp" alt="" width="1400" height="875" loading="lazy">
+      <img src="../img/modomax-catalog.webp" alt="" width="1400" height="875" loading="lazy">
+    </a>
   </header>
 
   <main id="main">
@@ -114,32 +120,77 @@
         principalmente en Python, SQL y PostgreSQL, con facturación electrónica regulada ante las
         autoridades tributarias de Chile, Colombia y Perú.
       </p>
+      <p class="muted">
+        También construyo aplicaciones sobre modelos de lenguaje en Python y TypeScript, desde asistentes
+        de compra hasta extracción de documentos y RAG, y las mido en vez de suponer que funcionan.
+      </p>
     </section>
 
-    <section aria-labelledby="escritos">
-      <h2 id="escritos">Escritos</h2>
+    <section aria-labelledby="proyectos">
+      <h2 id="proyectos">Proyectos destacados</h2>
 
-      <a class="proj" href="./writing/erp-migration.html">
-        <div class="proj-top">
-          <span class="proj-name">Los errores que sobreviven a una actualización de ERP son los silenciosos</span>
-          <span class="tag">Caso</span>
+      <div class="feature">
+        <a class="feature-media" href="projects/odoo-rag.html" tabindex="-1" aria-hidden="true"><figure class="term" data-replay><div class="term-bar"><i></i><i></i><i></i><b>odoo-rag</b></div><code class="term-body"><span class="cmd">$ uv run python -m odoo_rag.ask "¿Cómo ejecuto solo algunos tests desde la línea de comandos?"</span><span>Para ejecutar solo algunos tests desde la línea de comandos, puedes utilizar el comando `odoo-bin --test-tags` con los tags correspondientes.</span><span class="dim">[2] developer_reference_backend_testing.rst | Testing Python code &gt; Test selection &gt; Invocation</span><span class="cmd">$ uv run python -m odoo_rag.ask "What is the capital of France?"</span><span class="ok">NOT_IN_DOCS</span></code></figure></a>
+        <div class="feature-body">
+          <p class="feature-cap">Repetición de una ejecución real, acortada.</p>
+          <div class="feature-top"><h3><a href="projects/odoo-rag.html">Odoo RAG</a></h3><span class="tag">Python · pgvector</span></div>
+          <p>Un asistente de documentación que cita sus fuentes y dice cuando no sabe, con una evaluación que muestra qué cambios ayudaron de verdad.</p>
+          <div class="proof"><div><b>82 %</b><span>encontró el pasaje correcto entre los 5 primeros</span></div><div><b>20 → 90 %</b><span>preguntas en español, frente a búsqueda solo vectorial</span></div><div><b>7 de 8</b><span>preguntas fuera de alcance rechazadas</span></div></div>
+          <div class="actions"><a href="projects/odoo-rag.html">Leer el caso →</a><a href="https://github.com/Ssebv/odoo-rag" target="_blank" rel="noopener">Código</a></div>
         </div>
-        <p>
-          Migrar cinco versiones mayores en cuatro empresas y tres países — y por qué las fallas que no
-          lanzaron ningún error fueron las caras.
-        </p>
-      </a>
+      </div>
+      <div class="feature">
+        <a class="feature-media" href="projects/modomax.html" tabindex="-1" aria-hidden="true"><img src="../img/modomax-home.webp" alt="Portada de la tienda ModoMax" width="1400" height="875" loading="lazy" decoding="async"></a>
+        <div class="feature-body">
+          <div class="feature-top"><h3><a href="projects/modomax.html">ModoMax</a></h3><span class="tag">TypeScript · Next.js</span></div>
+          <p>Una tienda online completa construida de punta a punta, con asistente de compras, atención por WhatsApp y panel de administración con herramientas de IA.</p>
+          <div class="proof"><div><b>48</b><span>archivos de prueba, Vitest y Playwright</span></div><div><b>Tool calling</b><span>elegido sobre RAG por el catálogo pequeño</span></div><div><b>Zod</b><span>validación de lo que genera la IA</span></div></div>
+          <div class="actions"><a href="projects/modomax.html">Leer el caso →</a><a href="https://modomax.ressc.vip" target="_blank" rel="noopener">Ver la tienda</a></div>
+        </div>
+      </div>
+      <div class="feature">
+        <a class="feature-media" href="https://github.com/Ssebv/flagforge" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true"><img src="../img/flagforge-editor.webp" alt="Editor de flags de FlagForge con un despliegue por porcentaje" width="1400" height="875" loading="lazy" decoding="async"></a>
+        <div class="feature-body">
+          <div class="feature-top"><h3><a href="https://github.com/Ssebv/flagforge" target="_blank" rel="noopener">FlagForge</a></h3><span class="tag">Rust · WebAssembly</span></div>
+          <p>Servicio multi-tenant de feature flags construido desde cero: despliegues segmentados, segmentos reutilizables, experimentos A/B y registro de auditoría, con un panel compilado a WebAssembly desde el mismo motor que corre el servidor.</p>
+          <div class="proof"><div><b>74 ns</b><span>evaluación de flags en memoria</span></div><div><b>244</b><span>pruebas, comparando decisiones locales y del servidor</span></div><div><b>Código abierto</b><span>todo el código a la vista</span></div></div>
+          <div class="actions"><a href="https://github.com/Ssebv/flagforge" target="_blank" rel="noopener">Código en GitHub →</a></div>
+        </div>
+      </div>
 
-      <a class="proj" href="./writing/health-check.html">
-        <div class="proj-top">
-          <span class="proj-name">La calidad de las alertas le gana a la cantidad</span>
-          <span class="tag">Caso</span>
-        </div>
-        <p>
-          Construir un monitoreo que cuadra inventario contra contabilidad, lo que encontró que ningún
-          informe mostraba, y el detector propio que estaba seguro y equivocado.
-        </p>
+      <a class="proj" href="https://github.com/Ssebv/odoo-19-migration-field-notes" target="_blank" rel="noopener">
+        <div class="proj-top"><span class="proj-name">Odoo 14 → 19 Migration Field Notes</span><span class="tag">Código abierto</span></div>
+        <p>Las fallas que no lanzan ningún error durante una actualización mayor de ERP, documentadas como síntoma → causa → solución, desde una migración en producción.</p>
       </a>
+      <a class="proj" href="https://github.com/Ssebv/systematic-trading-showcase" target="_blank" rel="noopener">
+        <div class="proj-top"><span class="proj-name">Plataforma de Trading Sistemático</span><span class="tag">Arquitectura</span></div>
+        <p>Plataforma de investigación en trading sistemático — arquitectura, diseño de riesgo y documentación técnica.</p>
+      </a>
+      <a class="proj" href="https://github.com/Ssebv/TBSimAlgoritmoGenetico_HPC_LOCAL" target="_blank" rel="noopener">
+        <div class="proj-top"><span class="proj-name">Algoritmo Genético Paralelo, HPC</span><span class="tag">Java</span></div>
+        <p>Algoritmo genético paralelo (Jenetics) integrado con TeamBots/TBSim para optimizar equipos de fútbol robótico, con estudio de escalabilidad computacional. Trabajo de Título.</p>
+      </a>
+      <details class="more-work"><summary>Trabajos anteriores</summary>
+      <a class="proj" href="https://github.com/Ssebv/AI-Analizer-Llama" target="_blank" rel="noopener">
+        <div class="proj-top"><span class="proj-name">Analizador de Noticias con IA</span><span class="tag">Python · LangChain</span></div>
+        <p>Sistema de análisis de noticias con LangChain y LangGraph, con agentes especializados tras una interfaz Streamlit.</p>
+      </a>
+      <a class="proj" href="https://github.com/Ssebv/ecommerce-fastapi-rest" target="_blank" rel="noopener">
+        <div class="proj-top"><span class="proj-name">API REST de E-commerce</span><span class="tag">Python · FastAPI</span></div>
+        <p>API REST para un backend de comercio electrónico, construida con FastAPI.</p>
+      </a>
+      <a class="proj" href="https://github.com/Ssebv/introduccion-linux" target="_blank" rel="noopener">
+        <div class="proj-top"><span class="proj-name">Introducción a Linux</span><span class="tag">Curso</span></div>
+        <p>Curso de 16 capítulos, con un tratamiento inusualmente profundo del modelo de permisos.</p>
+      </a>
+      </details>
+    </section>
+
+    <section aria-labelledby="como-desarrollo">
+      <h2 id="como-desarrollo">Cómo desarrollo</h2>
+      <p class="muted">Los agentes de programación son mi flujo principal: más de 2.600 commits asistidos por IA solo en un ERP en producción. El agente escribe mucho código; las decisiones son mías. Este es el proceso, con evidencia real en cada paso.</p>
+      <ol class="strip"><li><b>Reglas del proyecto</b><span>Leídas antes de cualquier cambio</span></li><li><b>Plan</b><span>Aprobado antes del trabajo riesgoso</span></li><li><b>Pasos chicos</b><span>Pruebas tras cada bloque</span></li><li><b>Pruebas seguras</b><span>Sin datos ni red reales</span></li><li><b>Evaluaciones</b><span>Miden lo que las pruebas no ven</span></li><li><b>Despliegue por etapas</b><span>Staging y luego producción</span></li></ol>
+      <div class="actions"><a href="projects/how-i-build.html">Ver el proceso completo →</a></div>
     </section>
 
     <section aria-labelledby="experiencia">
@@ -152,10 +203,9 @@
           <p class="org">Toyng · Santiago, Chile</p>
           <p>
             Administración y desarrollo de Odoo ERP (14 → 19) en Odoo.sh para operaciones en Chile,
-            Colombia, Perú y China. Módulos custom de consignación y reportería masiva, facturación
+            Colombia y Perú. Módulos custom de consignación y reportería masiva, facturación
             electrónica ante tres autoridades tributarias, infraestructura cloud y PostgreSQL,
-            integraciones e-commerce, y soporte a los equipos de contabilidad, bodega y ventas en cuatro
-            países.
+            integraciones e-commerce, y soporte a los equipos de contabilidad, bodega y ventas en tres países.
           </p>
         </div>
       </div>
@@ -220,79 +270,42 @@
       </div>
     </section>
 
-    <section aria-labelledby="proyectos">
-      <h2 id="proyectos">Proyectos destacados</h2>
+    <section aria-labelledby="escritos">
+      <h2 id="escritos">Escritos</h2>
 
-      <a class="proj" href="https://github.com/Ssebv/flagforge" target="_blank" rel="noopener">
+      <a class="proj" href="./writing/erp-migration.html">
         <div class="proj-top">
-          <span class="proj-name">FlagForge</span>
-          <span class="tag">Rust</span>
+          <span class="proj-name">Los errores que sobreviven a una actualización de ERP son los silenciosos</span>
+          <span class="tag">Caso</span>
         </div>
         <p>
-          Servicio de feature flags multi-tenant construido desde cero: despliegues graduales,
-          segmentos reutilizables, experimentos A/B y un registro de auditoría, con un panel compilado
-          a WebAssembly desde el mismo motor de evaluación que ejecuta el servidor. 244 tests,
-          incluida la comparación usuario a usuario entre las decisiones locales y las del servidor.
+          Migrar cinco versiones mayores en cuatro empresas y tres países — y por qué las fallas que no
+          lanzaron ningún error fueron las caras.
         </p>
       </a>
 
-      <a class="proj" href="https://github.com/Ssebv/odoo-19-migration-field-notes" target="_blank" rel="noopener">
+      <a class="proj" href="./writing/health-check.html">
         <div class="proj-top">
-          <span class="proj-name">Odoo 14 → 19 Migration Field Notes</span>
-          <span class="tag">Código abierto</span>
+          <span class="proj-name">La calidad de las alertas le gana a la cantidad</span>
+          <span class="tag">Caso</span>
         </div>
         <p>
-          Las fallas que no lanzan ningún error durante una actualización mayor de ERP, documentadas
-          como síntoma → causa → solución, desde una migración en producción.
+          Construir un monitoreo que cuadra inventario contra contabilidad, lo que encontró que ningún
+          informe mostraba, y el detector propio que estaba seguro y equivocado.
         </p>
-      </a>
-
-      <a class="proj" href="https://github.com/Ssebv/systematic-trading-showcase" target="_blank" rel="noopener">
-        <div class="proj-top">
-          <span class="proj-name">Plataforma de Trading Sistemático</span>
-          <span class="tag">Arquitectura</span>
-        </div>
-        <p>Plataforma de investigación en trading sistemático — arquitectura, diseño de riesgo y documentación técnica.</p>
-      </a>
-
-      <a class="proj" href="https://github.com/Ssebv/TBSimAlgoritmoGenetico_HPC_LOCAL" target="_blank" rel="noopener">
-        <div class="proj-top">
-          <span class="proj-name">Algoritmo Genético Paralelo, HPC</span>
-          <span class="tag">Java</span>
-        </div>
-        <p>
-          Algoritmo genético paralelo (Jenetics) integrado con TeamBots/TBSim para optimizar equipos de
-          fútbol robótico, con estudio de escalabilidad computacional. Trabajo de Título.
-        </p>
-      </a>
-
-      <a class="proj" href="https://github.com/Ssebv/AI-Analizer-Llama" target="_blank" rel="noopener">
-        <div class="proj-top">
-          <span class="proj-name">Analizador de Noticias con IA</span>
-          <span class="tag">Python · LangChain</span>
-        </div>
-        <p>Sistema de análisis de noticias con LangChain y LangGraph, con agentes especializados tras una interfaz Streamlit.</p>
-      </a>
-
-      <a class="proj" href="https://github.com/Ssebv/ecommerce-fastapi-rest" target="_blank" rel="noopener">
-        <div class="proj-top">
-          <span class="proj-name">API REST de E-commerce</span>
-          <span class="tag">Python · FastAPI</span>
-        </div>
-        <p>API REST para un backend de comercio electrónico, construida con FastAPI.</p>
-      </a>
-
-      <a class="proj" href="https://github.com/Ssebv/introduccion-linux" target="_blank" rel="noopener">
-        <div class="proj-top">
-          <span class="proj-name">Introducción a Linux</span>
-          <span class="tag">Curso</span>
-        </div>
-        <p>Curso de 16 capítulos, con un tratamiento inusualmente profundo del modelo de permisos.</p>
       </a>
     </section>
 
     <section aria-labelledby="habilidades">
       <h2 id="habilidades">Habilidades</h2>
+
+      <div class="skill-row">
+        <strong>IA aplicada</strong>
+        <div class="chips">
+          <span>APIs de LLM</span><span>RAG</span><span>pgvector</span><span>Tool calling</span>
+          <span>Evaluación de LLM</span><span>Claude Code</span><span>MCP</span>
+        </div>
+      </div>
 
       <div class="skill-row">
         <strong>Backend</strong>

@@ -4,7 +4,7 @@ subtitle: Building a health check for an ERP running four companies in three cou
 date: 2026-07-28
 lang: en
 slug: health-check
-summary: Building a health check that reconciles inventory against the general ledger every six hours, what it found that no report showed, and why an alert nobody acts on is a defect rather than a nuisance.
+summary: Building a health check that reconciles inventory against the general ledger every day, what it found that no report showed, and why an alert nobody acts on is a defect rather than a nuisance.
 tags: monitoring, erp, observability
 ---
 
@@ -23,7 +23,7 @@ Every one of those was findable in advance. None of them was found in advance, b
 My first instinct was to fix each problem as it appeared. That is satisfying and it does not scale. Each fix addressed one instance of a class of failure I could not enumerate, and the interval between the failure happening and anyone noticing stayed exactly the same — weeks.
 
     
-So I stopped fixing individual cases and built a health check instead: a scheduled routine that interrogates the system on a fixed cadence and reports what it finds to the people who can act on it. It now runs around forty-six detectors every six hours, with a smaller urgent subset every thirty minutes.
+So I stopped fixing individual cases and built a health check instead: a scheduled routine that interrogates the system on a fixed cadence and reports what it finds to the people who can act on it. It now runs around forty-six detectors every day, with a smaller urgent subset every thirty minutes.
 
     
 What the detectors look at falls into four groups:
@@ -47,7 +47,7 @@ The first meaningful run surfaced something nobody knew about: inventory cost wa
 It had been accumulating for more than a year. No report showed it, because every individual report was internally consistent; the discrepancy only existed *between* two views that nobody had ever put side by side. That is precisely the class of problem a human reviewer never finds, because finding it requires comparing two things that each look correct.
 
     
-Two things came out of that. The historical figures were corrected, and — more importantly — the reconciliation became permanent. The same comparison now runs every six hours, so if the conditions that allowed it ever return, we find out that day instead of the following year.
+Two things came out of that. The historical figures were corrected, and — more importantly — the reconciliation became permanent. The same comparison now runs every day, so if the conditions that allowed it ever return, we find out that day instead of the following year.
 
     
 ## The rule that made it work

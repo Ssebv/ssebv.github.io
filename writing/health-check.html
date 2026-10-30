@@ -9,7 +9,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <title>Alert quality beats alert count — Sebastián Allende</title>
-<meta name="description" content="Building a health check that reconciles inventory against the general ledger every six hours, what it found that no report showed, and why an alert nobody acts on is a defect rather than a nuisance.">
+<meta name="description" content="Building a health check that reconciles inventory against the general ledger every day, what it found that no report showed, and why an alert nobody acts on is a defect rather than a nuisance.">
 <link rel="canonical" href="https://ssebv.github.io/writing/health-check.html">
 <link rel="alternate" hreflang="en" href="https://ssebv.github.io/writing/health-check.html">
 <link rel="alternate" hreflang="es" href="https://ssebv.github.io/es/writing/health-check.html">
@@ -17,7 +17,7 @@
 <meta property="og:type" content="article">
 <meta property="og:locale" content="en_US">
 <meta property="og:title" content="Alert quality beats alert count">
-<meta property="og:description" content="Building a health check that reconciles inventory against the general ledger every six hours, what it found that no report showed, and why an alert nobody acts on is a defect rather than a nuisance.">
+<meta property="og:description" content="Building a health check that reconciles inventory against the general ledger every day, what it found that no report showed, and why an alert nobody acts on is a defect rather than a nuisance.">
 <meta property="og:url" content="https://ssebv.github.io/writing/health-check.html">
 <meta property="og:image" content="https://ssebv.github.io/og-health-check.png">
 <meta name="twitter:card" content="summary_large_image">
@@ -30,7 +30,7 @@
   "@context": "https://schema.org",
   "@type": "BlogPosting",
   "headline": "Alert quality beats alert count",
-  "description": "Building a health check that reconciles inventory against the general ledger every six hours, what it found that no report showed, and why an alert nobody acts on is a defect rather than a nuisance.",
+  "description": "Building a health check that reconciles inventory against the general ledger every day, what it found that no report showed, and why an alert nobody acts on is a defect rather than a nuisance.",
   "datePublished": "2026-07-28",
   "author": { "@type": "Person", "name": "Sebastián Allende Cuello", "url": "https://ssebv.github.io/" },
   "inLanguage": "en"
@@ -67,7 +67,7 @@
 <p>Every one of those was findable in advance. None of them was found in advance, because nothing was looking.</p>
 <h2 id="chasing-bugs-versus-building-the-thing-that-finds-them">Chasing bugs versus building the thing that finds them<a class="anchor" href="#chasing-bugs-versus-building-the-thing-that-finds-them" aria-label="Link to this section">#</a></h2>
 <p>My first instinct was to fix each problem as it appeared. That is satisfying and it does not scale. Each fix addressed one instance of a class of failure I could not enumerate, and the interval between the failure happening and anyone noticing stayed exactly the same — weeks.</p>
-<p>So I stopped fixing individual cases and built a health check instead: a scheduled routine that interrogates the system on a fixed cadence and reports what it finds to the people who can act on it. It now runs around forty-six detectors every six hours, with a smaller urgent subset every thirty minutes.</p>
+<p>So I stopped fixing individual cases and built a health check instead: a scheduled routine that interrogates the system on a fixed cadence and reports what it finds to the people who can act on it. It now runs around forty-six detectors every day, with a smaller urgent subset every thirty minutes.</p>
 <p>What the detectors look at falls into four groups:</p>
 <ul><li><strong>Reconciliation.</strong> The inventory ledger and the accounting must tell the same story. For each country and each relevant account, the detector computes both sides and compares them against a threshold appropriate to that currency. Divergence is reported with the transactions that caused it, not just a number.</li></ul>
 <ul><li><strong>Regulatory state.</strong> Documents rejected by a tax authority, documents stuck waiting to be sent, and the projected exhaustion date of each authorised numbering range — so that "we run out of invoice numbers in nine days" is something we learn nine days early rather than on the day.</li></ul>
@@ -76,7 +76,7 @@
 <h2 id="the-thing-it-found">The thing it found<a class="anchor" href="#the-thing-it-found" aria-label="Link to this section">#</a></h2>
 <p>The first meaningful run surfaced something nobody knew about: inventory cost was being recorded twice for one category of transaction. Two independent parts of the system — a physical stock movement and a settlement process — were each doing their honest job, and both were crediting the same accounting entry.</p>
 <p>It had been accumulating for more than a year. No report showed it, because every individual report was internally consistent; the discrepancy only existed <em>between</em> two views that nobody had ever put side by side. That is precisely the class of problem a human reviewer never finds, because finding it requires comparing two things that each look correct.</p>
-<p>Two things came out of that. The historical figures were corrected, and — more importantly — the reconciliation became permanent. The same comparison now runs every six hours, so if the conditions that allowed it ever return, we find out that day instead of the following year.</p>
+<p>Two things came out of that. The historical figures were corrected, and — more importantly — the reconciliation became permanent. The same comparison now runs every day, so if the conditions that allowed it ever return, we find out that day instead of the following year.</p>
 <h2 id="the-rule-that-made-it-work">The rule that made it work<a class="anchor" href="#the-rule-that-made-it-work" aria-label="Link to this section">#</a></h2>
 <p>The temptation with a system like this is to measure it by coverage: how many detectors, how many alerts. That is the wrong metric, and following it produces something worse than nothing.</p>
 <blockquote></blockquote>

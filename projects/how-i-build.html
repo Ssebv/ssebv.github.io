@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<script>
+(function(){try{var t=localStorage.getItem('theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();
+</script>
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>How I build software with coding agents — Sebastián Allende</title>
+<meta name="description" content="Coding agents are my main workflow. This is the process, with real evidence at each step, that keeps that safe in production.">
+<link rel="canonical" href="https://ssebv.github.io/projects/how-i-build.html">
+<link rel="alternate" hreflang="en" href="https://ssebv.github.io/projects/how-i-build.html">
+<link rel="alternate" hreflang="es" href="https://ssebv.github.io/es/projects/how-i-build.html">
+<meta property="og:type" content="article">
+<meta property="og:locale" content="en_US">
+<meta property="og:title" content="How I build software with coding agents">
+<meta property="og:description" content="Coding agents are my main workflow. This is the process, with real evidence at each step, that keeps that safe in production.">
+<meta property="og:url" content="https://ssebv.github.io/projects/how-i-build.html">
+<meta property="og:image" content="https://ssebv.github.io/og.png">
+<meta name="twitter:card" content="summary_large_image">
+
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%232f5bd7'/%3E%3Ctext x='50' y='68' font-family='Helvetica,Arial,sans-serif' font-size='48' font-weight='700' fill='%23fff' text-anchor='middle'%3ESA%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="../style.css">
+<script src="../term.js" defer></script>
+</head>
+<body>
+
+<nav class="lang-switch" aria-label="Language">
+  <a href="./how-i-build.html" hreflang="en" aria-current="true">EN</a>
+  <a href="../es/projects/how-i-build.html" hreflang="es">ES</a>
+</nav>
+
+<button class="theme-toggle" id="themeToggle" type="button" aria-label="Switch colour theme" title="Switch colour theme">
+  <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+  <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+</button>
+
+<a class="skip" href="#main">Skip to content</a>
+
+<div class="wrap">
+  <a class="back" href="../">← Sebastián Allende</a>
+
+  <main id="main">
+  <article class="page">
+
+    <h1>How I build software with coding agents</h1>
+
+<p class="lead">Coding agents are my main workflow: over 2,600 AI-assisted commits on a production ERP alone. The agent writes a lot of the code. I own the decisions, and this process is what makes that safe.</p>
+
+<h2 id="process">The process</h2>
+<ol class="steps">
+<li><h3>Start from the project's rules</h3><p>Every repo has a short file that says how to install it, how to test it and what not to touch. The agent reads it first, then checks the branch and any uncommitted work. <a href="https://github.com/Ssebv/odoo-rag/blob/main/CLAUDE.md" target="_blank" rel="noopener">Here is a real one.</a></p></li>
+<li><h3>Plan before risky work</h3><p>Anything large, or anything touching payments, production, tax documents or personal data, gets a written plan that I approve before a single file changes.</p></li>
+<li><h3>Build in small, verifiable steps</h3><p>Each block of work is small enough to check, and the tests run after each one. On some projects a hook runs type checks and unit tests automatically whenever the agent finishes.</p></li>
+<li><h3>Test without touching anything real</h3><p>Tests use no real network, credentials or data. The ERP's critical flows are backed by about 180 test files, plus PostgreSQL invariants that block inconsistent data.</p>
+<figure class="term" data-replay><div class="term-bar"><i></i><i></i><i></i><b>odoo-rag</b></div><code class="term-body"><span class="cmd">$ uv run pytest -q</span><span class="ok">10 passed in 0.16s</span><span class="cmd">$ gh run list -R Ssebv/odoo-rag -L 1 --json conclusion,status -q &#x27;.[0]&#x27;</span><span class="ok">{&quot;conclusion&quot;:&quot;success&quot;,&quot;status&quot;:&quot;completed&quot;}</span></code></figure><p class="cap">Replay of real commands.</p>
+<figure class="shot"><img src="../img/ci-green.webp" alt="GitHub Actions showing a successful CI run for odoo-rag" width="1400" height="218" loading="lazy" decoding="async"><figcaption>Continuous integration on the public repo.</figcaption></figure></li>
+<li><h3>Measure what tests can't</h3><p>A passing test does not tell you whether an AI answer is good. For that I build evaluations and compare options on the same questions. In <a href="./odoo-rag.html">Odoo RAG</a>, that is how I learned translation mattered more than hybrid search.</p>
+<div class="bars"><table><caption>Recall@5, all questions</caption><tbody><tr><th scope="row">Keyword</th><td data-tip="Keyword: 73%"><i style="width:58%"></i><b>73%</b></td></tr><tr><th scope="row">Vector</th><td data-tip="Vector: 67%"><i style="width:54%"></i><b>67%</b></td></tr><tr><th scope="row">Hybrid</th><td data-tip="Hybrid: 73%"><i style="width:58%"></i><b>73%</b></td></tr><tr class="top"><th scope="row">Hybrid + translation</th><td data-tip="Hybrid + translation: 82%"><i style="width:66%"></i><b>82%</b></td></tr></tbody></table><table><caption>Recall@5, Spanish questions</caption><tbody><tr><th scope="row">Keyword</th><td data-tip="Keyword: 40%"><i style="width:32%"></i><b>40%</b></td></tr><tr><th scope="row">Vector</th><td data-tip="Vector: 20%"><i style="width:16%"></i><b>20%</b></td></tr><tr><th scope="row">Hybrid</th><td data-tip="Hybrid: 50%"><i style="width:40%"></i><b>50%</b></td></tr><tr class="top"><th scope="row">Hybrid + translation</th><td data-tip="Hybrid + translation: 90%"><i style="width:72%"></i><b>90%</b></td></tr></tbody></table></div></li>
+<li><h3>Review, and check claims against the code</h3><p>Changes get a code review before they are committed, and a security review if they touch authentication, payments or personal data. It applies to what I write about my work too: a review found that my own article said a monitor ran every six hours, while the code said daily. I corrected the article.</p></li>
+<li><h3>Ship in stages</h3><p>Changes go through staging before production, and production deploys avoid business hours. For the ERP migration, I compared the result against a pre-upgrade baseline: invoices, orders and deliveries were identical.</p></li>
+<li><h3>Watch it in production</h3><p>A daily health check runs over 40 detectors, with urgent alerts every 30 minutes. <a href="../writing/health-check.html">I wrote about what it found</a>, including the detector of mine that was confidently wrong.</p></li>
+</ol>
+
+<h2 id="limits">What the agent can't do alone</h2>
+<div class="guards"><ul>
+<li>Push to the ERP's production or staging branches.</li>
+<li>Send email: it only writes drafts.</li>
+<li>Read secret files or force-push: those commands are blocked by rule.</li>
+<li>Make the calls that are hard to undo: those stay with me.</li>
+</ul></div>
+
+  </article>
+  </main>
+
+  <footer>
+    <span><a href="../">← Back to portfolio</a></span>
+    <span>sallendec@outlook.com</span>
+  </footer>
+</div>
+<script>
+(function(){
+  var b=document.getElementById('themeToggle');if(!b)return;
+  b.addEventListener('click',function(){
+    var sysDark=window.matchMedia('(prefers-color-scheme: dark)').matches;
+    var cur=document.documentElement.getAttribute('data-theme')||(sysDark?'dark':'light');
+    var next=cur==='dark'?'light':'dark';
+    document.documentElement.setAttribute('data-theme',next);
+    try{localStorage.setItem('theme',next);}catch(e){}
+  });
+})();
+</script>
+<script>
+(function(){
+  if (window.innerWidth < 1280) return;
+  var heads = [].slice.call(document.querySelectorAll('main h2[id], article h2[id]'));
+  if (heads.length < 3) return;
+  var nav = document.createElement('nav');
+  nav.className = 'toc';
+  nav.setAttribute('aria-label','Sections');
+  nav.innerHTML = '<div class="toc-label">Sections</div><ol></ol>';
+  var ol = nav.querySelector('ol');
+  heads.forEach(function(h){
+    var text = (h.textContent || '').replace(/#$/, '').trim();
+    var li = document.createElement('li'), a = document.createElement('a');
+    a.href = '#' + h.id; a.textContent = text; a.dataset.target = h.id;
+    li.appendChild(a); ol.appendChild(li);
+  });
+  document.body.appendChild(nav);
+  requestAnimationFrame(function(){ nav.classList.add('ready'); });
+  var links = {};
+  [].slice.call(nav.querySelectorAll('a')).forEach(function(a){ links[a.dataset.target] = a; });
+  function setActive(id){ for (var k in links) links[k].classList.toggle('active', k === id); }
+  var obs = new IntersectionObserver(function(entries){
+    var v = entries.filter(function(e){ return e.isIntersecting; });
+    if (v.length) { v.sort(function(a,b){ return a.boundingClientRect.top - b.boundingClientRect.top; });
+      setActive(v[0].target.id); }
+  }, { rootMargin: '-15% 0px -70% 0px', threshold: 0 });
+  heads.forEach(function(h){ obs.observe(h); });
+  setActive(heads[0].id);
+})();
+</script>
+<script>
+(function(){
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (!reduce && 'IntersectionObserver' in window) {
+    document.documentElement.classList.add('js-reveal');
+    var targets = [].slice.call(document.querySelectorAll('article > *, .post, section > *'));
+    targets.forEach(function(el){ el.setAttribute('data-reveal',''); });
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if (!e.isIntersecting) return;
+        e.target.style.transitionDelay = Math.min((+e.target.dataset.i||0)*45,180)+'ms';
+        e.target.classList.add('shown'); io.unobserve(e.target);
+      });
+    }, { rootMargin: '0px 0px -8% 0px', threshold: 0.05 });
+    var groups = {};
+    targets.forEach(function(el){
+      var k = el.parentNode; groups[k] = groups[k] || 0; el.dataset.i = groups[k]++; io.observe(el);
+    });
+    setTimeout(function(){
+      targets.forEach(function(el){
+        if (el.getBoundingClientRect().top < window.innerHeight) el.classList.add('shown');
+      });
+    }, 30);
+  }
+  if (!reduce && document.querySelector('article')) {
+    var bar = document.createElement('div'); bar.className = 'progress';
+    document.body.appendChild(bar);
+    var tick = function(){
+      var h = document.documentElement.scrollHeight - window.innerHeight;
+      bar.style.width = (h > 0 ? (window.scrollY / h) * 100 : 0) + '%';
+    };
+    window.addEventListener('scroll', tick, { passive: true });
+    window.addEventListener('resize', tick); tick();
+  }
+})();
+</script>
+</body>
+</html>

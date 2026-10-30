@@ -15,6 +15,12 @@
   </url>
   <url><loc>https://ssebv.github.io/writing/</loc><priority>0.8</priority></url>
   <url><loc>https://ssebv.github.io/es/writing/</loc><priority>0.8</priority></url>
+  <url><loc>https://ssebv.github.io/projects/odoo-rag.html</loc><priority>0.8</priority></url>
+  <url><loc>https://ssebv.github.io/es/projects/odoo-rag.html</loc><priority>0.8</priority></url>
+  <url><loc>https://ssebv.github.io/projects/modomax.html</loc><priority>0.8</priority></url>
+  <url><loc>https://ssebv.github.io/es/projects/modomax.html</loc><priority>0.8</priority></url>
+  <url><loc>https://ssebv.github.io/projects/how-i-build.html</loc><priority>0.8</priority></url>
+  <url><loc>https://ssebv.github.io/es/projects/how-i-build.html</loc><priority>0.8</priority></url>
   <url><loc>https://ssebv.github.io/es/writing/erp-migration.html</loc><priority>0.8</priority></url>
   <url><loc>https://ssebv.github.io/es/writing/health-check.html</loc><priority>0.8</priority></url>
   <url><loc>https://ssebv.github.io/writing/erp-migration.html</loc><priority>0.8</priority></url>
