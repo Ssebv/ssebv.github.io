@@ -84,6 +84,9 @@ python3 blog/build.py --check
 Posts fall back to the site-wide `og.png`. For a dedicated card, drop an image at
 `og-<slug>.png` (1200×630) in the site root and the build picks it up on its own.
 
+Project pages use `og-<slug>.png` and `og-<slug>-es.png`, rendered by `python3 blog/build_og.py`.
+Its figures are typed in `CARDS`: rerun it when a figure on those pages changes.
+
 ---
 
 ## The Markdown subset

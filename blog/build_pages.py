@@ -6,6 +6,7 @@ Usage: python3 blog/build_pages.py
 Figures on these pages must match their source: odoo-rag's evals/results.json for the RAG numbers.
 """
 import html
+import json
 import pathlib
 import sys
 
@@ -191,7 +192,7 @@ PAGES = {
     "how-i-build": {
         "en": dict(
             title="How I build software with coding agents",
-            summary="Coding agents are my main workflow. This is the process, with real evidence at each step, that keeps that safe in production.",
+            summary="Coding agents are my main workflow. This is the process that keeps that safe in production, with real examples.",
             body=f"""
 <p class="lead">Coding agents are my main workflow: over 2,600 AI-assisted commits on a production ERP alone. The agent writes a lot of the code. I own the decisions, and this process is what makes that safe.</p>
 
@@ -221,7 +222,7 @@ PAGES = {
         ),
         "es": dict(
             title="Cómo desarrollo software con agentes de programación",
-            summary="Los agentes de programación son mi flujo principal. Este es el proceso, con evidencia real en cada paso, que lo hace seguro en producción.",
+            summary="Los agentes de programación son mi flujo principal. Este es el proceso que lo hace seguro en producción, con ejemplos reales.",
             body=f"""
 <p class="lead">Los agentes de programación son mi flujo principal: más de 2.600 commits asistidos por IA solo en un ERP en producción. El agente escribe mucho código. Las decisiones son mías, y este proceso es lo que lo hace seguro.</p>
 
@@ -264,6 +265,18 @@ def render(slug, lang):
     es_href = f"./{slug}.html" if lang == "es" else f"../es/projects/{slug}.html"
     title = html.escape(page["title"])
     summary = html.escape(page["summary"])
+    card = f"og-{slug}{'-es' if lang == 'es' else ''}.png"
+    image = f"{SITE}/{card if (ROOT / card).exists() else 'og.png'}"
+    schema = json.dumps({
+        "@context": "https://schema.org",
+        "@type": "TechArticle",
+        "headline": page["title"],
+        "description": page["summary"],
+        "image": image,
+        "url": url,
+        "author": {"@type": "Person", "name": "Sebastián Allende Cuello", "url": f"{SITE}/"},
+        "inLanguage": lang,
+    }, ensure_ascii=False, indent=2).replace("</", "<\\/")
     current = {"en": ' aria-current="true"' if lang == "en" else "", "es": ' aria-current="true"' if lang == "es" else ""}
     return f"""<!doctype html>
 <html lang="{lang}">
@@ -283,8 +296,14 @@ def render(slug, lang):
 <meta property="og:title" content="{title}">
 <meta property="og:description" content="{summary}">
 <meta property="og:url" content="{url}">
-<meta property="og:image" content="{SITE}/og.png">
+<meta property="og:image" content="{image}">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="{summary}">
 <meta name="twitter:card" content="summary_large_image">
+<script type="application/ld+json">
+{schema}
+</script>
 
 <link rel="icon" href="{FAVICON}">
 <link rel="stylesheet" href="{root}style.css">
