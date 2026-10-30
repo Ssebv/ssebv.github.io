@@ -35,8 +35,13 @@ def main():
             cells = "".join(f"<div><b>{html.escape(n)}</b><span>{html.escape(t)}</span></div>" for n, t in stats)
             page = pathlib.Path(tmp) / f"{name}.html"
             page.write_text(PAGE.format(title=html.escape(title), sub=html.escape(sub), stats=cells), encoding="utf-8")
-            subprocess.run([CHROME, "--headless", "--disable-gpu", "--hide-scrollbars", "--window-size=1200,630",
-                            f"--screenshot={ROOT / f'og-{name}.png'}", page.as_uri()], check=True, capture_output=True)
+            out = ROOT / f"og-{name}.png"
+            out.unlink(missing_ok=True)
+            # Chrome can exit non-zero while shutting down after writing the file, so the file is what counts.
+            result = subprocess.run([CHROME, "--headless", "--disable-gpu", "--no-sandbox", f"--user-data-dir={tmp}/chrome", "--hide-scrollbars",
+                                     "--window-size=1200,630", f"--screenshot={out}", page.as_uri()], stderr=subprocess.PIPE, stdout=subprocess.DEVNULL, text=True)
+            if not out.exists():
+                raise SystemExit(f"Chrome did not write {out.name}: {result.stderr[-500:]}")
             print(f"og-{name}.png")
 
 
