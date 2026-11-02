@@ -523,7 +523,7 @@ header::before {
 .term.play .term-body span.on { opacity: 1; }
 
 figure.shot { margin: var(--s4) 0; }
-figure.shot img { display: block; width: 100%; height: auto; border: 1px solid var(--line); border-radius: 12px; }
+figure.shot img, figure.shot video { display: block; width: 100%; height: auto; border: 1px solid var(--line); border-radius: 12px; }
 figure figcaption, .term + .cap, .phones + .cap { margin-top: 8px; font-size: 13px; line-height: 1.5; color: var(--faint); }
 .gallery { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: var(--s4) 0; }
 .gallery figure.shot { margin: 0; }
@@ -590,7 +590,7 @@ article .guards li { margin-bottom: 6px; font-size: 15.5px; }
 .feature-media { color: inherit; text-decoration: none; }
 
 .stats .stat-n { color: var(--accent); }
-.feature-cap { font-size: 13px; margin-bottom: 10px; color: var(--faint); }
+.feature p.feature-cap { font-size: 13px; margin-bottom: 10px; color: var(--faint); }
 
 .mosaic { display: grid; grid-template-columns: 2fr 1fr; grid-template-rows: 1fr 1fr; gap: 10px; margin-top: var(--s5); text-decoration: none; }
 .mosaic img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: top left; border: 1px solid var(--line); border-radius: 12px; box-shadow: var(--shadow); transition: transform .2s ease; }
@@ -862,4 +862,7 @@ article pre code { background: none; padding: 0; font-size: 13.5px; line-height:
   .mig-arrow { display: none; }
   .mig-steps { grid-template-columns: 1fr 1fr; }
 }
-figure.shot video { display: block; width: 100%; height: auto; border: 1px solid var(--line); border-radius: 12px; }
+/* A project with no page or public repo of its own: not a link, so no hover or arrow */
+.proj-static:hover { border-color: var(--line); transform: none; box-shadow: none; }
+.proj-static:hover .proj-name { color: inherit; }
+.proj-static .proj-name::after { content: none; }
