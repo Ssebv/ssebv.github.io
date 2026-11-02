@@ -27,6 +27,15 @@ def shot(name, alt, caption="", width=1400, height=875):
             f'width="{width}" height="{height}" loading="lazy" decoding="async">{cap}</figure>')
 
 
+def phones(label, items, height=1175):
+    cells = "".join(
+        f'<div><img src="%ROOT%img/{name}.webp" alt="{html.escape(alt)}" width="540" height="{height}" loading="lazy" decoding="async">'
+        f"<span>{html.escape(cap)}</span></div>"
+        for name, alt, cap in items
+    )
+    return f'<div class="phones" role="group" aria-label="{html.escape(label)}">{cells}</div>'
+
+
 def term(title, lines, caption):
     body = "".join(f'<span class="{k}">{html.escape(t)}</span>' if k else f"<span>{html.escape(t)}</span>" for k, t in lines)
     return (f'<figure class="term" data-replay><div class="term-bar"><i></i><i></i><i></i><b>{html.escape(title)}</b></div>'
@@ -186,6 +195,58 @@ PAGES = {
 <h2 id="stack">Tecnologías y pruebas</h2>
 <p>TypeScript, Next.js, React, Prisma, PostgreSQL, Vercel AI SDK y la API de Anthropic, con 48 archivos de prueba entre Vitest y Playwright.</p>
 <p>{MODOMAX_REPO_NOTE["es"]}</p>
+""",
+        ),
+    },
+    "apps": {
+        "en": dict(
+            title="iPhone apps: Norte, Citofonía and Maratón Marvel",
+            summary="Three mobile products I designed and built: a native finance and health app, a digital intercom for apartment buildings and a guide to watching Marvel in story order.",
+            body=f"""
+<p class="lead">Three mobile products I designed and built with <a href="./how-i-build.html">coding agents</a>, each on a different stack. These are real screens, not design mockups.</p>
+
+<h2 id="norte">Norte</h2>
+<p>A personal app that brings finances, training, nutrition and habits together. It is native SwiftUI with no third-party dependencies, with Apple Watch and widget targets, a Next.js API over SQLite, and Claude for analysis.</p>
+{phones("Norte screens", [("app-norte-finanzas", "Norte finances with net worth and a savings goal", "Finances"), ("app-norte-salud", "Norte health summary with recovery, calories and protein", "Health"), ("app-norte-entreno", "Norte training session with the muscles worked today", "Training")])}
+<p class="cap">Captured in the iPhone simulator against a local test server with seeded demo data. None of these figures are real.</p>
+<p>More than 280 Swift files, over 80 of them tests. The screen tests refuse to run against production. The source is private.</p>
+
+<h2 id="citofonia">Citofonía</h2>
+<p>The building intercom on your phone: concierge calls, door opening, QR visits, parcels, reservations and votes, with a tablet for the concierge and a panel for administrators. It is in development, built with React Native and Expo, Hono, Supabase and LiveKit for calls.</p>
+{phones("Citofonía screens", [("app-citofonia-llamada", "Incoming concierge call on the resident's phone", "Concierge call"), ("app-citofonia-reservas", "Common-area reservations with their rules", "Reservations"), ("app-citofonia-qr", "Visits list with a QR pass that expires", "Visits")], 1169)}
+<p class="cap">Real captures of the app with a fictional building and fictional residents.</p>
+<p>23 resident screens, 9 for the concierge and 17 admin pages over 105 database migrations. CI runs type checks, pgTAP, Vitest and end-to-end tests. The source is private.</p>
+
+<h2 id="marvel">Maratón Marvel</h2>
+<p>Every Marvel and X-Men title in story order, with progress tracking: more than 140 titles, counting comics and animation, and 1,600 episodes. The web app is live and free. A native SwiftUI version is in development, and that is the one shown here.</p>
+{phones("Maratón Marvel screens", [("app-marvel-inicio", "Maratón Marvel home with progress and the next title", "Home"), ("app-marvel-cronologia", "Timeline of X-Men films in story order", "Timeline"), ("app-marvel-ficha", "Detail page for a film", "Title page")])}
+<p class="cap">Captured in the iPhone simulator. Film images belong to their studios.</p>
+<div class="actions"><a href="https://ssebv.github.io/maraton-marvel/?lang=en" target="_blank" rel="noopener">Open the web app →</a><a href="https://github.com/Ssebv/maraton-marvel" target="_blank" rel="noopener">Source code</a></div>
+""",
+        ),
+        "es": dict(
+            title="Apps de iPhone: Norte, Citofonía y Maratón Marvel",
+            summary="Tres productos móviles que diseñé y construí: una app nativa de finanzas y salud, un citófono digital para edificios y una guía para ver Marvel.",
+            body=f"""
+<p class="lead">Tres productos móviles que diseñé y construí con <a href="./how-i-build.html">agentes de programación</a>, cada uno con un stack distinto. Son pantallas reales, no maquetas de diseño.</p>
+
+<h2 id="norte">Norte</h2>
+<p>Una app personal que reúne finanzas, entrenamiento, alimentación y hábitos. Es nativa en SwiftUI y sin dependencias de terceros, con objetivos para Apple Watch y widgets, una API en Next.js sobre SQLite, y Claude para los análisis.</p>
+{phones("Pantallas de Norte", [("app-norte-finanzas", "Finanzas de Norte con patrimonio y una meta de ahorro", "Finanzas"), ("app-norte-salud", "Resumen de salud de Norte con recuperación, calorías y proteína", "Salud"), ("app-norte-entreno", "Sesión de entrenamiento de Norte con los músculos del día", "Entreno")])}
+<p class="cap">Capturadas en el simulador de iPhone contra un servidor local de prueba con datos de demostración. Ninguna de estas cifras es real.</p>
+<p>Más de 280 archivos Swift, más de 80 de ellos de pruebas. Las pruebas de pantalla se niegan a correr contra producción. El código es privado.</p>
+
+<h2 id="citofonia">Citofonía</h2>
+<p>El citófono del edificio en el celular: llamadas de portería, apertura de puertas, visitas con QR, encomiendas, reservas y votaciones, con una tablet para conserjería y un panel para la administración. Está en desarrollo, con React Native y Expo, Hono, Supabase y LiveKit para las llamadas.</p>
+{phones("Pantallas de Citofonía", [("app-citofonia-llamada", "Llamada entrante de portería en el celular del residente", "Llamada de portería"), ("app-citofonia-reservas", "Reservas de espacios comunes con sus reglas", "Reservas"), ("app-citofonia-qr", "Lista de visitas con un pase QR que vence", "Visitas")], 1169)}
+<p class="cap">Capturas reales de la app con un edificio y residentes ficticios.</p>
+<p>23 pantallas del residente, 9 de conserjería y 17 páginas de administración, sobre 105 migraciones de base de datos. La integración continua corre tipos, pgTAP, Vitest y pruebas de punta a punta. El código es privado.</p>
+
+<h2 id="marvel">Maratón Marvel</h2>
+<p>Todo Marvel y X-Men en el orden de la historia, con seguimiento de avance: más de 140 títulos, contando cómics y animación, y 1.600 episodios. La app web está publicada y es gratis. Hay una versión nativa en SwiftUI en desarrollo, y es la que se ve aquí.</p>
+{phones("Pantallas de Maratón Marvel", [("app-marvel-inicio", "Inicio de Maratón Marvel con el avance y el siguiente título", "Inicio"), ("app-marvel-cronologia", "Cronología de las películas de X-Men en el orden de la historia", "Cronología"), ("app-marvel-ficha", "Ficha de una película", "Ficha")])}
+<p class="cap">Capturadas en el simulador de iPhone. Las imágenes de las películas pertenecen a sus estudios.</p>
+<div class="actions"><a href="https://ssebv.github.io/maraton-marvel/" target="_blank" rel="noopener">Abrir la app web →</a><a href="https://github.com/Ssebv/maraton-marvel" target="_blank" rel="noopener">Código fuente</a></div>
 """,
         ),
     },

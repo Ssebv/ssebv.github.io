@@ -16,6 +16,8 @@ CARDS = {
     "odoo-rag-es": ("Odoo RAG", "Un asistente de documentación que puedo medir", [("0,822", "recall@5 en 45 preguntas"), ("0,50 → 0,90", "recall@5 en español"), ("0 de 20", "preguntas válidas rechazadas")]),
     "modomax": ("ModoMax", "An online store with AI assistants", [("End to end", "designed and built by me"), ("WhatsApp", "support, stale replies dropped"), ("TypeScript", "store, checkout and admin")]),
     "modomax-es": ("ModoMax", "Una tienda online con asistentes de IA", [("De punta a punta", "diseñada y construida por mí"), ("WhatsApp", "soporte, sin respuestas obsoletas"), ("TypeScript", "tienda, pagos y administración")]),
+    "apps": ("iPhone apps", "Norte, Citofonía and Maratón Marvel", [("SwiftUI", "native finance and health app"), ("React Native", "digital intercom for buildings"), ("140+", "titles in the Marvel guide")]),
+    "apps-es": ("Apps de iPhone", "Norte, Citofonía y Maratón Marvel", [("SwiftUI", "app nativa de finanzas y salud"), ("React Native", "citófono digital para edificios"), ("140+", "títulos en la guía de Marvel")]),
     "how-i-build": ("How I build software", "with coding agents", [("2,600+", "AI-assisted commits on a production ERP"), ("8 steps", "from project rules to release, with real examples")]),
     "how-i-build-es": ("Cómo desarrollo software", "con agentes de programación", [("2.600+", "commits con IA en un ERP en producción"), ("8 pasos", "de las reglas del proyecto a la entrega, con ejemplos reales")]),
 }

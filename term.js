@@ -1,3 +1,8 @@
+/* Only phone rows that actually scroll sideways take keyboard focus. */
+document.querySelectorAll('.page .phones').forEach(function (row) {
+  if (row.scrollWidth > row.clientWidth) row.tabIndex = 0;
+});
+
 /* Replays a terminal figure line by line when it scrolls into view. Without JS, or with
    reduced motion, the whole output is simply visible. */
 (function(){
