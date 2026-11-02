@@ -239,7 +239,7 @@ PAGES = {
 {phones("Citofonía screens", [("app-citofonia-llamada", "Incoming concierge call on the resident's phone", "Concierge call"), ("app-citofonia-reservas", "Common-area reservations with their rules", "Reservations"), ("app-citofonia-qr", "Visits list with a QR pass that expires", "Visits")], 1169)}
 <p class="cap">Real captures of the app with a fictional building and fictional residents.</p>
 {video("citofonia", "citofonia-video", "Tour of Citofonía", "A 65-second silent tour with on-screen text in Spanish: concierge calls, parcels with a PIN, shared keys, building services and the modules each building chooses. All data is fictional.", "Download the video")}
-<p>23 resident screens, 9 for the concierge and 17 admin pages over 105 database migrations. CI runs type checks, pgTAP, Vitest and end-to-end tests. The source is private.</p>
+<p>23 resident screens, 9 for the concierge and 17 admin pages over 105 database migrations. CI runs type checks, pgTAP, Vitest and end-to-end tests. The source is private. <a href="./citofonia.html">Read the full case →</a></p>
 
 <h2 id="marvel">Maratón Marvel</h2>
 <p>Every Marvel and X-Men title in story order, with progress tracking: more than 140 titles, counting comics and animation, and 1,600 episodes. The web app is live and free. A native SwiftUI version is in development, and that is the one shown here.</p>
@@ -265,13 +265,95 @@ PAGES = {
 {phones("Pantallas de Citofonía", [("app-citofonia-llamada", "Llamada entrante de portería en el celular del residente", "Llamada de portería"), ("app-citofonia-reservas", "Reservas de espacios comunes con sus reglas", "Reservas"), ("app-citofonia-qr", "Lista de visitas con un pase QR que vence", "Visitas")], 1169)}
 <p class="cap">Capturas reales de la app con un edificio y residentes ficticios.</p>
 {video("citofonia", "citofonia-video", "Recorrido por Citofonía", "Un recorrido de 65 segundos sin sonido: llamadas de portería, encomiendas con PIN, llaves compartidas, servicios del edificio y los módulos que elige cada edificio. Todos los datos son ficticios.", "Descargar el video")}
-<p>23 pantallas del residente, 9 de conserjería y 17 páginas de administración, sobre 105 migraciones de base de datos. La integración continua corre tipos, pgTAP, Vitest y pruebas de punta a punta. El código es privado.</p>
+<p>23 pantallas del residente, 9 de conserjería y 17 páginas de administración, sobre 105 migraciones de base de datos. La integración continua corre tipos, pgTAP, Vitest y pruebas de punta a punta. El código es privado. <a href="./citofonia.html">Leer el caso completo →</a></p>
 
 <h2 id="marvel">Maratón Marvel</h2>
 <p>Todo Marvel y X-Men en el orden de la historia, con seguimiento de avance: más de 140 títulos, contando cómics y animación, y 1.600 episodios. La app web está publicada y es gratis. Hay una versión nativa en SwiftUI en desarrollo, y es la que se ve aquí.</p>
 {phones("Pantallas de Maratón Marvel", [("app-marvel-inicio", "Inicio de Maratón Marvel con el avance y el siguiente título", "Inicio"), ("app-marvel-cronologia", "Cronología de las películas de X-Men en el orden de la historia", "Cronología"), ("app-marvel-ficha", "Ficha de una película", "Ficha")])}
 <p class="cap">Capturadas en el simulador de iPhone. Las imágenes de las películas pertenecen a sus estudios.</p>
 <div class="actions"><a href="https://ssebv.github.io/maraton-marvel/" target="_blank" rel="noopener">Abrir la app web →</a><a href="https://github.com/Ssebv/maraton-marvel" target="_blank" rel="noopener">Código fuente</a></div>
+""",
+        ),
+    },
+    "citofonia": {
+        "en": dict(
+            title="Citofonía: the building intercom on your phone",
+            summary="A digital intercom for apartment buildings: concierge calls, door opening, parcels and visits, with the call handled on the server and privacy built into the data.",
+            body=f"""
+<p class="lead">Concierge calls, door opening, QR visits, parcels, reservations and votes. One app serves residents and the concierge's tablet, and a web panel serves the administration. It is in development, shown here with a fictional building.</p>
+<div class="actions"><a href="./how-i-build.html#arch-citofonia">Architecture</a><a href="./apps.html">Other iPhone apps</a></div>
+{video("citofonia", "citofonia-video", "Tour of Citofonía", "A 65-second silent tour with on-screen text in Spanish. All data is fictional.", "Download the video")}
+
+<h2 id="roles">One product, three seats</h2>
+<p>A resident, a concierge and an administrator need very different screens, but they work on the same data. The resident and concierge modes share one React Native app, and each building turns on only the modules it wants.</p>
+{phones("Resident screens", [("app-citofonia-llamada", "Incoming concierge call on the resident's phone", "Concierge call"), ("app-citofonia-reservas", "Common-area reservations with their rules", "Reservations"), ("app-citofonia-qr", "Visits list with a QR pass that expires", "Visits")], 1169)}
+{shot("citofonia-tablet", "Concierge tablet screen for calling an apartment", "The concierge's tablet. A call rings on the apartment's phones for 30 seconds, and the first person to answer takes it.", 1400, 973)}
+<div class="gallery">
+{shot("citofonia-panel", "Administration panel with the day's parcels, visits, missed calls and pending tasks", "The administration panel.")}
+{shot("citofonia-modulos", "Building modules that can be turned on or off", "Modules per building.", 1400, 428)}
+</div>
+
+<h2 id="call">How a call works</h2>
+{flow(["Concierge calls", "Rings for 30 s", "First answer takes it", "Door can open for a short time"])}
+<p>The call is the hard part of this product. It has to behave correctly when several phones ring at once, when someone answers on two devices, and when a database write fails halfway.</p>
+<ul>
+<li><strong>A pure state machine.</strong> The call logic has no network or storage, and it takes the clock as an argument. A Durable Object runs it on the server, and an in-memory version runs the same logic in tests.</li>
+<li><strong>Limits that respect emergencies.</strong> A concierge station has one active call, and each apartment has a limit on attempts per minute. An emergency call has its own higher limit, so it is not lost to that cap.</li>
+<li><strong>One owner for the audio.</strong> A call to the concierge rings on every concierge device, but the audio and the hang-up button belong to the one that answered.</li>
+<li><strong>Failures that clean up.</strong> If a database write fails, a job that runs every minute closes the stuck call, so it does not keep blocking new calls to that apartment.</li>
+</ul>
+
+<h2 id="privacy">Privacy in the data, not only in the text</h2>
+<ul>
+<li><strong>Notifications carry no names.</strong> A parcel or visit alert says how many arrived, without a name, apartment or detail.</li>
+<li><strong>The audit log removes personal data.</strong> Personal data such as names, ID numbers, license plates and QR codes is removed from visit and parcel changes before they reach the audit log.</li>
+<li><strong>Data has an expiry date.</strong> A daily job applies the retention period set for each type of data.</li>
+<li><strong>Reports are tested for leaks.</strong> The monthly report has aggregate figures only, and a database test checks that no names or apartment numbers come out.</li>
+</ul>
+<p>The privacy and terms text follows Chile's Law 21.719, but it is still a draft that a lawyer needs to review.</p>
+
+<h2 id="tests">Tests</h2>
+<p>105 database migrations, 88 pgTAP test files for access rules and data, and more than 30 Vitest files for the API and panel. CI also runs end-to-end tests against a local database. The source is private, and I am happy to walk through it in an interview.</p>
+""",
+        ),
+        "es": dict(
+            title="Citofonía: el citófono del edificio en el celular",
+            summary="Un citófono digital para edificios: llamadas de portería, apertura de puertas, encomiendas y visitas, con la llamada manejada en el servidor y la privacidad incorporada en los datos.",
+            body=f"""
+<p class="lead">Llamadas de portería, apertura de puertas, visitas con QR, encomiendas, reservas y votaciones. Una app sirve a residentes y a la tablet de conserjería, y un panel web a la administración. Está en desarrollo, y aquí se muestra con un edificio ficticio.</p>
+<div class="actions"><a href="./how-i-build.html#arq-citofonia">Arquitectura</a><a href="./apps.html">Otras apps de iPhone</a></div>
+{video("citofonia", "citofonia-video", "Recorrido por Citofonía", "Un recorrido de 65 segundos sin sonido. Todos los datos son ficticios.", "Descargar el video")}
+
+<h2 id="roles">Un producto, tres puestos</h2>
+<p>Residente, conserje y administración necesitan pantallas muy distintas, pero trabajan sobre los mismos datos. Los modos de residente y conserjería comparten una app en React Native, y cada edificio enciende solo los módulos que quiere.</p>
+{phones("Pantallas del residente", [("app-citofonia-llamada", "Llamada entrante de portería en el celular del residente", "Llamada de portería"), ("app-citofonia-reservas", "Reservas de espacios comunes con sus reglas", "Reservas"), ("app-citofonia-qr", "Lista de visitas con un pase QR que vence", "Visitas")], 1169)}
+{shot("citofonia-tablet", "Pantalla de la tablet de conserjería para llamar a un departamento", "La tablet de conserjería. La llamada suena 30 segundos en los teléfonos del depto, y la toma el primero que contesta.", 1400, 973)}
+<div class="gallery">
+{shot("citofonia-panel", "Panel de administración con las encomiendas, visitas, llamadas perdidas y tareas pendientes del día", "El panel de administración.")}
+{shot("citofonia-modulos", "Módulos del edificio que se pueden encender o apagar", "Módulos por edificio.", 1400, 428)}
+</div>
+
+<h2 id="llamada">Cómo funciona una llamada</h2>
+{flow(["Conserjería llama", "Suena 30 s", "Contesta el primero", "Se puede abrir por poco tiempo"])}
+<p>La llamada es la parte difícil de este producto. Tiene que comportarse bien cuando suenan varios teléfonos a la vez, cuando alguien contesta en dos dispositivos y cuando una escritura en la base falla a medias.</p>
+<ul>
+<li><strong>Una máquina de estados pura.</strong> La lógica de la llamada no tiene red ni almacenamiento, y recibe el reloj como argumento. En el servidor la corre un Durable Object, y en las pruebas una versión en memoria corre la misma lógica.</li>
+<li><strong>Límites que respetan las emergencias.</strong> Cada puesto de conserjería tiene una llamada activa, y cada depto tiene un límite de intentos por minuto. Una llamada de emergencia tiene su propio límite, más alto, para que ese tope no la deje fuera.</li>
+<li><strong>Un solo dueño del audio.</strong> Una llamada a portería suena en todos los equipos de conserjería, pero el audio y el botón de colgar son del que contestó.</li>
+<li><strong>Las fallas se limpian solas.</strong> Si falla una escritura en la base, una tarea que corre cada minuto cierra la llamada colgada, para que no siga bloqueando llamadas nuevas a ese depto.</li>
+</ul>
+
+<h2 id="privacidad">Privacidad en los datos, no solo en el texto</h2>
+<ul>
+<li><strong>Los avisos no llevan nombres.</strong> Un aviso de encomienda o visita dice cuántas llegaron, sin nombre, depto ni detalle.</li>
+<li><strong>La auditoría quita los datos personales.</strong> Los datos personales, como nombre, RUT, patente y QR, se quitan de los cambios en visitas y encomiendas antes de que lleguen a la auditoría.</li>
+<li><strong>Los datos tienen fecha de vencimiento.</strong> Una tarea diaria aplica el plazo de retención de cada tipo de dato.</li>
+<li><strong>Se prueba que los reportes no filtren datos.</strong> El reporte del mes solo trae cifras agregadas, y una prueba de base de datos revisa que no salgan nombres ni números de depto.</li>
+</ul>
+<p>El texto de privacidad y términos sigue la Ley 21.719, pero todavía es un borrador que debe revisar un abogado.</p>
+
+<h2 id="pruebas">Pruebas</h2>
+<p>105 migraciones de base de datos, 88 archivos de pruebas pgTAP para reglas de acceso y datos, y más de 30 archivos de Vitest para la API y el panel. La integración continua también corre pruebas de punta a punta contra una base local. El código es privado, y con gusto lo recorro en una entrevista.</p>
 """,
         ),
     },
@@ -401,7 +483,7 @@ PAGES = {
 </ul>
 
 <h3 id="arch-citofonia">Citofonía</h3>
-<p>A digital building intercom, in development. It is a monorepo with pnpm and Turborepo: a mobile app, an admin panel, an API and shared packages for database types and UI. The source is private.</p>
+<p>A digital building intercom, in development, <a href="./citofonia.html">with its own page</a>. It is a monorepo with pnpm and Turborepo: a mobile app, an admin panel, an API and shared packages for database types and UI. The source is private.</p>
 {arch("Citofonía layers", [
     ("Clients", ["Resident app · React Native, Expo", "Concierge tablet", "Admin panel · React, Vite"]),
     ("API on the edge", ["Hono on Cloudflare Workers", "Calls", "Doors", "Push", "Invitations", "Votes"]),
@@ -410,7 +492,7 @@ PAGES = {
 ])}
 <ul>
 <li><strong>The database enforces access.</strong> For everyday data, the apps talk to PostgreSQL directly, under row-level security tested with pgTAP. The API handles what the database cannot, such as calls, doors, push and invitations.</li>
-<li><strong>The call lives on the server, not on a device.</strong> Each unit has a state machine in a Durable Object, with its own alarms. Tests run the same logic through an in-memory version.</li>
+<li><strong>The call lives on the server, not on a device.</strong> Each apartment has a state machine in a Durable Object, with its own alarms. Tests run the same logic through an in-memory version.</li>
 <li><strong>Door hardware sits behind one interface.</strong> A driver has one method, <code>openDoor</code>. Today there are two, for the tablet and for an HTTP relay, and a new door system means a new driver.</li>
 <li><strong>Migrations are never edited.</strong> There is one per topic and 105 so far. Types are generated from the schema, and CI checks they are current.</li>
 </ul>
@@ -511,7 +593,7 @@ PAGES = {
 </ul>
 
 <h3 id="arq-citofonia">Citofonía</h3>
-<p>Un citófono digital para edificios, en desarrollo. Es un monorepo con pnpm y Turborepo: una app móvil, un panel de administración, una API y paquetes compartidos para los tipos de la base y la interfaz. El código es privado.</p>
+<p>Un citófono digital para edificios, en desarrollo, <a href="./citofonia.html">con su propia página</a>. Es un monorepo con pnpm y Turborepo: una app móvil, un panel de administración, una API y paquetes compartidos para los tipos de la base y la interfaz. El código es privado.</p>
 {arch("Capas de Citofonía", [
     ("Clientes", ["App del residente · React Native, Expo", "Tablet de conserjería", "Panel de administración · React, Vite"]),
     ("API en el borde", ["Hono en Cloudflare Workers", "Llamadas", "Puertas", "Avisos push", "Invitaciones", "Votaciones"]),
@@ -520,7 +602,7 @@ PAGES = {
 ])}
 <ul>
 <li><strong>La base de datos impone el acceso.</strong> Para los datos del día a día, las apps hablan directo con PostgreSQL, bajo seguridad por fila probada con pgTAP. La API se encarga de lo que la base no puede hacer, como llamadas, puertas, avisos e invitaciones.</li>
-<li><strong>La llamada vive en el servidor, no en un dispositivo.</strong> Cada unidad tiene una máquina de estados en un Durable Object, con sus propias alarmas. Las pruebas corren la misma lógica con una versión en memoria.</li>
+<li><strong>La llamada vive en el servidor, no en un dispositivo.</strong> Cada depto tiene una máquina de estados en un Durable Object, con sus propias alarmas. Las pruebas corren la misma lógica con una versión en memoria.</li>
 <li><strong>El hardware de las puertas está detrás de una sola interfaz.</strong> Un driver tiene un método, <code>openDoor</code>. Hoy hay dos, para la tablet y para un relé HTTP, y un sistema de puertas nuevo significa un driver nuevo.</li>
 <li><strong>Las migraciones no se editan.</strong> Hay una por tema y van 105. Los tipos se generan desde el esquema, y la integración continua revisa que estén al día.</li>
 </ul>

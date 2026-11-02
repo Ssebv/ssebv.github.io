@@ -428,7 +428,7 @@ def render_sitemap(posts, out_root):
   </url>
   <url><loc>{SITE}/writing/</loc><priority>0.8</priority></url>
   <url><loc>{SITE}/es/writing/</loc><priority>0.8</priority></url>"""]
-    for slug in ("odoo-rag", "modomax", "flagforge", "apps", "how-i-build"):
+    for slug in sorted(p.stem for p in (ROOT / "projects").glob("*.html")):
         urls.append(f'  <url><loc>{SITE}/projects/{slug}.html</loc><priority>0.8</priority></url>')
         urls.append(f'  <url><loc>{SITE}/es/projects/{slug}.html</loc><priority>0.8</priority></url>')
     for p in sorted(posts, key=lambda p: (p["date"], p["lang"]), reverse=True):

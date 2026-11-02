@@ -18,6 +18,8 @@ CARDS = {
     "modomax-es": ("ModoMax", "Una tienda online con asistentes de IA", [("De punta a punta", "diseñada y construida por mí"), ("WhatsApp", "soporte, sin respuestas obsoletas"), ("TypeScript", "tienda, pagos y administración")]),
     "apps": ("iPhone apps", "Norte, Citofonía and Maratón Marvel", [("SwiftUI", "native finance and health app"), ("React Native", "digital intercom for buildings"), ("140+", "titles in the Marvel guide")]),
     "apps-es": ("Apps de iPhone", "Norte, Citofonía y Maratón Marvel", [("SwiftUI", "app nativa de finanzas y salud"), ("React Native", "citófono digital para edificios"), ("140+", "títulos en la guía de Marvel")]),
+    "citofonia": ("Citofonía", "The building intercom on your phone", [("Calls", "a server-side state machine per apartment"), ("Privacy", "built into the data and tested")]),
+    "citofonia-es": ("Citofonía", "El citófono del edificio en el celular", [("Llamadas", "una máquina de estados por depto, en el servidor"), ("Privacidad", "incorporada en los datos y probada")]),
     "flagforge": ("FlagForge", "Feature flags in Rust, one engine everywhere", [("Under a microsecond", "per evaluation, worst case measured"), ("245 tests", "in four layers, open source")]),
     "flagforge-es": ("FlagForge", "Feature flags en Rust, un solo motor en todas partes", [("Menos de 1 microsegundo", "por evaluación, en el peor caso medido"), ("245 pruebas", "en cuatro capas, código abierto")]),
     "how-i-build": ("How I organize development", "process and architecture", [("5 systems", "their architecture and the reasons behind it"), ("8 steps", "from plan to production, with real examples")]),

@@ -98,11 +98,11 @@
 </ul>
 
 <h3 id="arq-citofonia">Citofonía</h3>
-<p>Un citófono digital para edificios, en desarrollo. Es un monorepo con pnpm y Turborepo: una app móvil, un panel de administración, una API y paquetes compartidos para los tipos de la base y la interfaz. El código es privado.</p>
+<p>Un citófono digital para edificios, en desarrollo, <a href="./citofonia.html">con su propia página</a>. Es un monorepo con pnpm y Turborepo: una app móvil, un panel de administración, una API y paquetes compartidos para los tipos de la base y la interfaz. El código es privado.</p>
 <ol class="arch" aria-label="Capas de Citofonía"><li><b>Clientes</b><ul><li>App del residente · React Native, Expo</li><li>Tablet de conserjería</li><li>Panel de administración · React, Vite</li></ul></li><li><b>API en el borde</b><ul><li>Hono en Cloudflare Workers</li><li>Llamadas</li><li>Puertas</li><li>Avisos push</li><li>Invitaciones</li><li>Votaciones</li></ul></li><li><b>Estado de la llamada</b><ul><li class="key">Un Durable Object por unidad: la llamada</li><li>Uno por estación: el límite de llamadas</li></ul></li><li><b>Datos y medios</b><ul><li>Supabase PostgreSQL con seguridad por fila</li><li>LiveKit para las llamadas</li></ul></li></ol>
 <ul>
 <li><strong>La base de datos impone el acceso.</strong> Para los datos del día a día, las apps hablan directo con PostgreSQL, bajo seguridad por fila probada con pgTAP. La API se encarga de lo que la base no puede hacer, como llamadas, puertas, avisos e invitaciones.</li>
-<li><strong>La llamada vive en el servidor, no en un dispositivo.</strong> Cada unidad tiene una máquina de estados en un Durable Object, con sus propias alarmas. Las pruebas corren la misma lógica con una versión en memoria.</li>
+<li><strong>La llamada vive en el servidor, no en un dispositivo.</strong> Cada depto tiene una máquina de estados en un Durable Object, con sus propias alarmas. Las pruebas corren la misma lógica con una versión en memoria.</li>
 <li><strong>El hardware de las puertas está detrás de una sola interfaz.</strong> Un driver tiene un método, <code>openDoor</code>. Hoy hay dos, para la tablet y para un relé HTTP, y un sistema de puertas nuevo significa un driver nuevo.</li>
 <li><strong>Las migraciones no se editan.</strong> Hay una por tema y van 105. Los tipos se generan desde el esquema, y la integración continua revisa que estén al día.</li>
 </ul>

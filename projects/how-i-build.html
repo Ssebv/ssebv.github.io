@@ -98,11 +98,11 @@
 </ul>
 
 <h3 id="arch-citofonia">Citofonía</h3>
-<p>A digital building intercom, in development. It is a monorepo with pnpm and Turborepo: a mobile app, an admin panel, an API and shared packages for database types and UI. The source is private.</p>
+<p>A digital building intercom, in development, <a href="./citofonia.html">with its own page</a>. It is a monorepo with pnpm and Turborepo: a mobile app, an admin panel, an API and shared packages for database types and UI. The source is private.</p>
 <ol class="arch" aria-label="Citofonía layers"><li><b>Clients</b><ul><li>Resident app · React Native, Expo</li><li>Concierge tablet</li><li>Admin panel · React, Vite</li></ul></li><li><b>API on the edge</b><ul><li>Hono on Cloudflare Workers</li><li>Calls</li><li>Doors</li><li>Push</li><li>Invitations</li><li>Votes</li></ul></li><li><b>Call state</b><ul><li class="key">One Durable Object per unit: the call</li><li>One per station: the call limit</li></ul></li><li><b>Data and media</b><ul><li>Supabase PostgreSQL with row-level security</li><li>LiveKit for calls</li></ul></li></ol>
 <ul>
 <li><strong>The database enforces access.</strong> For everyday data, the apps talk to PostgreSQL directly, under row-level security tested with pgTAP. The API handles what the database cannot, such as calls, doors, push and invitations.</li>
-<li><strong>The call lives on the server, not on a device.</strong> Each unit has a state machine in a Durable Object, with its own alarms. Tests run the same logic through an in-memory version.</li>
+<li><strong>The call lives on the server, not on a device.</strong> Each apartment has a state machine in a Durable Object, with its own alarms. Tests run the same logic through an in-memory version.</li>
 <li><strong>Door hardware sits behind one interface.</strong> A driver has one method, <code>openDoor</code>. Today there are two, for the tablet and for an HTTP relay, and a new door system means a new driver.</li>
 <li><strong>Migrations are never edited.</strong> There is one per topic and 105 so far. Types are generated from the schema, and CI checks they are current.</li>
 </ul>
