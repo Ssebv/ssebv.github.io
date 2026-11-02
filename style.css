@@ -529,14 +529,24 @@ figure figcaption, .term + .cap, .phones + .cap { margin-top: 8px; font-size: 13
 .gallery figure.shot { margin: 0; }
 @media (max-width: 580px) { .gallery { grid-template-columns: 1fr; } }
 
+/* Architecture layers */
+.arch { display: grid; gap: 24px; margin: var(--s4) 0; padding: 0; list-style: none; }
+article .arch > li { position: relative; margin: 0; padding: 12px 14px 14px; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; }
+.arch > li + li::before { content: "↓"; content: "↓" / ""; position: absolute; top: -23px; left: 50%; font-size: 14px; line-height: 22px; color: var(--faint); transform: translateX(-50%); }
+.arch b { display: block; margin-bottom: 8px; font-size: 12.5px; font-weight: 600; color: var(--muted); }
+.arch ul { display: flex; flex-wrap: wrap; gap: 6px; margin: 0; padding: 0; list-style: none; }
+article .arch ul li { margin: 0; padding: 5px 10px; font-size: 13.5px; line-height: 1.35; background: var(--bg); border: 1px solid var(--line); border-radius: 8px; }
+article .arch ul li.key { background: var(--accent-lo); border-color: var(--accent); font-weight: 600; }
+
 /* Pipeline */
-.flow { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 8px; margin: var(--s4) 0; padding: 0; list-style: none; }
+.flow { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 22px; margin: var(--s4) 0; padding: 0; list-style: none; }
 article .flow li {
   margin: 0; padding: 7px 12px; font-size: 13.5px; line-height: 1.35;
   background: var(--surface); border: 1px solid var(--line); border-radius: 9px;
 }
 article .flow li.end { background: var(--accent-lo); border-color: var(--accent); font-weight: 600; }
-article .flow li.arrow { padding: 0; background: none; border: 0; color: var(--faint); }
+article .flow li { position: relative; }
+.flow li:not(:last-child)::after { content: "→"; content: "→" / ""; position: absolute; top: 50%; right: -18px; color: var(--faint); transform: translateY(-50%); }
 
 /* Bar charts: one series, labels in text colours, a table for assistive tech */
 .bars { display: grid; grid-template-columns: 1fr 1fr; gap: var(--s4); margin: var(--s4) 0; }

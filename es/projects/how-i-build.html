@@ -8,27 +8,27 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<title>Cómo desarrollo software con agentes de programación — Sebastián Allende</title>
-<meta name="description" content="Los agentes de programación son mi flujo principal. Este es el proceso que lo hace seguro en producción, con ejemplos reales.">
+<title>Cómo organizo el desarrollo: proceso y arquitectura — Sebastián Allende</title>
+<meta name="description" content="Cómo llevo un cambio del plan a producción, y la arquitectura de cinco sistemas reales, con las razones detrás de cada decisión.">
 <link rel="canonical" href="https://ssebv.github.io/es/projects/how-i-build.html">
 <link rel="alternate" hreflang="en" href="https://ssebv.github.io/projects/how-i-build.html">
 <link rel="alternate" hreflang="es" href="https://ssebv.github.io/es/projects/how-i-build.html">
 <meta property="og:type" content="article">
 <meta property="og:locale" content="es_CL">
-<meta property="og:title" content="Cómo desarrollo software con agentes de programación">
-<meta property="og:description" content="Los agentes de programación son mi flujo principal. Este es el proceso que lo hace seguro en producción, con ejemplos reales.">
+<meta property="og:title" content="Cómo organizo el desarrollo: proceso y arquitectura">
+<meta property="og:description" content="Cómo llevo un cambio del plan a producción, y la arquitectura de cinco sistemas reales, con las razones detrás de cada decisión.">
 <meta property="og:url" content="https://ssebv.github.io/es/projects/how-i-build.html">
 <meta property="og:image" content="https://ssebv.github.io/og-how-i-build-es.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Los agentes de programación son mi flujo principal. Este es el proceso que lo hace seguro en producción, con ejemplos reales.">
+<meta property="og:image:alt" content="Cómo llevo un cambio del plan a producción, y la arquitectura de cinco sistemas reales, con las razones detrás de cada decisión.">
 <meta name="twitter:card" content="summary_large_image">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
   "@type": "TechArticle",
-  "headline": "Cómo desarrollo software con agentes de programación",
-  "description": "Los agentes de programación son mi flujo principal. Este es el proceso que lo hace seguro en producción, con ejemplos reales.",
+  "headline": "Cómo organizo el desarrollo: proceso y arquitectura",
+  "description": "Cómo llevo un cambio del plan a producción, y la arquitectura de cinco sistemas reales, con las razones detrás de cada decisión.",
   "image": "https://ssebv.github.io/og-how-i-build-es.png",
   "url": "https://ssebv.github.io/es/projects/how-i-build.html",
   "author": {
@@ -64,31 +64,84 @@
   <main id="main">
   <article class="page">
 
-    <h1>Cómo desarrollo software con agentes de programación</h1>
+    <h1>Cómo organizo el desarrollo: proceso y arquitectura</h1>
 
-<p class="lead">Los agentes de programación son mi flujo principal: más de 2.600 commits asistidos por IA solo en un ERP en producción. El agente escribe mucho código. Las decisiones son mías, y este proceso es lo que lo hace seguro.</p>
+<p class="lead">Organizo el software en torno a tres ideas: límites claros entre las partes, entregas que se pueden verificar y una producción que informa su propio estado. Esta página muestra el proceso y luego la arquitectura de cinco sistemas reales, con el porqué de cada uno.</p>
+<div class="actions"><a href="#proceso">El proceso</a><a href="#arquitectura">La arquitectura</a><a href="#reglas">Las reglas</a></div>
 
-<h2 id="proceso">El proceso</h2>
+<h2 id="proceso">Del plan a producción</h2>
+<ol class="flow"><li>Plan</li><li>Rama corta</li><li>Pruebas por capas</li><li>Revisión</li><li>Staging</li><li>Producción</li><li class="end">Monitoreo</li></ol>
 <ol class="steps">
-<li><h3>Partir de las reglas del proyecto</h3><p>Cada repo tiene un archivo corto que dice cómo instalarlo, cómo probarlo y qué no tocar. El agente lo lee primero y luego revisa la rama y si hay trabajo sin commit. <a href="https://github.com/Ssebv/odoo-rag/blob/main/CLAUDE.md" target="_blank" rel="noopener">Aquí hay uno real.</a></p></li>
-<li><h3>Planificar antes del trabajo riesgoso</h3><p>Todo lo grande, o lo que toque pagos, producción, documentos tributarios o datos personales, parte con un plan escrito que apruebo antes de cambiar un solo archivo.</p></li>
-<li><h3>Construir en pasos chicos y verificables</h3><p>Cada bloque de trabajo es lo bastante chico para revisarlo, y las pruebas corren después de cada uno. En algunos proyectos, un hook corre tipos y pruebas unitarias automáticamente cuando el agente termina.</p></li>
-<li><h3>Probar sin tocar nada real</h3><p>Las pruebas no usan red, credenciales ni datos reales. Los flujos críticos del ERP tienen unos 180 archivos de prueba, más invariantes en PostgreSQL que bloquean datos inconsistentes.</p>
+<li><h3>Dejar escrito cómo funciona el proyecto</h3><p>Los proyectos tienen un documento corto: cómo instalarlo, cómo probarlo y qué no tocar. Los sistemas más grandes también tienen un documento por módulo, que se actualiza en el mismo commit que el código, y un registro de decisiones de arquitectura con sus compromisos. <a href="https://github.com/Ssebv/odoo-rag#run-it" target="_blank" rel="noopener">Pasos para instalar y probar de un repo público.</a></p></li>
+<li><h3>Planificar antes del trabajo riesgoso</h3><p>Todo lo grande, o lo que toque pagos, producción, documentos tributarios o datos personales, parte con un plan escrito antes de cambiar un solo archivo.</p></li>
+<li><h3>Trabajar en ramas cortas</h3><p>Cada cambio es lo bastante chico para revisarlo por separado, y las pruebas corren después de cada bloque. La app de iPhone de Norte creció así, por rondas numeradas: pruebas, revisión, merge y despliegue.</p></li>
+<li><h3>Probar por capas</h3><p>Los tipos atajan los errores simples, las pruebas unitarias la lógica, las de base de datos las reglas de acceso y las de punta a punta el flujo completo. La integración continua de Citofonía corre todas contra una base local, y falla si los tipos generados desde la base están desactualizados. Las pruebas automáticas usan datos de prueba y ninguna credencial real. Los flujos críticos del ERP tienen unos 180 archivos de prueba, y ensayé su migración en una copia de producción antes del corte.</p>
 <figure class="term" data-replay><div class="term-bar"><i></i><i></i><i></i><b>odoo-rag</b></div><code class="term-body"><span class="cmd">$ uv run pytest -q</span><span class="ok">10 passed in 0.16s</span><span class="cmd">$ gh run list -R Ssebv/odoo-rag -L 1 --json conclusion,status -q &#x27;.[0]&#x27;</span><span class="ok">{&quot;conclusion&quot;:&quot;success&quot;,&quot;status&quot;:&quot;completed&quot;}</span></code></figure><p class="cap">Repetición de comandos reales.</p>
 <figure class="shot"><img src="../../img/ci-green.webp" alt="GitHub Actions con una ejecución exitosa de integración continua de odoo-rag" width="1400" height="218" loading="lazy" decoding="async"><figcaption>Integración continua en el repo público.</figcaption></figure></li>
 <li><h3>Medir lo que las pruebas no ven</h3><p>Que una prueba pase no dice si una respuesta de IA es buena. Para eso construyo evaluaciones y comparo opciones con las mismas preguntas. En <a href="./odoo-rag.html">Odoo RAG</a>, así descubrí que traducir importaba más que la búsqueda híbrida.</p>
 <div class="bars"><table><caption>Recall@5, todas las preguntas</caption><tbody><tr><th scope="row">Palabras clave</th><td data-tip="Palabras clave: 73%"><i style="width:58%"></i><b>73%</b></td></tr><tr><th scope="row">Vectorial</th><td data-tip="Vectorial: 67%"><i style="width:54%"></i><b>67%</b></td></tr><tr><th scope="row">Híbrida</th><td data-tip="Híbrida: 73%"><i style="width:58%"></i><b>73%</b></td></tr><tr class="top"><th scope="row">Híbrida + traducción</th><td data-tip="Híbrida + traducción: 82%"><i style="width:66%"></i><b>82%</b></td></tr></tbody></table><table><caption>Recall@5, preguntas en español</caption><tbody><tr><th scope="row">Palabras clave</th><td data-tip="Palabras clave: 40%"><i style="width:32%"></i><b>40%</b></td></tr><tr><th scope="row">Vectorial</th><td data-tip="Vectorial: 20%"><i style="width:16%"></i><b>20%</b></td></tr><tr><th scope="row">Híbrida</th><td data-tip="Híbrida: 50%"><i style="width:40%"></i><b>50%</b></td></tr><tr class="top"><th scope="row">Híbrida + traducción</th><td data-tip="Híbrida + traducción: 90%"><i style="width:72%"></i><b>90%</b></td></tr></tbody></table></div></li>
 <li><h3>Revisar, y contrastar lo que se afirma con el código</h3><p>Los cambios pasan por revisión de código antes del commit, y por revisión de seguridad si tocan autenticación, pagos o datos personales. También vale para lo que escribo sobre mi trabajo: una revisión detectó que un artículo mío decía que un monitoreo corría cada seis horas, y el código decía que una vez al día. Corregí el artículo.</p></li>
-<li><h3>Desplegar por etapas</h3><p>Los cambios pasan por staging antes de producción, y los despliegues a producción evitan el horario laboral. En la migración del ERP comparé el resultado contra una línea base previa: facturas, pedidos y despachos quedaron idénticos.</p></li>
+<li><h3>Desplegar por etapas</h3><p>En el ERP, el trabajo pasa de una rama de desarrollo a staging y luego a producción. Los despliegues a producción se hacen solo fuera del horario laboral de los tres países, porque cada build reinicia el servidor. En la migración comparé el resultado contra una línea base previa: facturas, pedidos y despachos quedaron idénticos.</p></li>
 <li><h3>Vigilar en producción</h3><p>Un health check diario corre más de 40 detectores, con alertas urgentes cada 30 minutos. <a href="../writing/health-check.html">Escribí sobre lo que encontró</a>, incluido el detector mío que estaba seguro y equivocado.</p></li>
 </ol>
 
-<h2 id="limites">Lo que el agente no puede hacer solo</h2>
+<h2 id="arquitectura">Arquitectura de cinco sistemas</h2>
+<p>Cada sistema tiene restricciones distintas, así que cada uno tiene una forma distinta. Los diagramas se leen de arriba hacia abajo, desde quienes usan el sistema hasta donde viven los datos. La parte destacada es la que define el diseño.</p>
+
+<h3 id="arq-erp">ERP en Odoo 19</h3>
+<p>Un ERP en producción para 4 empresas en 3 países, alojado en Odoo.sh. El código es privado.</p>
+<ol class="arch" aria-label="Capas del ERP"><li><b>Canales</b><ul><li>Administración</li><li>Consignación con retail</li><li>Mercado Libre</li><li>Yuju</li></ul></li><li><b>18 módulos propios</b><ul><li class="key">Núcleo común: ventas, stock, facturas</li><li>Consignación</li><li>Facturación por despacho</li><li>Informes</li></ul></li><li><b>Localización tributaria</b><ul><li>Chile · SII</li><li>Colombia · DIAN</li><li>Perú · SUNAT</li></ul></li><li><b>Plataforma</b><ul><li>Odoo 19</li><li>PostgreSQL con invariantes</li><li>Health check y alertas</li></ul></li></ol>
+<ul>
+<li><strong>Menos módulos, responsabilidades más claras.</strong> Consolidé 41 módulos propios en 18, así hay menos que actualizar y la lógica común tiene un solo lugar.</li>
+<li><strong>Las reglas críticas viven en la base de datos.</strong> Un trigger de PostgreSQL impone la invariante del stock en consignación, y ningún flujo ni script puede saltársela.</li>
+<li><strong>Campos explícitos, no convenciones de nombres.</strong> Una reorganización de bodegas obligó a cambiar 45 puntos en 7 módulos que dependían del nombre de la ubicación. La regla ahora es identificar la consignación por un campo.</li>
+</ul>
+
+<h3 id="arq-citofonia">Citofonía</h3>
+<p>Un citófono digital para edificios, en desarrollo. Es un monorepo con pnpm y Turborepo: una app móvil, un panel de administración, una API y paquetes compartidos para los tipos de la base y la interfaz. El código es privado.</p>
+<ol class="arch" aria-label="Capas de Citofonía"><li><b>Clientes</b><ul><li>App del residente · React Native, Expo</li><li>Tablet de conserjería</li><li>Panel de administración · React, Vite</li></ul></li><li><b>API en el borde</b><ul><li>Hono en Cloudflare Workers</li><li>Llamadas</li><li>Puertas</li><li>Avisos push</li><li>Invitaciones</li><li>Votaciones</li></ul></li><li><b>Estado de la llamada</b><ul><li class="key">Un Durable Object por unidad: la llamada</li><li>Uno por estación: el límite de llamadas</li></ul></li><li><b>Datos y medios</b><ul><li>Supabase PostgreSQL con seguridad por fila</li><li>LiveKit para las llamadas</li></ul></li></ol>
+<ul>
+<li><strong>La base de datos impone el acceso.</strong> Para los datos del día a día, las apps hablan directo con PostgreSQL, bajo seguridad por fila probada con pgTAP. La API se encarga de lo que la base no puede hacer, como llamadas, puertas, avisos e invitaciones.</li>
+<li><strong>La llamada vive en el servidor, no en un dispositivo.</strong> Cada unidad tiene una máquina de estados en un Durable Object, con sus propias alarmas. Las pruebas corren la misma lógica con una versión en memoria.</li>
+<li><strong>El hardware de las puertas está detrás de una sola interfaz.</strong> Un driver tiene un método, <code>openDoor</code>. Hoy hay dos, para la tablet y para un relé HTTP, y un sistema de puertas nuevo significa un driver nuevo.</li>
+<li><strong>Las migraciones no se editan.</strong> Hay una por tema y van 105. Los tipos se generan desde el esquema, y la integración continua revisa que estén al día.</li>
+</ul>
+
+<h3 id="arq-norte">Norte</h3>
+<p>Una app personal de finanzas y salud con clientes nativos y web. El código es privado.</p>
+<ol class="arch" aria-label="Capas de Norte"><li><b>Clientes</b><ul><li>iPhone, Apple Watch y widgets · SwiftUI</li><li>Web · Next.js, React</li></ul></li><li><b>API</b><ul><li class="key">Una sola API REST JSON para todos los clientes</li><li>Revisión de sesión en cada consulta</li></ul></li><li><b>Dominio</b><ul><li>Finanzas</li><li>Entrenamiento</li><li>Alimentación</li><li>Hábitos</li></ul></li><li><b>Datos y servicios</b><ul><li>SQLite</li><li>Lector de correos del banco · IMAP</li><li>API de Anthropic, con salida validada</li></ul></li><li><b>Alojamiento</b><ul><li>VPS</li><li>Caddy</li><li>systemd</li></ul></li></ol>
+<ul>
+<li><strong>Una sola API para todos los clientes.</strong> El iPhone y la web usan los mismos endpoints, así que cada regla de negocio se escribe una vez.</li>
+<li><strong>Sin dependencias de terceros en iOS.</strong> La app usa solo lo que trae la plataforma, así que no hay nada externo que actualizar o auditar.</li>
+<li><strong>Una base de datos en un solo archivo.</strong> Una app de un usuario no necesita un servidor de base de datos. SQLite simplifica el alojamiento y los respaldos.</li>
+<li><strong>Las pruebas de pantalla están aisladas.</strong> Corren contra un servidor local con una base temporal y datos de demostración, y se niegan a correr contra producción.</li>
+</ul>
+
+<h3 id="arq-flagforge">FlagForge</h3>
+<p>Feature flags multi-tenant en Rust. <a href="https://github.com/Ssebv/flagforge" target="_blank" rel="noopener">El código es público.</a></p>
+<ol class="arch" aria-label="Capas de FlagForge"><li><b>Clientes</b><ul><li>SDK para servicios</li><li>Panel · Leptos, WebAssembly</li><li>Operadores e integración continua</li></ul></li><li><b>API · axum</b><ul><li>Evaluación, desde memoria</li><li>API de administración</li><li>Caché de snapshots</li></ul></li><li><b>Motor</b><ul><li class="key">flagforge-core: funciones puras, sin I/O</li></ul></li><li><b>Datos</b><ul><li>flagforge-storage: SQL revisado al compilar</li><li>PostgreSQL, LISTEN/NOTIFY</li></ul></li></ol>
+<ul>
+<li><strong>La parte que debe ser correcta no tiene I/O.</strong> La evaluación es una función pura del flag, el contexto y el entorno (salt y segmentos), así que se puede probar a fondo.</li>
+<li><strong>Un motor, tres consumidores.</strong> El servidor, el SDK y el editor de reglas del panel reutilizan el mismo crate, así que no pueden contradecirse.</li>
+<li><strong>Un cambio de esquema rompe el build, no producción.</strong> <code>sqlx</code> verifica cada consulta contra el esquema real al compilar.</li>
+</ul>
+
+<h3 id="arq-modomax">ModoMax</h3>
+<p>Una tienda online. <a href="./modomax.html">Las decisiones de su asistente tienen su propia página.</a> El código es privado.</p>
+<ol class="arch" aria-label="Capas de ModoMax"><li><b>Clientes</b><ul><li>Tienda</li><li>Panel de administración</li><li>WhatsApp</li></ul></li><li><b>Aplicación</b><ul><li class="key">Una sola app Next.js: páginas, server actions, rutas de API, tareas programadas</li></ul></li><li><b>Dominio y validación</b><ul><li>Prisma</li><li>Zod</li><li>Registro de auditoría</li></ul></li><li><b>Datos y servicios</b><ul><li>PostgreSQL, solo acceso local</li><li>Pagos</li><li>Documentos tributarios</li><li>Correo</li><li>API de Anthropic</li></ul></li><li><b>Alojamiento</b><ul><li>VPS</li><li>Caddy</li><li>systemd</li></ul></li></ol>
+<ul>
+<li><strong>Una sola aplicación desplegable.</strong> Para una tienda de este tamaño, una app en un VPS es más fácil de operar y depurar que varios servicios separados.</li>
+<li><strong>La base de datos no está expuesta.</strong> PostgreSQL acepta solo conexiones locales.</li>
+<li><strong>Los cambios de esquema van por migraciones.</strong> Producción usa <code>prisma migrate deploy</code>, nunca <code>db push</code>.</li>
+</ul>
+
+<h2 id="reglas">Reglas que mantengo</h2>
 <div class="guards"><ul>
-<li>Subir a las ramas de producción o staging del ERP.</li>
-<li>Enviar correos: solo escribe borradores.</li>
-<li>Leer archivos con secretos o forzar un push: esos comandos están bloqueados por regla.</li>
-<li>Tomar las decisiones difíciles de revertir: esas quedan en mis manos.</li>
+<li>Sin despliegues a producción del ERP en horario laboral de ninguno de sus tres países.</li>
+<li>Los secretos no entran a los repositorios.</li>
+<li>Una migración ya commiteada no se edita.</li>
+<li>Las pruebas automáticas no tocan producción, y los datos de ejemplo siempre son ficticios.</li>
+<li>Los cambios difíciles de revertir requieren una decisión explícita antes.</li>
 </ul></div>
 
   </article>

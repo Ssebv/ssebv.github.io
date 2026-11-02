@@ -18,8 +18,8 @@ CARDS = {
     "modomax-es": ("ModoMax", "Una tienda online con asistentes de IA", [("De punta a punta", "diseñada y construida por mí"), ("WhatsApp", "soporte, sin respuestas obsoletas"), ("TypeScript", "tienda, pagos y administración")]),
     "apps": ("iPhone apps", "Norte, Citofonía and Maratón Marvel", [("SwiftUI", "native finance and health app"), ("React Native", "digital intercom for buildings"), ("140+", "titles in the Marvel guide")]),
     "apps-es": ("Apps de iPhone", "Norte, Citofonía y Maratón Marvel", [("SwiftUI", "app nativa de finanzas y salud"), ("React Native", "citófono digital para edificios"), ("140+", "títulos en la guía de Marvel")]),
-    "how-i-build": ("How I build software", "with coding agents", [("2,600+", "AI-assisted commits on a production ERP"), ("8 steps", "from project rules to release, with real examples")]),
-    "how-i-build-es": ("Cómo desarrollo software", "con agentes de programación", [("2.600+", "commits con IA en un ERP en producción"), ("8 pasos", "de las reglas del proyecto a la entrega, con ejemplos reales")]),
+    "how-i-build": ("How I organize development", "process and architecture", [("5 systems", "their architecture and the reasons behind it"), ("8 steps", "from plan to production, with real examples")]),
+    "how-i-build-es": ("Cómo organizo el desarrollo", "proceso y arquitectura", [("5 sistemas", "su arquitectura y las razones detrás"), ("8 pasos", "del plan a producción, con ejemplos reales")]),
 }
 
 PAGE = """<!doctype html><meta charset="utf-8"><style>

@@ -8,27 +8,27 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<title>How I build software with coding agents — Sebastián Allende</title>
-<meta name="description" content="Coding agents are my main workflow. This is the process that keeps that safe in production, with real examples.">
+<title>How I organize development: process and architecture — Sebastián Allende</title>
+<meta name="description" content="How I take a change from plan to production, and the architecture of five real systems, with the reasons behind each decision.">
 <link rel="canonical" href="https://ssebv.github.io/projects/how-i-build.html">
 <link rel="alternate" hreflang="en" href="https://ssebv.github.io/projects/how-i-build.html">
 <link rel="alternate" hreflang="es" href="https://ssebv.github.io/es/projects/how-i-build.html">
 <meta property="og:type" content="article">
 <meta property="og:locale" content="en_US">
-<meta property="og:title" content="How I build software with coding agents">
-<meta property="og:description" content="Coding agents are my main workflow. This is the process that keeps that safe in production, with real examples.">
+<meta property="og:title" content="How I organize development: process and architecture">
+<meta property="og:description" content="How I take a change from plan to production, and the architecture of five real systems, with the reasons behind each decision.">
 <meta property="og:url" content="https://ssebv.github.io/projects/how-i-build.html">
 <meta property="og:image" content="https://ssebv.github.io/og-how-i-build.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Coding agents are my main workflow. This is the process that keeps that safe in production, with real examples.">
+<meta property="og:image:alt" content="How I take a change from plan to production, and the architecture of five real systems, with the reasons behind each decision.">
 <meta name="twitter:card" content="summary_large_image">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
   "@type": "TechArticle",
-  "headline": "How I build software with coding agents",
-  "description": "Coding agents are my main workflow. This is the process that keeps that safe in production, with real examples.",
+  "headline": "How I organize development: process and architecture",
+  "description": "How I take a change from plan to production, and the architecture of five real systems, with the reasons behind each decision.",
   "image": "https://ssebv.github.io/og-how-i-build.png",
   "url": "https://ssebv.github.io/projects/how-i-build.html",
   "author": {
@@ -64,31 +64,84 @@
   <main id="main">
   <article class="page">
 
-    <h1>How I build software with coding agents</h1>
+    <h1>How I organize development: process and architecture</h1>
 
-<p class="lead">Coding agents are my main workflow: over 2,600 AI-assisted commits on a production ERP alone. The agent writes a lot of the code. I own the decisions, and this process is what makes that safe.</p>
+<p class="lead">I organize software around three ideas: clear boundaries between parts, releases that can be checked, and production that reports its own health. This page shows the process, then the architecture of five real systems and why each one is built that way.</p>
+<div class="actions"><a href="#process">The process</a><a href="#architecture">The architecture</a><a href="#rules">The rules</a></div>
 
-<h2 id="process">The process</h2>
+<h2 id="process">From plan to production</h2>
+<ol class="flow"><li>Plan</li><li>Short branch</li><li>Tests in layers</li><li>Review</li><li>Staging</li><li>Production</li><li class="end">Monitoring</li></ol>
 <ol class="steps">
-<li><h3>Start from the project's rules</h3><p>Every repo has a short file that says how to install it, how to test it and what not to touch. The agent reads it first, then checks the branch and any uncommitted work. <a href="https://github.com/Ssebv/odoo-rag/blob/main/CLAUDE.md" target="_blank" rel="noopener">Here is a real one.</a></p></li>
-<li><h3>Plan before risky work</h3><p>Anything large, or anything touching payments, production, tax documents or personal data, gets a written plan that I approve before a single file changes.</p></li>
-<li><h3>Build in small, verifiable steps</h3><p>Each block of work is small enough to check, and the tests run after each one. On some projects a hook runs type checks and unit tests automatically whenever the agent finishes.</p></li>
-<li><h3>Test without touching anything real</h3><p>Tests use no real network, credentials or data. The ERP's critical flows are backed by about 180 test files, plus PostgreSQL invariants that block inconsistent data.</p>
+<li><h3>Write down how the project works</h3><p>Projects have a short document: how to install it, how to test it and what not to touch. Larger systems also keep one document per module, updated in the same commit as the code, and a record of architecture decisions with their trade-offs. <a href="https://github.com/Ssebv/odoo-rag#run-it" target="_blank" rel="noopener">Install and test steps from a public repo.</a></p></li>
+<li><h3>Plan before risky work</h3><p>Anything large, or anything touching payments, production, tax documents or personal data, starts with a written plan before a single file changes.</p></li>
+<li><h3>Work in short branches</h3><p>Each change is small enough to check on its own, with tests run after each block. Norte's iPhone app grew this way, in numbered rounds: tests, review, merge, deploy.</p></li>
+<li><h3>Test in layers</h3><p>Types catch the cheap mistakes, unit tests the logic, database tests the access rules and end-to-end tests the full flow. Citofonía's CI runs all of them against a local database, and fails if the generated database types are out of date. Automated tests use test data and no real credentials. The ERP's critical flows are backed by about 180 test files, and I rehearsed its migration on a copy of production before the cutover.</p>
 <figure class="term" data-replay><div class="term-bar"><i></i><i></i><i></i><b>odoo-rag</b></div><code class="term-body"><span class="cmd">$ uv run pytest -q</span><span class="ok">10 passed in 0.16s</span><span class="cmd">$ gh run list -R Ssebv/odoo-rag -L 1 --json conclusion,status -q &#x27;.[0]&#x27;</span><span class="ok">{&quot;conclusion&quot;:&quot;success&quot;,&quot;status&quot;:&quot;completed&quot;}</span></code></figure><p class="cap">Replay of real commands.</p>
 <figure class="shot"><img src="../img/ci-green.webp" alt="GitHub Actions showing a successful CI run for odoo-rag" width="1400" height="218" loading="lazy" decoding="async"><figcaption>Continuous integration on the public repo.</figcaption></figure></li>
 <li><h3>Measure what tests can't</h3><p>A passing test does not tell you whether an AI answer is good. For that I build evaluations and compare options on the same questions. In <a href="./odoo-rag.html">Odoo RAG</a>, that is how I learned translation mattered more than hybrid search.</p>
 <div class="bars"><table><caption>Recall@5, all questions</caption><tbody><tr><th scope="row">Keyword</th><td data-tip="Keyword: 73%"><i style="width:58%"></i><b>73%</b></td></tr><tr><th scope="row">Vector</th><td data-tip="Vector: 67%"><i style="width:54%"></i><b>67%</b></td></tr><tr><th scope="row">Hybrid</th><td data-tip="Hybrid: 73%"><i style="width:58%"></i><b>73%</b></td></tr><tr class="top"><th scope="row">Hybrid + translation</th><td data-tip="Hybrid + translation: 82%"><i style="width:66%"></i><b>82%</b></td></tr></tbody></table><table><caption>Recall@5, Spanish questions</caption><tbody><tr><th scope="row">Keyword</th><td data-tip="Keyword: 40%"><i style="width:32%"></i><b>40%</b></td></tr><tr><th scope="row">Vector</th><td data-tip="Vector: 20%"><i style="width:16%"></i><b>20%</b></td></tr><tr><th scope="row">Hybrid</th><td data-tip="Hybrid: 50%"><i style="width:40%"></i><b>50%</b></td></tr><tr class="top"><th scope="row">Hybrid + translation</th><td data-tip="Hybrid + translation: 90%"><i style="width:72%"></i><b>90%</b></td></tr></tbody></table></div></li>
 <li><h3>Review, and check claims against the code</h3><p>Changes get a code review before they are committed, and a security review if they touch authentication, payments or personal data. It applies to what I write about my work too: a review found that my own article said a monitor ran every six hours, while the code said daily. I corrected the article.</p></li>
-<li><h3>Ship in stages</h3><p>Changes go through staging before production, and production deploys avoid business hours. For the ERP migration, I compared the result against a pre-upgrade baseline: invoices, orders and deliveries were identical.</p></li>
+<li><h3>Ship in stages</h3><p>On the ERP, work moves from a development branch to staging and then to production. Production deploys happen only outside business hours in all three countries, because a build restarts the server. For the migration, I compared the result against a pre-upgrade baseline: invoices, orders and deliveries were identical.</p></li>
 <li><h3>Watch it in production</h3><p>A daily health check runs over 40 detectors, with urgent alerts every 30 minutes. <a href="../writing/health-check.html">I wrote about what it found</a>, including the detector of mine that was confidently wrong.</p></li>
 </ol>
 
-<h2 id="limits">What the agent can't do alone</h2>
+<h2 id="architecture">Architecture of five systems</h2>
+<p>Each system has different constraints, so each one has a different shape. The diagrams read from top to bottom, from the people using the system down to where the data lives. The highlighted part is the one that defines the design.</p>
+
+<h3 id="arch-erp">ERP on Odoo 19</h3>
+<p>A production ERP for 4 companies in 3 countries, hosted on Odoo.sh. The source is private.</p>
+<ol class="arch" aria-label="ERP layers"><li><b>Channels</b><ul><li>Back office</li><li>Retail consignment</li><li>Mercado Libre</li><li>Yuju</li></ul></li><li><b>18 custom modules</b><ul><li class="key">Shared core: sales, stock, invoices</li><li>Consignment</li><li>Invoicing by delivery</li><li>Reports</li></ul></li><li><b>Tax localization</b><ul><li>Chile · SII</li><li>Colombia · DIAN</li><li>Peru · SUNAT</li></ul></li><li><b>Platform</b><ul><li>Odoo 19</li><li>PostgreSQL with invariants</li><li>Health check and alerts</li></ul></li></ol>
+<ul>
+<li><strong>Fewer modules, clearer ownership.</strong> I consolidated 41 custom modules into 18, so there is less to upgrade and shared logic has one home.</li>
+<li><strong>Critical rules live in the database.</strong> A PostgreSQL trigger enforces the consignment stock invariant, so no code path or script can skip it.</li>
+<li><strong>Explicit fields, not naming conventions.</strong> A warehouse reorganization had to update 45 places in 7 modules that relied on location names. The rule now is to identify consignment by a field.</li>
+</ul>
+
+<h3 id="arch-citofonia">Citofonía</h3>
+<p>A digital building intercom, in development. It is a monorepo with pnpm and Turborepo: a mobile app, an admin panel, an API and shared packages for database types and UI. The source is private.</p>
+<ol class="arch" aria-label="Citofonía layers"><li><b>Clients</b><ul><li>Resident app · React Native, Expo</li><li>Concierge tablet</li><li>Admin panel · React, Vite</li></ul></li><li><b>API on the edge</b><ul><li>Hono on Cloudflare Workers</li><li>Calls</li><li>Doors</li><li>Push</li><li>Invitations</li><li>Votes</li></ul></li><li><b>Call state</b><ul><li class="key">One Durable Object per unit: the call</li><li>One per station: the call limit</li></ul></li><li><b>Data and media</b><ul><li>Supabase PostgreSQL with row-level security</li><li>LiveKit for calls</li></ul></li></ol>
+<ul>
+<li><strong>The database enforces access.</strong> For everyday data, the apps talk to PostgreSQL directly, under row-level security tested with pgTAP. The API handles what the database cannot, such as calls, doors, push and invitations.</li>
+<li><strong>The call lives on the server, not on a device.</strong> Each unit has a state machine in a Durable Object, with its own alarms. Tests run the same logic through an in-memory version.</li>
+<li><strong>Door hardware sits behind one interface.</strong> A driver has one method, <code>openDoor</code>. Today there are two, for the tablet and for an HTTP relay, and a new door system means a new driver.</li>
+<li><strong>Migrations are never edited.</strong> There is one per topic and 105 so far. Types are generated from the schema, and CI checks they are current.</li>
+</ul>
+
+<h3 id="arch-norte">Norte</h3>
+<p>A personal finance and health app with native and web clients. The source is private.</p>
+<ol class="arch" aria-label="Norte layers"><li><b>Clients</b><ul><li>iPhone, Apple Watch and widgets · SwiftUI</li><li>Web · Next.js, React</li></ul></li><li><b>API</b><ul><li class="key">One REST JSON API for every client</li><li>Session check on each request</li></ul></li><li><b>Domain</b><ul><li>Finance</li><li>Training</li><li>Nutrition</li><li>Habits</li></ul></li><li><b>Data and services</b><ul><li>SQLite</li><li>Bank email reader · IMAP</li><li>Anthropic API, validated output</li></ul></li><li><b>Hosting</b><ul><li>VPS</li><li>Caddy</li><li>systemd</li></ul></li></ol>
+<ul>
+<li><strong>One API for every client.</strong> The iPhone and the web use the same endpoints, so a business rule is written once.</li>
+<li><strong>No third-party dependencies on iOS.</strong> The app uses only what the platform provides, so there is nothing to update or audit from outside.</li>
+<li><strong>A single-file database.</strong> A single-user app does not need a database server. SQLite keeps hosting and backups simple.</li>
+<li><strong>Screen tests are isolated.</strong> They run against a local server with a temporary database and demo data, and refuse to run against production.</li>
+</ul>
+
+<h3 id="arch-flagforge">FlagForge</h3>
+<p>Multi-tenant feature flags in Rust. <a href="https://github.com/Ssebv/flagforge" target="_blank" rel="noopener">The source is public.</a></p>
+<ol class="arch" aria-label="FlagForge layers"><li><b>Clients</b><ul><li>Service SDK</li><li>Dashboard · Leptos, WebAssembly</li><li>Operators and CI</li></ul></li><li><b>API · axum</b><ul><li>Evaluation, from memory</li><li>Management API</li><li>Snapshot cache</li></ul></li><li><b>Engine</b><ul><li class="key">flagforge-core: pure functions, no I/O</li></ul></li><li><b>Data</b><ul><li>flagforge-storage: SQL checked at compile time</li><li>PostgreSQL, LISTEN/NOTIFY</li></ul></li></ol>
+<ul>
+<li><strong>The part that must be correct has no I/O.</strong> Evaluation is a pure function of the flag, the context and the environment (salt and segments), so it can be tested thoroughly.</li>
+<li><strong>One engine, three consumers.</strong> The server, the SDK and the dashboard's rule editor reuse the same crate, so they cannot disagree.</li>
+<li><strong>A schema change breaks the build, not production.</strong> <code>sqlx</code> verifies every query against the real schema at compile time.</li>
+</ul>
+
+<h3 id="arch-modomax">ModoMax</h3>
+<p>An online store. <a href="./modomax.html">Its assistant decisions have their own page.</a> The source is private.</p>
+<ol class="arch" aria-label="ModoMax layers"><li><b>Clients</b><ul><li>Storefront</li><li>Admin panel</li><li>WhatsApp</li></ul></li><li><b>Application</b><ul><li class="key">One Next.js app: pages, server actions, API routes, scheduled jobs</li></ul></li><li><b>Domain and validation</b><ul><li>Prisma</li><li>Zod</li><li>Audit log</li></ul></li><li><b>Data and services</b><ul><li>PostgreSQL, local access only</li><li>Payments</li><li>Tax documents</li><li>Email</li><li>Anthropic API</li></ul></li><li><b>Hosting</b><ul><li>VPS</li><li>Caddy</li><li>systemd</li></ul></li></ol>
+<ul>
+<li><strong>One deployable app.</strong> For a store this size, a single application on a VPS is easier to run and debug than separate services.</li>
+<li><strong>The database is not exposed.</strong> PostgreSQL accepts local connections only.</li>
+<li><strong>Schema changes go through migrations.</strong> Production uses <code>prisma migrate deploy</code>, never <code>db push</code>.</li>
+</ul>
+
+<h2 id="rules">Rules I keep</h2>
 <div class="guards"><ul>
-<li>Push to the ERP's production or staging branches.</li>
-<li>Send email: it only writes drafts.</li>
-<li>Read secret files or force-push: those commands are blocked by rule.</li>
-<li>Make the calls that are hard to undo: those stay with me.</li>
+<li>No deploys to the ERP's production during business hours in any of its three countries.</li>
+<li>Secrets stay out of repositories.</li>
+<li>A committed migration is never edited.</li>
+<li>Automated tests never touch production, and sample data is always fictional.</li>
+<li>Changes that are hard to undo get an explicit decision first.</li>
 </ul></div>
 
   </article>
