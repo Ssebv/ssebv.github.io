@@ -881,3 +881,15 @@ article pre code { background: none; padding: 0; font-size: 13.5px; line-height:
 .now { margin: 0 0 4px; font-size: 15px; font-weight: 500; }
 .jump { display: flex; flex-wrap: wrap; gap: 6px 16px; margin-top: var(--s3); font-size: 14px; }
 @media (min-width: 1280px) { .jump { display: none; } }
+
+/* Paths by role */
+.paths { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+.path { padding: 14px 16px; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; }
+.path h3 { margin: 0 0 6px; font-size: 16px; }
+.path p { margin: 0 0 10px; font-size: 14px; line-height: 1.45; color: var(--muted); }
+.path ul { display: grid; gap: 4px; margin: 0; padding: 0; list-style: none; font-size: 14px; }
+@media (max-width: 720px) { .paths { grid-template-columns: 1fr; } }
+
+/* Where a skill is used */
+.seen { grid-column: 2; margin: 2px 0 0; font-size: 13px; color: var(--faint); }
+@media (max-width: 580px) { .seen { grid-column: 1; } }

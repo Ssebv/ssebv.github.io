@@ -275,6 +275,90 @@ PAGES = {
 """,
         ),
     },
+    "flagforge": {
+        "en": dict(
+            title="FlagForge: feature flags in Rust, with one engine everywhere",
+            summary="A multi-tenant feature-flag service built from scratch in Rust, with the same evaluation engine on the server, in the SDK and in the dashboard.",
+            body=f"""
+<p class="lead">A multi-tenant feature-flag service I built from scratch in Rust: targeted rollouts, A/B experiments, an audit trail and a dashboard compiled to WebAssembly. It answers one question, whether this user should get this feature, and it has to answer the same way on every server.</p>
+<div class="actions"><a href="https://github.com/Ssebv/flagforge" target="_blank" rel="noopener">Source code on GitHub →</a><a href="./how-i-build.html#arch-flagforge">Architecture</a></div>
+{shot("flagforge-editor", "FlagForge flag editor with a targeting rule, a rollout slider and a live preview", "The flag editor. Its validation and preview call the same engine the server runs, compiled to WebAssembly.")}
+
+<h2 id="what">What it does</h2>
+<ul>
+<li><strong>Targeting rules</strong> with seventeen operators, including regex, semver and set membership.</li>
+<li><strong>Reusable segments,</strong> so widening an audience is one edit instead of twelve.</li>
+<li><strong>Percentage rollouts</strong> that are deterministic and sticky, with no shared state between servers.</li>
+<li><strong>A/B experiments</strong> that end in a verdict: rates, 95% confidence intervals and a significance test against the control.</li>
+<li><strong>An audit trail</strong> with a before and after for every change.</li>
+</ul>
+<div class="gallery">
+{shot("flagforge-experiments", "Experiment results with a conversion rate and confidence interval per arm", "Experiment results.")}
+{shot("flagforge-audit", "Audit log with a before and after diff", "Audit log.")}
+</div>
+
+<h2 id="decisions">Decisions worth explaining</h2>
+<ul>
+<li><strong>Evaluation never touches the database.</strong> A service may check flags on every request, so each node keeps an immutable snapshot in memory, with lock-free reads.</li>
+<li><strong>PostgreSQL tells the nodes when to reload.</strong> Triggers send a notification on every write, with no message broker. Because this lives in the database, a change made by anything, even a migration, refreshes every node.</li>
+<li><strong>An invalid flag can never reach the database.</strong> The API and the dashboard run the same validation, so an error appears as you type, with the same message the API would return.</li>
+<li><strong>Two operators cannot silently overwrite each other.</strong> A write carries the version it expects, PostgreSQL resolves the race in one statement, and the loser gets a 409 that says what happened.</li>
+</ul>
+
+<h2 id="reversed">A decision I had to reverse</h2>
+<p>The snapshot originally withheld the bucketing salt, and a test asserted it never appeared. That felt prudent and was wrong. Without the salt, an SDK matches rules correctly but assigns rollouts differently from the server, so every answer looks plausible and roughly a quarter of them are wrong, with nothing to indicate it.</p>
+<p>The salt now goes to server-scoped keys, and only to them. Client-scoped keys still get decisions only, and tests pin that boundary.</p>
+
+<h2 id="numbers">Speed and tests</h2>
+<table><caption>Time per evaluation, from the repo's benchmark on an M-series laptop</caption>
+<thead><tr><th scope="col">Flag shape</th><th scope="col">Time</th></tr></thead>
+<tbody><tr><td>On, no rules</td><td>40 ns</td></tr><tr><td>Percentage rollout</td><td>114 ns</td></tr><tr><td>5 rules, the last one matches</td><td>298 ns</td></tr><tr><td>20 rules, none match (worst case)</td><td>985 ns</td></tr></tbody></table>
+<p>It is a plain benchmark, enough to back the claim and notice a regression, not a statistical study.</p>
+<p>There are 245 tests in four layers: 86 for the domain, including property tests with proptest, 79 for HTTP, 65 for integration, each with its own migrated database, and 15 for the SDK. One of them starts a real server and compares 300 users evaluated locally and remotely.</p>
+""",
+        ),
+        "es": dict(
+            title="FlagForge: feature flags en Rust, con un solo motor en todas partes",
+            summary="Un servicio multi-tenant de feature flags construido desde cero en Rust, con el mismo motor de evaluación en el servidor, el SDK y el panel.",
+            body=f"""
+<p class="lead">Un servicio multi-tenant de feature flags que construí desde cero en Rust: despliegues segmentados, experimentos A/B, registro de auditoría y un panel compilado a WebAssembly. Responde una pregunta, si este usuario debe recibir esta función, y tiene que responder igual en todos los servidores.</p>
+<div class="actions"><a href="https://github.com/Ssebv/flagforge" target="_blank" rel="noopener">Código en GitHub →</a><a href="./how-i-build.html#arq-flagforge">Arquitectura</a></div>
+{shot("flagforge-editor", "Editor de flags de FlagForge con una regla de segmentación, un control de despliegue y una vista previa", "El editor de flags. Su validación y su vista previa llaman al mismo motor que corre el servidor, compilado a WebAssembly.")}
+
+<h2 id="que-hace">Qué hace</h2>
+<ul>
+<li><strong>Reglas de segmentación</strong> con diecisiete operadores, incluidos regex, semver y pertenencia a conjuntos.</li>
+<li><strong>Segmentos reutilizables,</strong> para que ampliar una audiencia sea un cambio y no doce.</li>
+<li><strong>Despliegues por porcentaje</strong> deterministas y estables, sin estado compartido entre servidores.</li>
+<li><strong>Experimentos A/B</strong> que terminan en un veredicto: tasas, intervalos de confianza del 95 % y una prueba de significancia contra el control.</li>
+<li><strong>Registro de auditoría</strong> con el antes y el después de cada cambio.</li>
+</ul>
+<div class="gallery">
+{shot("flagforge-experiments", "Resultados de un experimento con la tasa de conversión e intervalo de confianza por variante", "Resultados de un experimento.")}
+{shot("flagforge-audit", "Registro de auditoría con el antes y el después de un cambio", "Registro de auditoría.")}
+</div>
+
+<h2 id="decisiones">Decisiones que vale la pena explicar</h2>
+<ul>
+<li><strong>La evaluación nunca toca la base de datos.</strong> Un servicio puede consultar flags en cada solicitud, así que cada nodo mantiene una copia inmutable en memoria, con lecturas sin bloqueos.</li>
+<li><strong>PostgreSQL avisa a los nodos cuándo recargar.</strong> Los triggers envían una notificación en cada escritura, sin un broker de mensajes. Como esto vive en la base, un cambio hecho por cualquier vía, incluso una migración, actualiza todos los nodos.</li>
+<li><strong>Un flag inválido nunca llega a la base de datos.</strong> La API y el panel corren la misma validación, así que el error aparece mientras se escribe, con el mismo mensaje que devolvería la API.</li>
+<li><strong>Dos operadores no pueden sobrescribirse sin saberlo.</strong> Cada escritura lleva la versión que espera, PostgreSQL resuelve la carrera en una sola sentencia, y quien pierde recibe un 409 que explica lo ocurrido.</li>
+</ul>
+
+<h2 id="revertida">Una decisión que tuve que revertir</h2>
+<p>Al principio, la copia que recibe el SDK ocultaba el salt de asignación, y una prueba exigía que nunca apareciera. Parecía prudente y estaba mal. Sin el salt, el SDK evalúa bien las reglas, pero asigna los despliegues distinto que el servidor: todas las respuestas parecen razonables y cerca de una cuarta parte son incorrectas, sin nada que lo indique.</p>
+<p>Ahora el salt llega a las claves de servidor, y solo a ellas. Las claves de cliente siguen recibiendo solo decisiones, y hay pruebas que fijan ese límite.</p>
+
+<h2 id="cifras">Velocidad y pruebas</h2>
+<table><caption>Tiempo por evaluación, según el benchmark del repo en un notebook con chip serie M</caption>
+<thead><tr><th scope="col">Tipo de flag</th><th scope="col">Tiempo</th></tr></thead>
+<tbody><tr><td>Activo, sin reglas</td><td>40 ns</td></tr><tr><td>Despliegue por porcentaje</td><td>114 ns</td></tr><tr><td>5 reglas, coincide la última</td><td>298 ns</td></tr><tr><td>20 reglas, ninguna coincide (peor caso)</td><td>985 ns</td></tr></tbody></table>
+<p>Es un benchmark simple, suficiente para respaldar la cifra y notar una regresión, no un estudio estadístico.</p>
+<p>Hay 245 pruebas en cuatro capas: 86 del dominio, incluidas pruebas de propiedades con proptest, 79 de HTTP, 65 de integración, cada una con su propia base migrada, y 15 del SDK. Una de ellas levanta un servidor real y compara 300 usuarios evaluados en local y en remoto.</p>
+""",
+        ),
+    },
     "how-i-build": {
         "en": dict(
             title="How I organize development: process and architecture",
@@ -348,7 +432,7 @@ PAGES = {
 </ul>
 
 <h3 id="arch-flagforge">FlagForge</h3>
-<p>Multi-tenant feature flags in Rust. <a href="https://github.com/Ssebv/flagforge" target="_blank" rel="noopener">The source is public.</a></p>
+<p>Multi-tenant feature flags in Rust. <a href="./flagforge.html">It has its own page</a>, and <a href="https://github.com/Ssebv/flagforge" target="_blank" rel="noopener">the source is public</a>.</p>
 {arch("FlagForge layers", [
     ("Clients", ["Service SDK", "Dashboard · Leptos, WebAssembly", "Operators and CI"]),
     ("API · axum", ["Evaluation, from memory", "Management API", "Snapshot cache"]),
@@ -458,7 +542,7 @@ PAGES = {
 </ul>
 
 <h3 id="arq-flagforge">FlagForge</h3>
-<p>Feature flags multi-tenant en Rust. <a href="https://github.com/Ssebv/flagforge" target="_blank" rel="noopener">El código es público.</a></p>
+<p>Feature flags multi-tenant en Rust. <a href="./flagforge.html">Tiene su propia página</a>, y <a href="https://github.com/Ssebv/flagforge" target="_blank" rel="noopener">el código es público</a>.</p>
 {arch("Capas de FlagForge", [
     ("Clientes", ["SDK para servicios", "Panel · Leptos, WebAssembly", "Operadores e integración continua"]),
     ("API · axum", ["Evaluación, desde memoria", "API de administración", "Caché de snapshots"]),
@@ -512,6 +596,8 @@ def render(slug, lang):
     title = html.escape(page["title"])
     summary = html.escape(page["summary"])
     card = f"og-{slug}{'-es' if lang == 'es' else ''}.png"
+    if not (ROOT / card).exists():
+        print(f"warning: {card} is missing, run build_og.py and rebuild", file=sys.stderr)
     image = f"{SITE}/{card if (ROOT / card).exists() else 'og.png'}"
     schema = json.dumps({
         "@context": "https://schema.org",

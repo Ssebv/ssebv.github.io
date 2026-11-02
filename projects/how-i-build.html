@@ -118,7 +118,7 @@
 </ul>
 
 <h3 id="arch-flagforge">FlagForge</h3>
-<p>Multi-tenant feature flags in Rust. <a href="https://github.com/Ssebv/flagforge" target="_blank" rel="noopener">The source is public.</a></p>
+<p>Multi-tenant feature flags in Rust. <a href="./flagforge.html">It has its own page</a>, and <a href="https://github.com/Ssebv/flagforge" target="_blank" rel="noopener">the source is public</a>.</p>
 <ol class="arch" aria-label="FlagForge layers"><li><b>Clients</b><ul><li>Service SDK</li><li>Dashboard · Leptos, WebAssembly</li><li>Operators and CI</li></ul></li><li><b>API · axum</b><ul><li>Evaluation, from memory</li><li>Management API</li><li>Snapshot cache</li></ul></li><li><b>Engine</b><ul><li class="key">flagforge-core: pure functions, no I/O</li></ul></li><li><b>Data</b><ul><li>flagforge-storage: SQL checked at compile time</li><li>PostgreSQL, LISTEN/NOTIFY</li></ul></li></ol>
 <ul>
 <li><strong>The part that must be correct has no I/O.</strong> Evaluation is a pure function of the flag, the context and the environment (salt and segments), so it can be tested thoroughly.</li>
