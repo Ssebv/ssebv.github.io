@@ -215,6 +215,7 @@ PAGES = {
 <p>The building intercom on your phone: concierge calls, door opening, QR visits, parcels, reservations and votes, with a tablet for the concierge and a panel for administrators. It is in development, built with React Native and Expo, Hono, Supabase and LiveKit for calls.</p>
 {phones("Citofonía screens", [("app-citofonia-llamada", "Incoming concierge call on the resident's phone", "Concierge call"), ("app-citofonia-reservas", "Common-area reservations with their rules", "Reservations"), ("app-citofonia-qr", "Visits list with a QR pass that expires", "Visits")], 1169)}
 <p class="cap">Real captures of the app with a fictional building and fictional residents.</p>
+<figure class="shot"><video controls preload="none" playsinline muted width="1280" height="720" poster="%ROOT%img/citofonia-video.webp" aria-label="Tour of Citofonía"><source src="%ROOT%video/citofonia.mp4" type="video/mp4"></video><figcaption>A 65-second silent tour, with on-screen text in Spanish. All data is fictional.</figcaption></figure>
 <p>23 resident screens, 9 for the concierge and 17 admin pages over 105 database migrations. CI runs type checks, pgTAP, Vitest and end-to-end tests. The source is private.</p>
 
 <h2 id="marvel">Maratón Marvel</h2>
@@ -240,6 +241,7 @@ PAGES = {
 <p>El citófono del edificio en el celular: llamadas de portería, apertura de puertas, visitas con QR, encomiendas, reservas y votaciones, con una tablet para conserjería y un panel para la administración. Está en desarrollo, con React Native y Expo, Hono, Supabase y LiveKit para las llamadas.</p>
 {phones("Pantallas de Citofonía", [("app-citofonia-llamada", "Llamada entrante de portería en el celular del residente", "Llamada de portería"), ("app-citofonia-reservas", "Reservas de espacios comunes con sus reglas", "Reservas"), ("app-citofonia-qr", "Lista de visitas con un pase QR que vence", "Visitas")], 1169)}
 <p class="cap">Capturas reales de la app con un edificio y residentes ficticios.</p>
+<figure class="shot"><video controls preload="none" playsinline muted width="1280" height="720" poster="%ROOT%img/citofonia-video.webp" aria-label="Recorrido por Citofonía"><source src="%ROOT%video/citofonia.mp4" type="video/mp4"></video><figcaption>Un recorrido de 65 segundos sin sonido. Todos los datos son ficticios.</figcaption></figure>
 <p>23 pantallas del residente, 9 de conserjería y 17 páginas de administración, sobre 105 migraciones de base de datos. La integración continua corre tipos, pgTAP, Vitest y pruebas de punta a punta. El código es privado.</p>
 
 <h2 id="marvel">Maratón Marvel</h2>
