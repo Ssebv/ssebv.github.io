@@ -866,3 +866,8 @@ article pre code { background: none; padding: 0; font-size: 13.5px; line-height:
 .proj-static:hover { border-color: var(--line); transform: none; box-shadow: none; }
 .proj-static:hover .proj-name { color: inherit; }
 .proj-static .proj-name::after { content: none; }
+
+/* Current role in the hero, and section links where the side nav is hidden */
+.now { margin: 0 0 4px; font-size: 15px; font-weight: 500; }
+.jump { display: flex; flex-wrap: wrap; gap: 6px 16px; margin-top: var(--s3); font-size: 14px; }
+@media (min-width: 1280px) { .jump { display: none; } }
