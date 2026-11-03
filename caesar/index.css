@@ -115,3 +115,11 @@ input[type='range']::-webkit-slider-thumb {
     justify-content: space-between;
 
 }
+.rango output {
+    color: var(--color-terminal);
+}
+
+input:focus-visible, button:focus-visible {
+    outline: 2px solid var(--color-terminal);
+    outline-offset: 2px;
+}

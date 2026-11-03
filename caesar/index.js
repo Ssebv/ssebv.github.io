@@ -18,7 +18,7 @@ const printChar = (currentLetterIndex, wordArray) => {
     animateChar(spanChar)
         .then( () => {
             const charSinCodificar = wordArray[currentLetterIndex];
-            spanChar.innerHTML = alfabeto.includes(charSinCodificar) ? 
+            spanChar.textContent = alfabeto.includes(charSinCodificar) ? 
                 alfabeto[(alfabeto.indexOf(charSinCodificar) + parseInt(rango.value)) % alfabeto.length] : 
                 charSinCodificar
             printChar(currentLetterIndex + 1, wordArray);
@@ -30,7 +30,7 @@ const animateChar = spanChar => {
     let cambiosDeLetra = 0;
     return new Promise(resolve => {
         const intervalo = setInterval(() => {
-            spanChar.innerHTML = alfabeto[Math.floor(Math.random() * alfabeto.length)];
+            spanChar.textContent = alfabeto[Math.floor(Math.random() * alfabeto.length)];
             cambiosDeLetra++;
             if(cambiosDeLetra === 3) {
                 clearInterval(intervalo);
