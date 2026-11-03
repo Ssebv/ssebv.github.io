@@ -441,6 +441,148 @@ PAGES = {
 """,
         ),
     },
+    "construye-hoy": {
+        "en": dict(
+            title="Construye Hoy: daily site control for construction firms",
+            summary="A field app, a web panel and AI that reads invoices and quantity take-offs for construction firms with several sites: the model proposes, a person confirms, and the database decides who sees what.",
+            body=f"""
+<p class="lead">Daily reports, GPS attendance, warehouse, schedule, cost control and a client portal, for small and mid-sized construction firms running several sites at once. One app serves the site manager, the warehouse, workers, subcontractors and the client, and a web panel serves owners and accounting. It is in development and not deployed yet. Everything shown here uses fictional data.</p>
+{phones("Client portal screens", [("app-construye-avance", "Client portal home with progress, the delivery date and a decision the client still owes", "Progress"), ("app-construye-adicional", "A change order with its price, VAT and an approve button", "Change order"), ("app-construye-mensajes", "Messages between the client and the site manager, linked to the change order", "Messages")], 1169)}
+<p class="cap">The client portal, with a fictional firm and house.</p>
+
+<h2 id="stack">How it is put together</h2>
+{arch("Construye Hoy architecture", [("Apps", ["*Expo app with five roles, offline first", "Web panel for owners and accounting"]), ("Server", ["Hono API on Cloudflare Workers", "AI reading, invitations, 2FA, QR access", "Scheduled jobs"]), ("Data", ["*PostgreSQL with row-level security", "Files and encrypted fields"])])}
+<p>The apps read and write the database directly with the user's own session, so row-level security decides what each person sees. The API only does what a user cannot do alone, and it uses elevated access only for those cases. Domain logic that every app needs lives in one shared package.</p>
+
+<h2 id="ai">AI that proposes and waits for a person</h2>
+{flow(["Photo or PDF", "Model fills a schema", "Totals are checked", "A person confirms"])}
+<ul>
+<li><strong>Structured output, then arithmetic.</strong> Invoices and quantity take-offs come back as schema-validated data with a readability flag and a confidence per item. The invoice totals are then checked arithmetically, before anyone is asked to confirm.</li>
+<li><strong>Documents are data, not instructions.</strong> The document goes to the model separately from the instruction, so text inside a PDF cannot act as an order.</li>
+<li><strong>The cheaper model first.</strong> A fast model reads first, and a stronger one retries only when the result is unreadable. A truncated answer is not retried.</li>
+<li><strong>Cost on every call, content on none.</strong> Every call, failed ones included, is logged with its model, tokens and computed cost, but not the document. Each company has a monthly quota, and an unknown model is charged at the highest rate.</li>
+<li><strong>The provider is swappable.</strong> The model sits behind an interface, and without a key the app keeps working by hand.</li>
+</ul>
+<p>The AI reading is built and tested, but it has not yet run against the live API, so there are no real cost figures yet.</p>
+
+<h2 id="security">The database is the security boundary</h2>
+<ul>
+<li><strong>Row-level security on every table.</strong> Owner and accounting roles only work after two-factor authentication.</li>
+<li><strong>Money where few can see it.</strong> Amounts are stored as integers, and only in tables that site staff and clients cannot read. Supplier tax IDs are encrypted.</li>
+</ul>
+
+<h2 id="tests">Tests</h2>
+<p>59 Vitest files with about 580 cases for the API, panel, app and shared logic, 42 pgTAP files for the database rules, and two end-to-end scripts that drive the app and the panel in Chrome, one of them with the network cut on purpose. Model answers are recorded, so no test calls the API: one feeds the real SDK a recorded response and checks the request and the computed cost. The CI workflow type-checks, starts a local database and runs all of them. The source is private, and I am happy to walk through it in an interview.</p>
+""",
+        ),
+        "es": dict(
+            title="Construye Hoy: control diario de obras para constructoras",
+            summary="Una app de terreno, un panel web e IA que lee facturas y cubicaciones para constructoras con varias obras: el modelo propone, una persona confirma y la base de datos decide quién ve qué.",
+            body=f"""
+<p class="lead">Partes diarios, asistencia con GPS, bodega, programa, control de costos y un portal para el cliente, para constructoras pequeñas y medianas con varias obras a la vez. Una app sirve al jefe de obra, a bodega, a trabajadores, a subcontratos y al cliente, y un panel web a los dueños y a contabilidad. Está en desarrollo y todavía no está desplegada. Todo lo que se ve aquí usa datos ficticios.</p>
+{phones("Pantallas del portal del cliente", [("app-construye-avance", "Inicio del portal del cliente con el avance, la fecha de entrega y una decisión pendiente", "Avance"), ("app-construye-adicional", "Un adicional con su precio, IVA y un botón para aprobarlo", "Adicional"), ("app-construye-mensajes", "Mensajes entre el cliente y el jefe de obra, ligados al adicional", "Mensajes")], 1169)}
+<p class="cap">El portal del cliente, con una constructora y una casa ficticias.</p>
+
+<h2 id="stack">Cómo está armada</h2>
+{arch("Arquitectura de Construye Hoy", [("Apps", ["*App Expo con cinco roles, primero sin conexión", "Panel web para dueños y contabilidad"]), ("Servidor", ["API Hono en Cloudflare Workers", "Lectura con IA, invitaciones, 2FA, acceso con QR", "Tareas programadas"]), ("Datos", ["*PostgreSQL con seguridad por fila", "Archivos y campos cifrados"])])}
+<p>Las apps leen y escriben en la base directamente con la sesión de cada usuario, así que la seguridad por fila decide qué ve cada persona. La API solo hace lo que un usuario no puede hacer solo, y usa acceso elevado únicamente en esos casos. La lógica del negocio que necesitan todas las apps vive en un paquete compartido.</p>
+
+<h2 id="ia">IA que propone y espera a una persona</h2>
+{flow(["Foto o PDF", "El modelo llena un esquema", "Se revisan los totales", "Una persona confirma"])}
+<ul>
+<li><strong>Salida estructurada, y después aritmética.</strong> Las facturas y cubicaciones vuelven como datos validados con un esquema, con una marca de legibilidad y una confianza por ítem. Después se revisan los totales de la factura con aritmética, antes de pedirle a alguien que confirme.</li>
+<li><strong>Los documentos son datos, no instrucciones.</strong> El documento va al modelo separado de la instrucción, así que el texto dentro de un PDF no puede actuar como una orden.</li>
+<li><strong>Primero el modelo barato.</strong> Lee primero un modelo rápido, y uno más fuerte reintenta solo si el resultado no es legible. Una respuesta cortada no se reintenta.</li>
+<li><strong>Costo en cada llamada, contenido en ninguna.</strong> Cada llamada, incluidas las fallidas, queda registrada con su modelo, tokens y costo calculado, pero sin el documento. Cada empresa tiene una cuota mensual, y un modelo desconocido se cobra a la tarifa más alta.</li>
+<li><strong>El proveedor es intercambiable.</strong> El modelo está detrás de una interfaz, y sin clave la app sigue funcionando a mano.</li>
+</ul>
+<p>La lectura con IA está construida y probada, pero todavía no ha corrido contra la API real, así que aún no hay cifras de costo reales.</p>
+
+<h2 id="seguridad">La base de datos es la frontera de seguridad</h2>
+<ul>
+<li><strong>Seguridad por fila en cada tabla.</strong> Los roles de dueño y contabilidad solo funcionan después de la autenticación en dos pasos.</li>
+<li><strong>La plata donde pocos la ven.</strong> Los montos se guardan como enteros y solo en tablas que el personal de obra y los clientes no pueden leer. El RUT de los proveedores va cifrado.</li>
+</ul>
+
+<h2 id="pruebas">Pruebas</h2>
+<p>59 archivos de Vitest con unos 580 casos para la API, el panel, la app y la lógica compartida, 42 archivos de pgTAP para las reglas de la base, y dos scripts de punta a punta que manejan la app y el panel en Chrome, uno de ellos con la red cortada a propósito. Las respuestas del modelo están grabadas, así que ninguna prueba llama a la API: una le entrega al SDK real una respuesta grabada y revisa la solicitud y el costo calculado. El flujo de integración continua revisa tipos, levanta una base local y corre todas. El código es privado, y con gusto lo recorro en una entrevista.</p>
+""",
+        ),
+    },
+    "sac-next": {
+        "en": dict(
+            title="SAC Next: a community alarm platform",
+            summary="A neighbourhood alarm system for a municipal security programme: remotes, an app, calls and texts raise an alert, nearby street sirens sound, and an operations room follows it live. Consulting work, in development.",
+            body=f"""
+<p class="lead">Residents raise an alert for security, fire or a medical emergency from a mobile app, a radio remote, a phone call or a text message. The alert sounds the sirens on nearby street panels and appears live in the console of the operations room. I built it as consulting work for a municipal programme. It is in development: it has run against simulated panels only, and it is not deployed.</p>
+{arch("SAC Next architecture", [("Devices", ["Street panels with sirens", "Radio remotes", "Phone calls and text messages"]), ("Server", ["*MQTT broker", "*Fastify API", "PostgreSQL with PostGIS"]), ("People", ["Live console for the operations room", "Mobile app", "Push and text alerts"])])}
+
+<h2 id="alarm">From a button to a siren</h2>
+{flow(["Remote, app, call or text", "Checked and recorded", "Nearby sirens sound", "Seen live"])}
+<ul>
+<li><strong>Every message is checked.</strong> Panels talk to the server over MQTT, and every message is validated against a schema before it reaches the database. Repeated presses of the same remote become one incident.</li>
+<li><strong>The nearest panels, by distance.</strong> A PostGIS query picks the panels near the alert, and they receive the siren command.</li>
+<li><strong>Commands are signed and expire.</strong> Each command carries a signature, a one-time value and an expiry, so a replayed or forged command is refused. Remotes use a rolling code.</li>
+<li><strong>Silence is reported, not hidden.</strong> A command that no panel confirms is marked expired, logged on the incident and opened as a maintenance ticket, so the operator knows which siren did not sound.</li>
+</ul>
+
+<h2 id="assistant">An assistant that knows its limits</h2>
+<ul>
+<li><strong>Emergencies come first.</strong> Emergency detection runs before anything else, and an emergency gets a fixed answer with call buttons. It never reaches the language model.</li>
+<li><strong>Known questions, known answers.</strong> Common questions are answered from a fixed list of topics. Only the rest go to the model, which is told to answer from the programme's knowledge base only.</li>
+<li><strong>Personal data stays home.</strong> Emails, national ID numbers and phone numbers are removed before any text leaves the server, and if the model fails the assistant falls back to its own answers.</li>
+</ul>
+
+<h2 id="data">One deployment per client, personal data protected</h2>
+<ul>
+<li><strong>Each client gets its own stack.</strong> Database, broker, API and console run as one Docker Compose project on an internal network, and only the proxy is exposed. The broker refuses anonymous connections, and each panel can read only its own commands.</li>
+<li><strong>Personal fields are encrypted.</strong> A keyed index still allows exact lookups without keeping the value in clear.</li>
+<li><strong>The audit log is chained.</strong> Each entry is hashed with the one before it, so an edited or deleted entry can be detected.</li>
+<li><strong>Backups are encrypted as they are written,</strong> so a plain dump never touches the disk, and a script tests restoring one.</li>
+<li><strong>The code does not know its client.</strong> A test fails if any source file names the client or contains its coordinates, so the same code can serve another municipality.</li>
+</ul>
+
+<h2 id="tests">Tests</h2>
+<p>14 Vitest files with 136 unit tests, and three scripted suites: one end to end through the API, MQTT and simulated panels, and two that drive the mobile web app and the console in Chrome. The end-to-end suite imports 1,100 households and 1,100 remotes and checks that importing twice creates no duplicates. Shell scripts test restoring a backup and upgrading with a rollback. There is no CI or load test yet, and nothing has run on real hardware or with users. The source belongs to the engagement and is private, and I am happy to walk through it in an interview.</p>
+""",
+        ),
+        "es": dict(
+            title="SAC Next: una plataforma de alarma comunitaria",
+            summary="Un sistema de alarma vecinal para un programa municipal de seguridad: controles, una app, llamadas y SMS levantan una alerta, suenan las sirenas cercanas y una central la sigue en vivo. Trabajo de consultoría, en desarrollo.",
+            body=f"""
+<p class="lead">Los vecinos levantan una alerta de seguridad, incendio o emergencia médica desde una app, un control remoto por radio, una llamada o un SMS. La alerta hace sonar las sirenas de las centrales cercanas y aparece en vivo en la consola de la central de operaciones. La construí como consultoría para un programa municipal. Está en desarrollo: solo ha corrido contra centrales simuladas y no está desplegada.</p>
+{arch("Arquitectura de SAC Next", [("Equipos", ["Centrales con sirena en la calle", "Controles remotos por radio", "Llamadas y SMS"]), ("Servidor", ["*Broker MQTT", "*API en Fastify", "PostgreSQL con PostGIS"]), ("Personas", ["Consola en vivo de la central", "App móvil", "Avisos push y por SMS"])])}
+
+<h2 id="alarma">De un botón a una sirena</h2>
+{flow(["Control, app, llamada o SMS", "Se revisa y se registra", "Suenan las sirenas cercanas", "Se ve en vivo"])}
+<ul>
+<li><strong>Cada mensaje se revisa.</strong> Las centrales hablan con el servidor por MQTT, y cada mensaje se valida contra un esquema antes de llegar a la base. Varias pulsaciones del mismo control quedan como un solo incidente.</li>
+<li><strong>Las centrales más cercanas, por distancia.</strong> Una consulta en PostGIS elige las centrales cerca de la alerta, y ellas reciben la orden de sirena.</li>
+<li><strong>Las órdenes van firmadas y vencen.</strong> Cada orden lleva una firma, un valor de un solo uso y un vencimiento, así que una orden repetida o falsificada se rechaza. Los controles usan código rotativo.</li>
+<li><strong>El silencio se informa, no se esconde.</strong> Una orden que ninguna central confirma queda vencida, se anota en el incidente y abre un ticket de mantención, para que el operador sepa qué sirena no sonó.</li>
+</ul>
+
+<h2 id="asistente">Un asistente que conoce sus límites</h2>
+<ul>
+<li><strong>Las emergencias van primero.</strong> La detección de emergencias corre antes que todo, y una emergencia recibe una respuesta fija con botones para llamar. Nunca llega al modelo de lenguaje.</li>
+<li><strong>Preguntas conocidas, respuestas conocidas.</strong> Las preguntas comunes se responden desde una lista fija de temas. Solo el resto va al modelo, que tiene la instrucción de responder únicamente con la base de conocimiento del programa.</li>
+<li><strong>Los datos personales no salen.</strong> Correos, RUN y teléfonos se quitan antes de que el texto salga del servidor, y si el modelo falla el asistente vuelve a sus propias respuestas.</li>
+</ul>
+
+<h2 id="datos">Un despliegue por cliente y datos personales protegidos</h2>
+<ul>
+<li><strong>Cada cliente tiene su propio stack.</strong> Base, broker, API y consola corren como un proyecto de Docker Compose en una red interna, y solo el proxy queda expuesto. El broker rechaza conexiones anónimas, y cada central solo puede leer sus propias órdenes.</li>
+<li><strong>Los campos personales van cifrados.</strong> Un índice con clave permite buscar por valor exacto sin guardarlo en claro.</li>
+<li><strong>La auditoría va encadenada.</strong> Cada registro lleva el hash del anterior, así que se puede detectar uno editado o borrado.</li>
+<li><strong>Los respaldos se cifran mientras se escriben,</strong> así que un volcado en claro nunca toca el disco, y un script prueba restaurar uno.</li>
+<li><strong>El código no conoce a su cliente.</strong> Una prueba falla si algún archivo nombra al cliente o trae sus coordenadas, así que el mismo código puede servir a otra municipalidad.</li>
+</ul>
+
+<h2 id="pruebas">Pruebas</h2>
+<p>14 archivos de Vitest con 136 pruebas unitarias, y tres suites con script: una de punta a punta por la API, MQTT y centrales simuladas, y dos que manejan la app web y la consola en Chrome. La suite de punta a punta importa 1.100 hogares y 1.100 controles y revisa que importar dos veces no cree duplicados. Unos scripts de shell prueban restaurar un respaldo y actualizar con vuelta atrás. Todavía no hay integración continua ni prueba de carga, y nada ha corrido en hardware real ni con usuarios. El código es del proyecto de consultoría y es privado, y con gusto lo recorro en una entrevista.</p>
+""",
+        ),
+    },
     "how-i-build": {
         "en": dict(
             title="How I organize development: process and architecture",

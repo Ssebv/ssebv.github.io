@@ -22,6 +22,10 @@ CARDS = {
     "citofonia-es": ("Citofonía", "El citófono del edificio en el celular", [("Llamadas", "una máquina de estados por depto, en el servidor"), ("Privacidad", "incorporada en los datos y probada")]),
     "flagforge": ("FlagForge", "Feature flags in Rust, one engine everywhere", [("Under a microsecond", "per evaluation, worst case measured"), ("245 tests", "in four layers, open source")]),
     "flagforge-es": ("FlagForge", "Feature flags en Rust, un solo motor en todas partes", [("Menos de 1 microsegundo", "por evaluación, en el peor caso medido"), ("245 pruebas", "en cuatro capas, código abierto")]),
+    "construye-hoy": ("Construye Hoy", "Site control for construction firms, with AI that proposes", [("Five roles", "one app, offline first"), ("101 test files", "and no network in any of them")]),
+    "construye-hoy-es": ("Construye Hoy", "Control de obras, con IA que propone", [("Cinco roles", "una app, primero sin conexión"), ("101 archivos de prueba", "y ninguno usa la red")]),
+    "sac-next": ("SAC Next", "Community alarms: remotes, sirens and a live console", [("Signed commands", "that expire, and silence that is reported"), ("One stack per client", "with encrypted data and backups")]),
+    "sac-next-es": ("SAC Next", "Alarma comunitaria: controles, sirenas y una consola en vivo", [("Órdenes firmadas", "que vencen, y el silencio se informa"), ("Un stack por cliente", "con datos y respaldos cifrados")]),
     "how-i-build": ("How I organize development", "process and architecture", [("5 systems", "their architecture and the reasons behind it"), ("8 steps", "from plan to production, with real examples")]),
     "how-i-build-es": ("Cómo organizo el desarrollo", "proceso y arquitectura", [("5 sistemas", "su arquitectura y las razones detrás"), ("8 pasos", "del plan a producción, con ejemplos reales")]),
 }

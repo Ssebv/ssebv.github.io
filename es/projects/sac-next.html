@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<script>
+(function(){try{var t=localStorage.getItem('theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();
+</script>
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>SAC Next: una plataforma de alarma comunitaria — Sebastián Allende</title>
+<meta name="description" content="Un sistema de alarma vecinal para un programa municipal de seguridad: controles, una app, llamadas y SMS levantan una alerta, suenan las sirenas cercanas y una central la sigue en vivo. Trabajo de consultoría, en desarrollo.">
+<link rel="canonical" href="https://ssebv.github.io/es/projects/sac-next.html">
+<link rel="alternate" hreflang="en" href="https://ssebv.github.io/projects/sac-next.html">
+<link rel="alternate" hreflang="es" href="https://ssebv.github.io/es/projects/sac-next.html">
+<meta property="og:type" content="article">
+<meta property="og:locale" content="es_CL">
+<meta property="og:title" content="SAC Next: una plataforma de alarma comunitaria">
+<meta property="og:description" content="Un sistema de alarma vecinal para un programa municipal de seguridad: controles, una app, llamadas y SMS levantan una alerta, suenan las sirenas cercanas y una central la sigue en vivo. Trabajo de consultoría, en desarrollo.">
+<meta property="og:url" content="https://ssebv.github.io/es/projects/sac-next.html">
+<meta property="og:image" content="https://ssebv.github.io/og-sac-next-es.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Un sistema de alarma vecinal para un programa municipal de seguridad: controles, una app, llamadas y SMS levantan una alerta, suenan las sirenas cercanas y una central la sigue en vivo. Trabajo de consultoría, en desarrollo.">
+<meta name="twitter:card" content="summary_large_image">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "headline": "SAC Next: una plataforma de alarma comunitaria",
+  "description": "Un sistema de alarma vecinal para un programa municipal de seguridad: controles, una app, llamadas y SMS levantan una alerta, suenan las sirenas cercanas y una central la sigue en vivo. Trabajo de consultoría, en desarrollo.",
+  "image": "https://ssebv.github.io/og-sac-next-es.png",
+  "url": "https://ssebv.github.io/es/projects/sac-next.html",
+  "author": {
+    "@type": "Person",
+    "name": "Sebastián Allende Cuello",
+    "url": "https://ssebv.github.io/"
+  },
+  "inLanguage": "es"
+}
+</script>
+
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%232f5bd7'/%3E%3Ctext x='50' y='68' font-family='Helvetica,Arial,sans-serif' font-size='48' font-weight='700' fill='%23fff' text-anchor='middle'%3ESA%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="../../style.css">
+<script src="../../term.js" defer></script>
+</head>
+<body>
+
+<nav class="lang-switch" aria-label="Idioma">
+  <a href="../../projects/sac-next.html" hreflang="en">EN</a>
+  <a href="./sac-next.html" hreflang="es" aria-current="true">ES</a>
+</nav>
+
+<button class="theme-toggle" id="themeToggle" type="button" aria-label="Cambiar tema de color" title="Cambiar tema de color">
+  <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+  <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+</button>
+
+<a class="skip" href="#main">Saltar al contenido</a>
+
+<div class="wrap">
+  <a class="back" href="../">← Sebastián Allende</a>
+
+  <main id="main">
+  <article class="page">
+
+    <h1>SAC Next: una plataforma de alarma comunitaria</h1>
+
+<p class="lead">Los vecinos levantan una alerta de seguridad, incendio o emergencia médica desde una app, un control remoto por radio, una llamada o un SMS. La alerta hace sonar las sirenas de las centrales cercanas y aparece en vivo en la consola de la central de operaciones. La construí como consultoría para un programa municipal. Está en desarrollo: solo ha corrido contra centrales simuladas y no está desplegada.</p>
+<ol class="arch" aria-label="Arquitectura de SAC Next"><li><b>Equipos</b><ul><li>Centrales con sirena en la calle</li><li>Controles remotos por radio</li><li>Llamadas y SMS</li></ul></li><li><b>Servidor</b><ul><li class="key">Broker MQTT</li><li class="key">API en Fastify</li><li>PostgreSQL con PostGIS</li></ul></li><li><b>Personas</b><ul><li>Consola en vivo de la central</li><li>App móvil</li><li>Avisos push y por SMS</li></ul></li></ol>
+
+<h2 id="alarma">De un botón a una sirena</h2>
+<ol class="flow"><li>Control, app, llamada o SMS</li><li>Se revisa y se registra</li><li>Suenan las sirenas cercanas</li><li class="end">Se ve en vivo</li></ol>
+<ul>
+<li><strong>Cada mensaje se revisa.</strong> Las centrales hablan con el servidor por MQTT, y cada mensaje se valida contra un esquema antes de llegar a la base. Varias pulsaciones del mismo control quedan como un solo incidente.</li>
+<li><strong>Las centrales más cercanas, por distancia.</strong> Una consulta en PostGIS elige las centrales cerca de la alerta, y ellas reciben la orden de sirena.</li>
+<li><strong>Las órdenes van firmadas y vencen.</strong> Cada orden lleva una firma, un valor de un solo uso y un vencimiento, así que una orden repetida o falsificada se rechaza. Los controles usan código rotativo.</li>
+<li><strong>El silencio se informa, no se esconde.</strong> Una orden que ninguna central confirma queda vencida, se anota en el incidente y abre un ticket de mantención, para que el operador sepa qué sirena no sonó.</li>
+</ul>
+
+<h2 id="asistente">Un asistente que conoce sus límites</h2>
+<ul>
+<li><strong>Las emergencias van primero.</strong> La detección de emergencias corre antes que todo, y una emergencia recibe una respuesta fija con botones para llamar. Nunca llega al modelo de lenguaje.</li>
+<li><strong>Preguntas conocidas, respuestas conocidas.</strong> Las preguntas comunes se responden desde una lista fija de temas. Solo el resto va al modelo, que tiene la instrucción de responder únicamente con la base de conocimiento del programa.</li>
+<li><strong>Los datos personales no salen.</strong> Correos, RUN y teléfonos se quitan antes de que el texto salga del servidor, y si el modelo falla el asistente vuelve a sus propias respuestas.</li>
+</ul>
+
+<h2 id="datos">Un despliegue por cliente y datos personales protegidos</h2>
+<ul>
+<li><strong>Cada cliente tiene su propio stack.</strong> Base, broker, API y consola corren como un proyecto de Docker Compose en una red interna, y solo el proxy queda expuesto. El broker rechaza conexiones anónimas, y cada central solo puede leer sus propias órdenes.</li>
+<li><strong>Los campos personales van cifrados.</strong> Un índice con clave permite buscar por valor exacto sin guardarlo en claro.</li>
+<li><strong>La auditoría va encadenada.</strong> Cada registro lleva el hash del anterior, así que se puede detectar uno editado o borrado.</li>
+<li><strong>Los respaldos se cifran mientras se escriben,</strong> así que un volcado en claro nunca toca el disco, y un script prueba restaurar uno.</li>
+<li><strong>El código no conoce a su cliente.</strong> Una prueba falla si algún archivo nombra al cliente o trae sus coordenadas, así que el mismo código puede servir a otra municipalidad.</li>
+</ul>
+
+<h2 id="pruebas">Pruebas</h2>
+<p>14 archivos de Vitest con 136 pruebas unitarias, y tres suites con script: una de punta a punta por la API, MQTT y centrales simuladas, y dos que manejan la app web y la consola en Chrome. La suite de punta a punta importa 1.100 hogares y 1.100 controles y revisa que importar dos veces no cree duplicados. Unos scripts de shell prueban restaurar un respaldo y actualizar con vuelta atrás. Todavía no hay integración continua ni prueba de carga, y nada ha corrido en hardware real ni con usuarios. El código es del proyecto de consultoría y es privado, y con gusto lo recorro en una entrevista.</p>
+
+  </article>
+  </main>
+
+  <footer>
+    <span><a href="../">← Volver al portafolio</a></span>
+    <span>sallendec@outlook.com</span>
+  </footer>
+</div>
+<script>
+(function(){
+  var b=document.getElementById('themeToggle');if(!b)return;
+  b.addEventListener('click',function(){
+    var sysDark=window.matchMedia('(prefers-color-scheme: dark)').matches;
+    var cur=document.documentElement.getAttribute('data-theme')||(sysDark?'dark':'light');
+    var next=cur==='dark'?'light':'dark';
+    document.documentElement.setAttribute('data-theme',next);
+    try{localStorage.setItem('theme',next);}catch(e){}
+  });
+})();
+</script>
+<script>
+(function(){
+  if (window.innerWidth < 1280) return;
+  var heads = [].slice.call(document.querySelectorAll('main h2[id], article h2[id]'));
+  if (heads.length < 3) return;
+  var nav = document.createElement('nav');
+  nav.className = 'toc';
+  nav.setAttribute('aria-label','Secciones');
+  nav.innerHTML = '<div class="toc-label">Secciones</div><ol></ol>';
+  var ol = nav.querySelector('ol');
+  heads.forEach(function(h){
+    var text = (h.textContent || '').replace(/#$/, '').trim();
+    var li = document.createElement('li'), a = document.createElement('a');
+    a.href = '#' + h.id; a.textContent = text; a.dataset.target = h.id;
+    li.appendChild(a); ol.appendChild(li);
+  });
+  document.body.appendChild(nav);
+  requestAnimationFrame(function(){ nav.classList.add('ready'); });
+  var links = {};
+  [].slice.call(nav.querySelectorAll('a')).forEach(function(a){ links[a.dataset.target] = a; });
+  function setActive(id){ for (var k in links) links[k].classList.toggle('active', k === id); }
+  var obs = new IntersectionObserver(function(entries){
+    var v = entries.filter(function(e){ return e.isIntersecting; });
+    if (v.length) { v.sort(function(a,b){ return a.boundingClientRect.top - b.boundingClientRect.top; });
+      setActive(v[0].target.id); }
+  }, { rootMargin: '-15% 0px -70% 0px', threshold: 0 });
+  heads.forEach(function(h){ obs.observe(h); });
+  setActive(heads[0].id);
+})();
+</script>
+<script>
+(function(){
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (!reduce && 'IntersectionObserver' in window) {
+    document.documentElement.classList.add('js-reveal');
+    var targets = [].slice.call(document.querySelectorAll('article > *, .post, section > *'));
+    targets.forEach(function(el){ el.setAttribute('data-reveal',''); });
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if (!e.isIntersecting) return;
+        e.target.style.transitionDelay = Math.min((+e.target.dataset.i||0)*45,180)+'ms';
+        e.target.classList.add('shown'); io.unobserve(e.target);
+      });
+    }, { rootMargin: '0px 0px -8% 0px', threshold: 0.05 });
+    var groups = {};
+    targets.forEach(function(el){
+      var k = el.parentNode; groups[k] = groups[k] || 0; el.dataset.i = groups[k]++; io.observe(el);
+    });
+    setTimeout(function(){
+      targets.forEach(function(el){
+        if (el.getBoundingClientRect().top < window.innerHeight) el.classList.add('shown');
+      });
+    }, 30);
+  }
+  if (!reduce && document.querySelector('article')) {
+    var bar = document.createElement('div'); bar.className = 'progress';
+    document.body.appendChild(bar);
+    var tick = function(){
+      var h = document.documentElement.scrollHeight - window.innerHeight;
+      bar.style.width = (h > 0 ? (window.scrollY / h) * 100 : 0) + '%';
+    };
+    window.addEventListener('scroll', tick, { passive: true });
+    window.addEventListener('resize', tick); tick();
+  }
+})();
+</script>
+</body>
+</html>

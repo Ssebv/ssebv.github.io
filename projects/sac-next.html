@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<script>
+(function(){try{var t=localStorage.getItem('theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();
+</script>
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>SAC Next: a community alarm platform — Sebastián Allende</title>
+<meta name="description" content="A neighbourhood alarm system for a municipal security programme: remotes, an app, calls and texts raise an alert, nearby street sirens sound, and an operations room follows it live. Consulting work, in development.">
+<link rel="canonical" href="https://ssebv.github.io/projects/sac-next.html">
+<link rel="alternate" hreflang="en" href="https://ssebv.github.io/projects/sac-next.html">
+<link rel="alternate" hreflang="es" href="https://ssebv.github.io/es/projects/sac-next.html">
+<meta property="og:type" content="article">
+<meta property="og:locale" content="en_US">
+<meta property="og:title" content="SAC Next: a community alarm platform">
+<meta property="og:description" content="A neighbourhood alarm system for a municipal security programme: remotes, an app, calls and texts raise an alert, nearby street sirens sound, and an operations room follows it live. Consulting work, in development.">
+<meta property="og:url" content="https://ssebv.github.io/projects/sac-next.html">
+<meta property="og:image" content="https://ssebv.github.io/og-sac-next.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="A neighbourhood alarm system for a municipal security programme: remotes, an app, calls and texts raise an alert, nearby street sirens sound, and an operations room follows it live. Consulting work, in development.">
+<meta name="twitter:card" content="summary_large_image">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "headline": "SAC Next: a community alarm platform",
+  "description": "A neighbourhood alarm system for a municipal security programme: remotes, an app, calls and texts raise an alert, nearby street sirens sound, and an operations room follows it live. Consulting work, in development.",
+  "image": "https://ssebv.github.io/og-sac-next.png",
+  "url": "https://ssebv.github.io/projects/sac-next.html",
+  "author": {
+    "@type": "Person",
+    "name": "Sebastián Allende Cuello",
+    "url": "https://ssebv.github.io/"
+  },
+  "inLanguage": "en"
+}
+</script>
+
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%232f5bd7'/%3E%3Ctext x='50' y='68' font-family='Helvetica,Arial,sans-serif' font-size='48' font-weight='700' fill='%23fff' text-anchor='middle'%3ESA%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="../style.css">
+<script src="../term.js" defer></script>
+</head>
+<body>
+
+<nav class="lang-switch" aria-label="Language">
+  <a href="./sac-next.html" hreflang="en" aria-current="true">EN</a>
+  <a href="../es/projects/sac-next.html" hreflang="es">ES</a>
+</nav>
+
+<button class="theme-toggle" id="themeToggle" type="button" aria-label="Switch colour theme" title="Switch colour theme">
+  <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+  <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+</button>
+
+<a class="skip" href="#main">Skip to content</a>
+
+<div class="wrap">
+  <a class="back" href="../">← Sebastián Allende</a>
+
+  <main id="main">
+  <article class="page">
+
+    <h1>SAC Next: a community alarm platform</h1>
+
+<p class="lead">Residents raise an alert for security, fire or a medical emergency from a mobile app, a radio remote, a phone call or a text message. The alert sounds the sirens on nearby street panels and appears live in the console of the operations room. I built it as consulting work for a municipal programme. It is in development: it has run against simulated panels only, and it is not deployed.</p>
+<ol class="arch" aria-label="SAC Next architecture"><li><b>Devices</b><ul><li>Street panels with sirens</li><li>Radio remotes</li><li>Phone calls and text messages</li></ul></li><li><b>Server</b><ul><li class="key">MQTT broker</li><li class="key">Fastify API</li><li>PostgreSQL with PostGIS</li></ul></li><li><b>People</b><ul><li>Live console for the operations room</li><li>Mobile app</li><li>Push and text alerts</li></ul></li></ol>
+
+<h2 id="alarm">From a button to a siren</h2>
+<ol class="flow"><li>Remote, app, call or text</li><li>Checked and recorded</li><li>Nearby sirens sound</li><li class="end">Seen live</li></ol>
+<ul>
+<li><strong>Every message is checked.</strong> Panels talk to the server over MQTT, and every message is validated against a schema before it reaches the database. Repeated presses of the same remote become one incident.</li>
+<li><strong>The nearest panels, by distance.</strong> A PostGIS query picks the panels near the alert, and they receive the siren command.</li>
+<li><strong>Commands are signed and expire.</strong> Each command carries a signature, a one-time value and an expiry, so a replayed or forged command is refused. Remotes use a rolling code.</li>
+<li><strong>Silence is reported, not hidden.</strong> A command that no panel confirms is marked expired, logged on the incident and opened as a maintenance ticket, so the operator knows which siren did not sound.</li>
+</ul>
+
+<h2 id="assistant">An assistant that knows its limits</h2>
+<ul>
+<li><strong>Emergencies come first.</strong> Emergency detection runs before anything else, and an emergency gets a fixed answer with call buttons. It never reaches the language model.</li>
+<li><strong>Known questions, known answers.</strong> Common questions are answered from a fixed list of topics. Only the rest go to the model, which is told to answer from the programme's knowledge base only.</li>
+<li><strong>Personal data stays home.</strong> Emails, national ID numbers and phone numbers are removed before any text leaves the server, and if the model fails the assistant falls back to its own answers.</li>
+</ul>
+
+<h2 id="data">One deployment per client, personal data protected</h2>
+<ul>
+<li><strong>Each client gets its own stack.</strong> Database, broker, API and console run as one Docker Compose project on an internal network, and only the proxy is exposed. The broker refuses anonymous connections, and each panel can read only its own commands.</li>
+<li><strong>Personal fields are encrypted.</strong> A keyed index still allows exact lookups without keeping the value in clear.</li>
+<li><strong>The audit log is chained.</strong> Each entry is hashed with the one before it, so an edited or deleted entry can be detected.</li>
+<li><strong>Backups are encrypted as they are written,</strong> so a plain dump never touches the disk, and a script tests restoring one.</li>
+<li><strong>The code does not know its client.</strong> A test fails if any source file names the client or contains its coordinates, so the same code can serve another municipality.</li>
+</ul>
+
+<h2 id="tests">Tests</h2>
+<p>14 Vitest files with 136 unit tests, and three scripted suites: one end to end through the API, MQTT and simulated panels, and two that drive the mobile web app and the console in Chrome. The end-to-end suite imports 1,100 households and 1,100 remotes and checks that importing twice creates no duplicates. Shell scripts test restoring a backup and upgrading with a rollback. There is no CI or load test yet, and nothing has run on real hardware or with users. The source belongs to the engagement and is private, and I am happy to walk through it in an interview.</p>
+
+  </article>
+  </main>
+
+  <footer>
+    <span><a href="../">← Back to portfolio</a></span>
+    <span>sallendec@outlook.com</span>
+  </footer>
+</div>
+<script>
+(function(){
+  var b=document.getElementById('themeToggle');if(!b)return;
+  b.addEventListener('click',function(){
+    var sysDark=window.matchMedia('(prefers-color-scheme: dark)').matches;
+    var cur=document.documentElement.getAttribute('data-theme')||(sysDark?'dark':'light');
+    var next=cur==='dark'?'light':'dark';
+    document.documentElement.setAttribute('data-theme',next);
+    try{localStorage.setItem('theme',next);}catch(e){}
+  });
+})();
+</script>
+<script>
+(function(){
+  if (window.innerWidth < 1280) return;
+  var heads = [].slice.call(document.querySelectorAll('main h2[id], article h2[id]'));
+  if (heads.length < 3) return;
+  var nav = document.createElement('nav');
+  nav.className = 'toc';
+  nav.setAttribute('aria-label','Sections');
+  nav.innerHTML = '<div class="toc-label">Sections</div><ol></ol>';
+  var ol = nav.querySelector('ol');
+  heads.forEach(function(h){
+    var text = (h.textContent || '').replace(/#$/, '').trim();
+    var li = document.createElement('li'), a = document.createElement('a');
+    a.href = '#' + h.id; a.textContent = text; a.dataset.target = h.id;
+    li.appendChild(a); ol.appendChild(li);
+  });
+  document.body.appendChild(nav);
+  requestAnimationFrame(function(){ nav.classList.add('ready'); });
+  var links = {};
+  [].slice.call(nav.querySelectorAll('a')).forEach(function(a){ links[a.dataset.target] = a; });
+  function setActive(id){ for (var k in links) links[k].classList.toggle('active', k === id); }
+  var obs = new IntersectionObserver(function(entries){
+    var v = entries.filter(function(e){ return e.isIntersecting; });
+    if (v.length) { v.sort(function(a,b){ return a.boundingClientRect.top - b.boundingClientRect.top; });
+      setActive(v[0].target.id); }
+  }, { rootMargin: '-15% 0px -70% 0px', threshold: 0 });
+  heads.forEach(function(h){ obs.observe(h); });
+  setActive(heads[0].id);
+})();
+</script>
+<script>
+(function(){
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (!reduce && 'IntersectionObserver' in window) {
+    document.documentElement.classList.add('js-reveal');
+    var targets = [].slice.call(document.querySelectorAll('article > *, .post, section > *'));
+    targets.forEach(function(el){ el.setAttribute('data-reveal',''); });
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if (!e.isIntersecting) return;
+        e.target.style.transitionDelay = Math.min((+e.target.dataset.i||0)*45,180)+'ms';
+        e.target.classList.add('shown'); io.unobserve(e.target);
+      });
+    }, { rootMargin: '0px 0px -8% 0px', threshold: 0.05 });
+    var groups = {};
+    targets.forEach(function(el){
+      var k = el.parentNode; groups[k] = groups[k] || 0; el.dataset.i = groups[k]++; io.observe(el);
+    });
+    setTimeout(function(){
+      targets.forEach(function(el){
+        if (el.getBoundingClientRect().top < window.innerHeight) el.classList.add('shown');
+      });
+    }, 30);
+  }
+  if (!reduce && document.querySelector('article')) {
+    var bar = document.createElement('div'); bar.className = 'progress';
+    document.body.appendChild(bar);
+    var tick = function(){
+      var h = document.documentElement.scrollHeight - window.innerHeight;
+      bar.style.width = (h > 0 ? (window.scrollY / h) * 100 : 0) + '%';
+    };
+    window.addEventListener('scroll', tick, { passive: true });
+    window.addEventListener('resize', tick); tick();
+  }
+})();
+</script>
+</body>
+</html>
