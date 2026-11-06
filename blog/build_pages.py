@@ -446,7 +446,7 @@ PAGES = {
             title="Construye Hoy: daily site control for construction firms",
             summary="A field app, a web panel and AI that reads invoices and quantity take-offs for construction firms with several sites: the model proposes, a person confirms, and the database decides who sees what.",
             body=f"""
-<p class="lead">Daily reports, GPS attendance, warehouse, schedule, cost control and a client portal, for small and mid-sized construction firms running several sites at once. One app serves the site manager, the warehouse, workers, subcontractors and the client, and a web panel serves owners and accounting. It is in development and not deployed yet. Everything shown here uses fictional data.</p>
+<p class="lead">Daily reports, GPS attendance, warehouse, schedule, cost control and a client portal, for small and mid-sized construction firms running several sites at once. One app serves the site manager, the warehouse, workers, subcontractors and the client, and a web panel serves owners and accounting. I build it as an independent contractor for a construction firm, where it is in a pilot. Everything shown here uses fictional data.</p>
 {phones("Client portal screens", [("app-construye-avance", "Client portal home with progress, the delivery date and a decision the client still owes", "Progress"), ("app-construye-adicional", "A change order with its price, VAT and an approve button", "Change order"), ("app-construye-mensajes", "Messages between the client and the site manager, linked to the change order", "Messages")], 1169)}
 <p class="cap">The client portal, with a fictional firm and house.</p>
 
@@ -479,7 +479,7 @@ PAGES = {
             title="Construye Hoy: control diario de obras para constructoras",
             summary="Una app de terreno, un panel web e IA que lee facturas y cubicaciones para constructoras con varias obras: el modelo propone, una persona confirma y la base de datos decide quién ve qué.",
             body=f"""
-<p class="lead">Partes diarios, asistencia con GPS, bodega, programa, control de costos y un portal para el cliente, para constructoras pequeñas y medianas con varias obras a la vez. Una app sirve al jefe de obra, a bodega, a trabajadores, a subcontratos y al cliente, y un panel web a los dueños y a contabilidad. Está en desarrollo y todavía no está desplegada. Todo lo que se ve aquí usa datos ficticios.</p>
+<p class="lead">Partes diarios, asistencia con GPS, bodega, programa, control de costos y un portal para el cliente, para constructoras pequeñas y medianas con varias obras a la vez. Una app sirve al jefe de obra, a bodega, a trabajadores, a subcontratos y al cliente, y un panel web a los dueños y a contabilidad. La desarrollo como independiente para una constructora, donde está en piloto. Todo lo que se ve aquí usa datos ficticios.</p>
 {phones("Pantallas del portal del cliente", [("app-construye-avance", "Inicio del portal del cliente con el avance, la fecha de entrega y una decisión pendiente", "Avance"), ("app-construye-adicional", "Un adicional con su precio, IVA y un botón para aprobarlo", "Adicional"), ("app-construye-mensajes", "Mensajes entre el cliente y el jefe de obra, ligados al adicional", "Mensajes")], 1169)}
 <p class="cap">El portal del cliente, con una constructora y una casa ficticias.</p>
 
