@@ -43,6 +43,9 @@
 
 <link rel="alternate" type="application/rss+xml" title="Sebastián Allende — Writing" href="/feed.xml">
 <script src="../term.js" defer></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&display=swap">
 <link rel="stylesheet" href="../style.css">
 </head>
 <body>
@@ -62,7 +65,7 @@
 <div class="wrap">
 
   <header>
-    <div class="status"><span class="dot" aria-hidden="true"></span>Abierto a nuevas oportunidades</div>
+    <span class="brand" aria-hidden="true">SA</span><div class="status"><span class="dot" aria-hidden="true"></span>Abierto a nuevas oportunidades</div>
     <h1>Sebastián Allende Cuello</h1>
     <p class="role">Ingeniero de software full stack — ERP e IA aplicada</p>
     <p class="now">Actualmente IT Manager y Administrador de ERP en Toyng</p>
@@ -112,7 +115,7 @@
       <p class="muted">Elige el camino más cercano a tu cargo.</p>
       <div class="paths">
         <div class="path"><h3>ERP y Odoo</h3><p>Una migración a Odoo 19 en producción, facturación electrónica en 3 países y monitoreo.</p><ul><li><a href="writing/erp-migration.html">La migración</a></li><li><a href="writing/health-check.html">El health check</a></li><li><a href="projects/how-i-build.html#arq-erp">Arquitectura</a></li></ul></div>
-        <div class="path"><h3>Backend</h3><p>Servicios en Rust, Python y TypeScript, con las decisiones de diseño explicadas.</p><ul><li><a href="projects/flagforge.html">FlagForge</a></li><li><a href="projects/citofonia.html">Citofonía</a></li><li><a href="projects/modomax.html">ModoMax</a></li></ul></div>
+        <div class="path"><h3>Full stack</h3><p>Apps web y móviles con su API y su base de datos, de punta a punta, con las decisiones de diseño explicadas.</p><ul><li><a href="projects/construye-hoy.html">Construye Hoy</a></li><li><a href="projects/citofonia.html">Citofonía</a></li><li><a href="projects/modomax.html">ModoMax</a></li><li><a href="projects/flagforge.html">FlagForge</a></li></ul></div>
         <div class="path"><h3>IA aplicada</h3><p>Aplicaciones sobre modelos de lenguaje, medidas en vez de supuestas.</p><ul><li><a href="projects/odoo-rag.html">Odoo RAG</a></li><li><a href="projects/modomax.html#decisiones">Asistentes de ModoMax</a></li><li><a href="projects/construye-hoy.html#ia">Lectura de documentos en Construye Hoy</a></li><li><a href="projects/how-i-build.html#proceso">Evaluaciones</a></li></ul></div>
       </div>
     </section>
@@ -160,6 +163,16 @@
         </div>
       </div>
       <div class="feature">
+        <a class="feature-media" href="projects/construye-hoy.html" tabindex="-1" aria-hidden="true"><div class="phones"><div><img src="../img/app-construye-avance.webp" alt="Portal del cliente con el avance de la obra" width="420" height="909" loading="lazy" decoding="async"></div><div><img src="../img/app-construye-adicional.webp" alt="Un adicional con su precio e IVA" width="420" height="909" loading="lazy" decoding="async"></div><div><img src="../img/app-construye-mensajes.webp" alt="Mensajes entre el cliente y el jefe de obra" width="420" height="909" loading="lazy" decoding="async"></div></div></a>
+        <div class="feature-body">
+          <p class="feature-cap">Pantallas reales, con una constructora y una casa ficticias.</p>
+          <div class="feature-top"><h3><a href="projects/construye-hoy.html">Construye Hoy</a></h3><span class="tag">TypeScript · Supabase</span></div>
+          <p>Control diario de obras: app de terreno, panel web e IA que lee facturas y cubicaciones para que una persona confirme. La desarrollo como independiente para una constructora, donde está en piloto.</p>
+          <div class="proof"><div><b>5 roles</b><span>jefe de obra, bodega, trabajador, subcontrato y cliente</span></div><div><b>~580</b><span>casos de prueba en 59 archivos de Vitest</span></div><div><b>42</b><span>archivos pgTAP para la seguridad por fila</span></div></div>
+          <div class="actions"><a href="projects/construye-hoy.html">Leer el caso →</a></div>
+        </div>
+      </div>
+      <div class="feature">
         <a class="feature-media" href="projects/odoo-rag.html" tabindex="-1" aria-hidden="true"><figure class="term" data-replay><div class="term-bar"><i></i><i></i><i></i><b>odoo-rag</b></div><code class="term-body"><span class="cmd">$ uv run python -m odoo_rag.ask "¿Cómo ejecuto solo algunos tests desde la línea de comandos?"</span><span>Para ejecutar solo algunos tests desde la línea de comandos, puedes utilizar el comando `odoo-bin --test-tags` con los tags correspondientes.</span><span class="dim">[2] developer_reference_backend_testing.rst | Testing Python code &gt; Test selection &gt; Invocation</span><span class="cmd">$ uv run python -m odoo_rag.ask "What is the capital of France?"</span><span class="ok">NOT_IN_DOCS</span></code></figure></a>
         <div class="feature-body">
           <p class="feature-cap">Repetición de una ejecución real, acortada.</p>
@@ -198,10 +211,6 @@
         </div>
       </div>
 
-      <a class="proj" href="projects/construye-hoy.html">
-        <div class="proj-top"><span class="proj-name">Construye Hoy</span><span class="tag">TypeScript · Supabase</span></div>
-        <p>Control diario de obras para constructoras: app de terreno, panel web e IA que lee facturas y cubicaciones para que una persona confirme. Lo desarrollo como independiente para una constructora, donde está en piloto.</p>
-      </a>
       <a class="proj" href="projects/sac-next.html">
         <div class="proj-top"><span class="proj-name">SAC Next</span><span class="tag">TypeScript · MQTT</span></div>
         <p>Plataforma de alarma comunitaria para un programa municipal: controles y una app hacen sonar sirenas, y una central sigue cada alerta en vivo. Consultoría, en desarrollo.</p>

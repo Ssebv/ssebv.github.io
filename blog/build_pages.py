@@ -862,6 +862,9 @@ def render(slug, lang):
 </script>
 
 <link rel="icon" href="{FAVICON}">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&display=swap">
 <link rel="stylesheet" href="{root}style.css">
 <script src="{root}term.js" defer></script>
 </head>
