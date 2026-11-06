@@ -12,6 +12,8 @@ ROOT = pathlib.Path(__file__).resolve().parent.parent
 CHROME = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
 
 CARDS = {
+    "home": ("Sebastián Allende Cuello", "Full stack software engineer — ERP and applied AI", [("Odoo 14 → 19", "production migration, 4 companies"), ("Construye Hoy", "pilot with a construction firm"), ("RAG", "measured, not assumed")]),
+    "home-es": ("Sebastián Allende Cuello", "Ingeniero de software full stack — ERP e IA aplicada", [("Odoo 14 → 19", "en producción, 4 empresas"), ("Construye Hoy", "piloto con una constructora"), ("RAG", "medido, no supuesto")]),
     "odoo-rag": ("Odoo RAG", "A docs assistant I can measure", [("0.822", "recall@5 on 45 questions"), ("0.50 → 0.90", "Spanish recall@5"), ("0 of 20", "in-scope questions wrongly refused")]),
     "odoo-rag-es": ("Odoo RAG", "Un asistente de documentación que puedo medir", [("0,822", "recall@5 en 45 preguntas"), ("0,50 → 0,90", "recall@5 en español"), ("0 de 20", "preguntas válidas rechazadas")]),
     "modomax": ("ModoMax", "An online store with AI assistants", [("End to end", "designed and built by me"), ("WhatsApp", "support, stale replies dropped"), ("TypeScript", "store, checkout and admin")]),
@@ -30,13 +32,13 @@ CARDS = {
     "how-i-build-es": ("Cómo organizo el desarrollo", "proceso y arquitectura", [("5 sistemas", "su arquitectura y las razones detrás"), ("8 pasos", "del plan a producción, con ejemplos reales")]),
 }
 
-PAGE = """<!doctype html><meta charset="utf-8"><style>
+PAGE = """<!doctype html><meta charset="utf-8"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@600;700&display=block"><style>
 html,body{{margin:0;width:1200px;height:630px;overflow:hidden;font-family:-apple-system,Helvetica,Arial,sans-serif;color:#eef0f6;
 background:radial-gradient(circle at 85% 8%,#1b2a55 0,transparent 42%),radial-gradient(#23262e 1px,transparent 1px),#0c0e13;background-size:auto,22px 22px,auto}}
 .in{{position:absolute;left:80px;right:80px;top:150px}}
-h1{{font-size:62px;line-height:1.1;margin:0;letter-spacing:-.5px}}p{{font-size:32px;color:#a4abbb;margin:18px 0 58px}}
-.s{{display:flex;gap:56px}}b{{display:block;font-size:40px;color:#86a4ff}}span{{display:block;font-size:21px;color:#a4abbb;margin-top:6px;max-width:330px}}
-</style><div class="in"><h1>{title}</h1><p>{sub}</p><div class="s">{stats}</div></div>"""
+h1{{font-family:'Space Grotesk',-apple-system,sans-serif;font-size:62px;line-height:1.1;margin:0;letter-spacing:-1px}}.m{{position:absolute;left:80px;top:64px;width:56px;height:56px;border-radius:15px;display:flex;align-items:center;justify-content:center;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:24px;color:#fff;background:linear-gradient(135deg,#2f5bd7,#6d8dff);box-shadow:0 8px 24px -8px rgba(47,91,215,.6)}}p{{font-size:32px;color:#a4abbb;margin:18px 0 58px}}
+.s{{display:flex;gap:56px}}b{{display:block;font-family:'Space Grotesk',-apple-system,sans-serif;font-size:40px;color:#86a4ff}}span{{display:block;font-size:21px;color:#a4abbb;margin-top:6px;max-width:330px}}
+</style><div class="m">SA</div><div class="in"><h1>{title}</h1><p>{sub}</p><div class="s">{stats}</div></div>"""
 
 
 def main():
@@ -45,14 +47,14 @@ def main():
             cells = "".join(f"<div><b>{html.escape(n)}</b><span>{html.escape(t)}</span></div>" for n, t in stats)
             page = pathlib.Path(tmp) / f"{name}.html"
             page.write_text(PAGE.format(title=html.escape(title), sub=html.escape(sub), stats=cells), encoding="utf-8")
-            out = ROOT / f"og-{name}.png"
+            out = ROOT / {"home": "og.png", "home-es": "og-es.png"}.get(name, f"og-{name}.png")
             out.unlink(missing_ok=True)
             # Chrome can exit non-zero while shutting down after writing the file, so the file is what counts.
             result = subprocess.run([CHROME, "--headless", "--disable-gpu", "--no-sandbox", f"--user-data-dir={tmp}/chrome", "--hide-scrollbars",
-                                     "--window-size=1200,630", f"--screenshot={out}", page.as_uri()], stderr=subprocess.PIPE, stdout=subprocess.DEVNULL, text=True)
+                                     "--window-size=1200,630", "--virtual-time-budget=5000", f"--screenshot={out}", page.as_uri()], stderr=subprocess.PIPE, stdout=subprocess.DEVNULL, text=True)
             if not out.exists():
                 raise SystemExit(f"Chrome did not write {out.name}: {result.stderr[-500:]}")
-            print(f"og-{name}.png")
+            print(out.name)
 
 
 if __name__ == "__main__":
