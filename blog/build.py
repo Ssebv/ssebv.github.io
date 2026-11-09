@@ -48,12 +48,12 @@ T = {
                backfoot="← Back to portfolio", read="min read", next="Read next",
                anchor="Link to this section", writing="Writing",
                tagline="Notes on running ERP and financial systems in production",
-               langlabel="Language", themelabel="Switch colour theme", case="Case study"),
+               langlabel="Language", themelabel="Dark theme", case="Case study"),
     "es": dict(sections="Secciones", skip="Saltar al contenido", back="← Sebastián Allende",
                backfoot="← Volver al portafolio", read="min de lectura", next="Sigue leyendo",
                anchor="Enlace a esta sección", writing="Escritos",
                tagline="Notas sobre operar sistemas ERP y financieros en producción",
-               langlabel="Idioma", themelabel="Cambiar tema de color", case="Caso"),
+               langlabel="Idioma", themelabel="Tema oscuro", case="Caso"),
 }
 
 FAVICON = ("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E"
@@ -64,7 +64,7 @@ FAVICON = ("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox
 NOFLASH = ("<script>\n(function(){try{var t=localStorage.getItem('theme');"
            "if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();\n</script>")
 
-TOGGLE = """<button class="theme-toggle" id="themeToggle" type="button" aria-label="{lbl}" title="{lbl}">
+TOGGLE = """<button class="theme-toggle" id="themeToggle" type="button" aria-pressed="false" aria-label="{lbl}" title="{lbl}">
   <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
   <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
 </button>"""
@@ -72,12 +72,16 @@ TOGGLE = """<button class="theme-toggle" id="themeToggle" type="button" aria-lab
 SCRIPTS = """<script>
 (function(){
   var b=document.getElementById('themeToggle');if(!b)return;
+  var mq=window.matchMedia('(prefers-color-scheme: dark)');
+  var cur=function(){return document.documentElement.getAttribute('data-theme')||(mq.matches?'dark':'light');};
+  var sync=function(){b.setAttribute('aria-pressed',cur()==='dark'?'true':'false');};
+  sync();
+  if(mq.addEventListener)mq.addEventListener('change',sync);
   b.addEventListener('click',function(){
-    var sysDark=window.matchMedia('(prefers-color-scheme: dark)').matches;
-    var cur=document.documentElement.getAttribute('data-theme')||(sysDark?'dark':'light');
-    var next=cur==='dark'?'light':'dark';
+    var next=cur()==='dark'?'light':'dark';
     document.documentElement.setAttribute('data-theme',next);
     try{localStorage.setItem('theme',next);}catch(e){}
+    sync();
   });
 })();
 </script>

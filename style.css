@@ -527,7 +527,6 @@ header::before {
 .proof div { background: var(--bg); border: 1px solid var(--line-soft); border-radius: 10px; padding: 9px 12px; }
 .proof b { display: block; font-size: 18px; line-height: 1.25; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
 .proof span { display: block; font-size: 12px; line-height: 1.35; color: var(--muted); }
-@media (max-width: 520px) { .proof { grid-template-columns: 1fr; } }
 
 .actions { display: flex; flex-wrap: wrap; gap: 8px 16px; font-size: 14.5px; font-weight: 500; }
 .actions a { text-decoration: none; }
@@ -1174,3 +1173,20 @@ article pre code { background: none; padding: 0; font-size: 13.5px; line-height:
 /* Skills beyond the ERP core, folded like "Earlier work" */
 .more-skills .skill-row:first-of-type { padding-top: 13px; }
 .more-skills[open] summary { margin-bottom: 2px; }
+
+/* Phones: each project's three figures read as one line each ("82 % found the right
+   passage…") instead of three stacked boxes, and the cards lose some padding */
+@media (max-width: 520px) {
+  .feature-body { padding: var(--s3) 18px var(--s4); }
+  .proof {
+    grid-template-columns: 1fr; gap: 0; padding: 2px 12px;
+    background: var(--bg); border: 1px solid var(--line-soft); border-radius: 10px;
+  }
+  .proof div { padding: 7px 0; background: none; border: 0; border-radius: 0; }
+  .proof div + div { border-top: 1px solid var(--line-soft); }
+  .proof b { display: inline; margin-right: 6px; font-size: 15px; }
+  .proof span { display: inline; font-size: 13px; }
+  .feature-media .term { font-size: 11.5px; line-height: 1.5; }
+  /* Long titles take the full width; the stack tag drops below instead of squeezing them */
+  .feature-top { flex-wrap: wrap; gap: 6px 14px; }
+}
