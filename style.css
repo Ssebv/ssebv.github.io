@@ -648,7 +648,7 @@ article .guards li { margin-bottom: 6px; font-size: 15.5px; }
     --bg:#fff; --fg:#000; --muted:#333; --faint:#555;
     --line:#ccc; --line-soft:#ddd; --surface:#fff; --chip:#f2f2f2; --accent:#000;
   }
-  .links, .skip, .theme-toggle, .back, .next-up, .status { display: none; }
+  .links, .skip, .theme-toggle, .back, .next-up, .status, .cta-compact { display: none; }
   .wrap { max-width: none; padding: 0; }
   .proj, .job, article h2, blockquote { break-inside: avoid; }
   a { text-decoration: none; }
@@ -1097,7 +1097,7 @@ article pre code { background: none; padding: 0; font-size: 13.5px; line-height:
 .cta.spot::after { inset: 0; }
 .cta-top { display: flex; align-items: center; flex-wrap: wrap; gap: 0 12px; margin-bottom: var(--s4); }
 .cta-top .brand, .cta-top .status { margin: 0; }
-.cta h2 {
+.cta h2, .cta-eyebrow {
   margin: 0 0 var(--s2); padding: 0; border: 0;
   font-family: var(--sans); font-size: 12.5px; font-weight: 600;
   text-transform: uppercase; letter-spacing: .14em; color: var(--accent);
@@ -1156,6 +1156,11 @@ article pre code { background: none; padding: 0; font-size: 13.5px; line-height:
 @media (max-width: 580px) {
   .cta { padding: var(--s5) var(--s4) var(--s4); border-radius: 16px; }
 }
+/* Compact version at the end of articles and case studies */
+.cta-compact { max-width: 640px; margin-top: var(--s7); padding: var(--s5) var(--s5) var(--s4); }
+.cta-compact .cta-title { font-size: clamp(22px, 3.4vw, 28px); }
+.cta-compact .cta-sub { margin-bottom: var(--s3); font-size: 15.5px; }
+@media (max-width: 580px) { .cta-compact { padding: var(--s4); } }
 
 @media (prefers-reduced-motion: reduce) {
   .timeline .job.is-now::before { animation: none; }

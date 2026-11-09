@@ -11,7 +11,7 @@ import pathlib
 import sys
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
-from build import FAVICON, NOFLASH, SCRIPTS, SITE, T, TOGGLE
+from build import FAVICON, NOFLASH, SCRIPTS, SITE, T, TOGGLE, contact_cta
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 
@@ -886,6 +886,7 @@ def render(slug, lang):
     <h1>{title}</h1>
 {page['body'].replace('%ROOT%', root)}
   </article>
+{contact_cta(lang, root)}
   </main>
 
   <footer>

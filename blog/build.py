@@ -64,6 +64,41 @@ FAVICON = ("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox
 NOFLASH = ("<script>\n(function(){try{var t=localStorage.getItem('theme');"
            "if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();\n</script>")
 
+CTA = {
+    "en": dict(label="Contact", title="Open to roles in ERP, backend and applied AI.",
+               sub="The quickest way to reach me is by email.",
+               mail="Email me", cv="Download the CV", cvfile="cv.pdf"),
+    "es": dict(label="Contacto", title="Abierto a cargos de ERP, backend e IA aplicada.",
+               sub="La forma más rápida de contactarme es por correo.",
+               mail="Escríbeme", cv="Descargar el CV", cvfile="cv-es.pdf"),
+}
+
+_MAIL_SVG = ('<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">'
+             '<rect x="2" y="4" width="20" height="16" rx="2"/><path d="m2 7 10 6 10-6"/></svg>')
+_LI_SVG = ('<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M4.98 3.5a2.5 2.5 0 1 1 0 5 '
+           '2.5 2.5 0 0 1 0-5zM3 9h4v12H3zM9 9h3.8v1.7h.05c.53-.95 1.83-1.95 3.77-1.95 4.03 0 4.78 2.5 4.78 5.76V21h-4v-5.6'
+           'c0-1.34-.02-3.06-1.9-3.06-1.9 0-2.2 1.45-2.2 2.96V21H9z"/></svg>')
+_DL_SVG = ('<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">'
+           '<path d="M12 3v12"/><path d="m7 11 5 5 5-5"/><path d="M4 20h16"/></svg>')
+
+
+def contact_cta(lang, root):
+    """Closing contact block for articles and case studies, where readers arrive from the CV."""
+    c = CTA[lang]
+    return f"""
+  <aside class="cta cta-compact" aria-label="{c['label']}">
+    <h2 class="cta-eyebrow">{c['label']}</h2>
+    <p class="cta-title">{c['title']}</p>
+    <p class="cta-sub">{c['sub']}</p>
+    <div class="links cta-actions">
+      <a class="primary" href="mailto:sallendec@outlook.com">{_MAIL_SVG}{c['mail']}</a>
+      <a href="https://www.linkedin.com/in/sebastianallende/" target="_blank" rel="noopener">{_LI_SVG}LinkedIn</a>
+      <a href="{root}{c['cvfile']}" target="_blank" rel="noopener">{_DL_SVG}{c['cv']}</a>
+    </div>
+    <p class="cta-mail"><a href="mailto:sallendec@outlook.com">sallendec@outlook.com</a></p>
+  </aside>"""
+
+
 TOGGLE = """<button class="theme-toggle" id="themeToggle" type="button" aria-pressed="false" aria-label="{lbl}" title="{lbl}">
   <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
   <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
@@ -299,6 +334,7 @@ def render_post(post, siblings, out_root):
 {body}
 {next_up}
   </article>
+{contact_cta(lang, depth)}
   </main>
 
   <footer>
