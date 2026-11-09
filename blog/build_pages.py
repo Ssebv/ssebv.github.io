@@ -841,6 +841,8 @@ def render(slug, lang):
 {NOFLASH}
 
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0c0e12" media="(prefers-color-scheme: dark)">
 
 <title>{title} — Sebastián Allende</title>
 <meta name="description" content="{summary}">
@@ -867,6 +869,7 @@ def render(slug, lang):
 <script src="{root}term.js" defer></script>
 </head>
 <body>
+<a class="skip" href="#main">{t['skip']}</a>
 
 <nav class="lang-switch" aria-label="{t['langlabel']}">
   <a href="{en_href}" hreflang="en"{current['en']}>EN</a>
@@ -874,8 +877,6 @@ def render(slug, lang):
 </nav>
 
 {TOGGLE.format(lbl=t['themelabel'])}
-
-<a class="skip" href="#main">{t['skip']}</a>
 
 <div class="wrap">
   <a class="back" href="../">{t['back']}</a>

@@ -109,9 +109,10 @@ SCRIPTS = """<script>
   var b=document.getElementById('themeToggle');if(!b)return;
   var mq=window.matchMedia('(prefers-color-scheme: dark)');
   var cur=function(){return document.documentElement.getAttribute('data-theme')||(mq.matches?'dark':'light');};
-  var sync=function(){b.setAttribute('aria-pressed',cur()==='dark'?'true':'false');};
+  var sync=function(){var d=cur()==='dark';b.setAttribute('aria-pressed',d?'true':'false');[].forEach.call(document.querySelectorAll('meta[name=theme-color]'),function(m){m.setAttribute('content',d?'#0c0e12':'#ffffff');});};
   sync();
   if(mq.addEventListener)mq.addEventListener('change',sync);
+  window.addEventListener('storage',function(e){if(e.key!=='theme')return;var v=e.newValue;if(v==='dark'||v==='light')document.documentElement.setAttribute('data-theme',v);else document.documentElement.removeAttribute('data-theme');sync();});
   b.addEventListener('click',function(){
     var next=cur()==='dark'?'light':'dark';
     document.documentElement.setAttribute('data-theme',next);
@@ -284,6 +285,8 @@ def render_post(post, siblings, out_root):
 {NOFLASH}
 
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0c0e12" media="(prefers-color-scheme: dark)">
 
 <title>{html.escape(post['title'])} — Sebastián Allende</title>
 <meta name="description" content="{html.escape(post['summary'])}">
@@ -317,10 +320,9 @@ def render_post(post, siblings, out_root):
 <link rel="stylesheet" href="{depth}style.css">
 </head>
 <body>
+<a class="skip" href="#main">{t['skip']}</a>
 
 {lang_nav}{TOGGLE.format(lbl=t['themelabel'])}
-
-<a class="skip" href="#main">{t['skip']}</a>
 
 <div class="wrap">
   <a class="back" href="../">{t['back']}</a>
@@ -380,6 +382,8 @@ def render_index(posts, lang, out_root):
 {NOFLASH}
 
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0c0e12" media="(prefers-color-scheme: dark)">
 
 <title>{t['writing']} — Sebastián Allende</title>
 <meta name="description" content="{t['tagline']}.">
@@ -400,12 +404,11 @@ def render_index(posts, lang, out_root):
 <link rel="stylesheet" href="{depth}style.css">
 </head>
 <body>
+<a class="skip" href="#main">{t['skip']}</a>
 
 {lang_nav}
 
 {TOGGLE.format(lbl=t['themelabel'])}
-
-<a class="skip" href="#main">{t['skip']}</a>
 
 <div class="wrap">
   <a class="back" href="../">{t['back']}</a>
