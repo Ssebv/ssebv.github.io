@@ -32,7 +32,9 @@
   "@context": "https://schema.org",
   "@type": "Person",
   "name": "Sebastián Allende Cuello",
-  "jobTitle": "Software Engineer, ERP & Applied AI",
+  "jobTitle": "Full Stack Software Engineer, ERP & Applied AI",
+  "worksFor": { "@type": "Organization", "name": "Toyng" },
+  "knowsAbout": ["Odoo", "Odoo migrations (14 to 19)", "ERP", "Electronic invoicing (SII, DIAN, SUNAT)", "Python", "PostgreSQL", "TypeScript", "Rust", "Retrieval-augmented generation (RAG)", "LLM evaluation"],
   "url": "https://ssebv.github.io/",
   "email": "mailto:sallendec@outlook.com",
   "address": { "@type": "PostalAddress", "addressLocality": "Santiago", "addressCountry": "CL" },
@@ -51,9 +53,7 @@
 <link rel="alternate" hreflang="x-default" href="https://ssebv.github.io/">
 <script src="./term.js" defer></script>
 <script src="./home.js" defer></script>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&display=swap">
+<link rel="preload" href="./fonts/space-grotesk-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="./style.css">
 </head>
 <body>
@@ -367,6 +367,28 @@
       <h2 id="skills">Skills</h2>
 
       <div class="skill-row">
+        <strong>ERP</strong>
+        <div class="chips">
+          <span>Odoo 14–19</span><span>Odoo.sh</span><span>Module development</span><span>Version upgrades</span><span>SII · Chile</span><span>DIAN · Colombia</span><span>SUNAT · Peru</span><span>Mercado Libre</span><span>Yuju</span><span>SAP S/4HANA</span>
+        </div>
+        <p class="seen">Examples: <a href="writing/erp-migration.html">ERP migration</a> · <a href="writing/health-check.html">Health check</a> · <a href="projects/how-i-build.html#arch-erp">Architecture</a></p>
+      </div>
+      <div class="skill-row">
+        <strong>Backend</strong>
+        <div class="chips">
+          <span>Python</span><span>FastAPI</span><span>REST APIs</span>
+          <span>Java</span><span>JavaScript</span><span>Rust</span><span>TypeScript</span><span>Hono</span>
+        </div>
+        <p class="seen">Examples: <a href="projects/flagforge.html">FlagForge</a> · <a href="projects/how-i-build.html#arch-erp">ERP</a></p>
+      </div>
+      <div class="skill-row">
+        <strong>Data</strong>
+        <div class="chips">
+          <span>PostgreSQL</span><span>SQL / PL-SQL</span><span>Migrations</span><span>ETL</span>
+        </div>
+        <p class="seen">Examples: <a href="writing/erp-migration.html">ERP migration</a></p>
+      </div>
+      <div class="skill-row">
         <strong>Applied AI</strong>
         <div class="chips">
           <span>LLM APIs</span><span>RAG</span><span>pgvector</span><span>Tool calling</span>
@@ -374,16 +396,13 @@
         </div>
         <p class="seen">Examples: <a href="projects/odoo-rag.html">Odoo RAG</a> · <a href="projects/modomax.html">ModoMax</a> · <a href="https://github.com/Ssebv/AI-Analizer-Llama" target="_blank" rel="noopener">AI News Analyzer</a></p>
       </div>
-
       <div class="skill-row">
-        <strong>Backend</strong>
+        <strong>Languages</strong>
         <div class="chips">
-          <span>Python</span><span>Odoo 14–19</span><span>FastAPI</span><span>REST APIs</span>
-          <span>Java</span><span>JavaScript</span><span>Rust</span><span>TypeScript</span><span>Hono</span>
+          <span>Spanish — native</span><span>English — Upper-intermediate (B2)</span>
         </div>
-        <p class="seen">Examples: <a href="projects/flagforge.html">FlagForge</a> · <a href="projects/how-i-build.html#arch-erp">ERP</a></p>
       </div>
-
+      <details class="more-work more-skills"><summary>More skills</summary>
       <div class="skill-row">
         <strong>Web and mobile</strong>
         <div class="chips">
@@ -391,7 +410,6 @@
         </div>
         <p class="seen">Examples: <a href="projects/apps.html">iPhone apps</a> · <a href="projects/modomax.html">ModoMax</a></p>
       </div>
-
       <div class="skill-row">
         <strong>Testing</strong>
         <div class="chips">
@@ -399,40 +417,21 @@
         </div>
         <p class="seen">Examples: <a href="projects/modomax.html#stack">ModoMax</a> · <a href="projects/citofonia.html#tests">Citofonía</a> · <a href="projects/flagforge.html#numbers">FlagForge</a></p>
       </div>
-
-      <div class="skill-row">
-        <strong>Data</strong>
-        <div class="chips">
-          <span>PostgreSQL</span><span>SQL / PL-SQL</span><span>Migrations</span><span>ETL</span>
-          <span>SAP S/4HANA</span>
-        </div>
-        <p class="seen">Examples: <a href="writing/erp-migration.html">ERP migration</a></p>
-      </div>
-
       <div class="skill-row">
         <strong>Infrastructure</strong>
         <div class="chips">
-          <span>Linux</span><span>Docker</span><span>Git</span><span>Odoo.sh</span><span>AWS</span>
+          <span>Linux</span><span>Docker</span><span>Git</span><span>AWS</span>
           <span>Azure</span><span>HPC</span><span>Cloudflare Workers</span><span>GitHub Actions</span><span>Caddy</span>
         </div>
         <p class="seen">Examples: <a href="projects/how-i-build.html#architecture">Architecture</a></p>
       </div>
-
       <div class="skill-row">
-        <strong>Compliance</strong>
+        <strong>Security</strong>
         <div class="chips">
-          <span>SII · Chile</span><span>DIAN · Colombia</span><span>SUNAT · Peru</span>
           <span>Active Directory</span><span>IAM</span>
         </div>
-        <p class="seen">Examples: <a href="projects/how-i-build.html#arch-erp">ERP architecture</a></p>
       </div>
-
-      <div class="skill-row">
-        <strong>Languages</strong>
-        <div class="chips">
-          <span>Spanish — native</span><span>English — Upper-intermediate (B2)</span>
-        </div>
-      </div>
+      </details>
     </section>
 
     <section aria-labelledby="education">

@@ -274,9 +274,7 @@ def render_post(post, siblings, out_root):
 </script>
 
 <link rel="alternate" type="application/rss+xml" title="Sebastián Allende — Writing" href="/feed.xml">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&display=swap">
+<link rel="preload" href="{depth}fonts/space-grotesk-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="{depth}style.css">
 </head>
 <body>
@@ -358,9 +356,7 @@ def render_index(posts, lang, out_root):
 
 <link rel="icon" href="{FAVICON}">
 <link rel="alternate" type="application/rss+xml" title="Sebastián Allende — Writing" href="/feed.xml">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&display=swap">
+<link rel="preload" href="{depth}fonts/space-grotesk-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="{depth}style.css">
 </head>
 <body>
