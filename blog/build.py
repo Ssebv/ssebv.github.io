@@ -66,10 +66,10 @@ NOFLASH = ("<script>\n(function(){try{var t=localStorage.getItem('theme');"
 
 CTA = {
     "en": dict(label="Contact", title="Open to roles in ERP, backend and applied AI.",
-               sub="The quickest way to reach me is by email.",
+               sub="Remote, or hybrid in Santiago, Chile. The quickest way to reach me is by email.",
                mail="Email me", cv="Download the CV", cvfile="cv.pdf"),
     "es": dict(label="Contacto", title="Abierto a cargos de ERP, backend e IA aplicada.",
-               sub="La forma más rápida de contactarme es por correo.",
+               sub="Remoto, o híbrido en Santiago de Chile. La forma más rápida de contactarme es por correo.",
                mail="Escríbeme", cv="Descargar el CV", cvfile="cv-es.pdf"),
 }
 
