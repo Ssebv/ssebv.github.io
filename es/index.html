@@ -43,6 +43,7 @@
 
 <link rel="alternate" type="application/rss+xml" title="Sebastián Allende — Writing" href="/feed.xml">
 <script src="../term.js" defer></script>
+<script src="../home.js" defer></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&display=swap">
@@ -106,6 +107,7 @@
       <img src="../img/modomax-product.webp" srcset="../img/modomax-product-700.webp 700w, ../img/modomax-product.webp 1400w" sizes="(max-width: 640px) 30vw, 220px" alt="" width="1400" height="875" loading="lazy">
       <img src="../img/modomax-catalog.webp" srcset="../img/modomax-catalog-700.webp 700w, ../img/modomax-catalog.webp 1400w" sizes="(max-width: 640px) 30vw, 220px" alt="" width="1400" height="875" loading="lazy">
     </a>
+    <div class="ribbon"><div class="ribbon-track"><ul class="ribbon-list" aria-label="Tecnologías principales"><li>Python</li><li>Odoo</li><li>PostgreSQL</li><li>TypeScript</li><li>Next.js</li><li>React</li><li>Rust</li><li>WebAssembly</li><li>SwiftUI</li><li>React Native</li><li>FastAPI</li><li>pgvector</li><li>Supabase</li><li>Docker</li><li>Playwright</li><li>LangChain</li><li>MCP</li><li>Cloudflare Workers</li><li>GitHub Actions</li></ul></div></div>
   </header>
 
   <main id="main">
@@ -253,7 +255,9 @@
     <section aria-labelledby="experiencia">
       <h2 id="experiencia">Experiencia</h2>
 
-      <div class="job">
+      <ol class="timeline">
+
+      <li class="job is-now">
         <div class="when">dic. 2025 — Actualidad</div>
         <div class="what">
           <h3>IT Manager &amp; ERP Administrator</h3>
@@ -265,9 +269,9 @@
             integraciones e-commerce, y soporte a los equipos de contabilidad, bodega y ventas en tres países.
           </p>
         </div>
-      </div>
+      </li>
 
-      <div class="job">
+      <li class="job">
         <div class="when">ago. — dic. 2025</div>
         <div class="what">
           <h3>Gestión de Identidades y Accesos, Seguridad</h3>
@@ -278,9 +282,9 @@
             identidades y pruebas de concepto para productos de depósito a plazo.
           </p>
         </div>
-      </div>
+      </li>
 
-      <div class="job">
+      <li class="job">
         <div class="when">2024 — 2025</div>
         <div class="what">
           <h3>Consultoría Independiente y Soluciones Digitales</h3>
@@ -291,9 +295,9 @@
             trabajo de experiencia de cliente para clientes menores.
           </p>
         </div>
-      </div>
+      </li>
 
-      <div class="job">
+      <li class="job">
         <div class="when">2024</div>
         <div class="what">
           <h3>Consultor de Transformación Empresarial, Analista CX</h3>
@@ -303,9 +307,9 @@
             del usuario en coordinación con equipos internacionales.
           </p>
         </div>
-      </div>
+      </li>
 
-      <div class="job">
+      <li class="job">
         <div class="when">2023</div>
         <div class="what">
           <h3>Práctica Profesional</h3>
@@ -315,16 +319,17 @@
             licencias TI, además de un flujo de resumen de documentos con Power Apps conectado a OpenAI.
           </p>
         </div>
-      </div>
+      </li>
 
-      <div class="job">
+      <li class="job">
         <div class="when">2022</div>
         <div class="what">
           <h3>Ayudante, Programación Avanzada y Bases de Datos</h3>
           <p class="org">Universidad Finis Terrae · Santiago, Chile</p>
           <p>Clases personalizadas, ayudantías y corrección de laboratorios.</p>
         </div>
-      </div>
+      </li>
+      </ol>
     </section>
 
     <section aria-labelledby="escritos">
@@ -447,15 +452,24 @@
     </section>
 
     <section aria-labelledby="contacto">
-      <h2 id="contacto">Contacto</h2>
-      <p>Abierto a cargos de ERP, backend e IA aplicada. La forma más rápida de contactarme es por correo.</p>
-      <div class="actions"><a href="mailto:sallendec@outlook.com">Escríbeme →</a><a href="../cv-es.pdf" target="_blank" rel="noopener">Descargar el CV</a></div>
+      <div class="cta">
+        <div class="cta-top"><span class="brand" aria-hidden="true">SA</span><div class="status"><span class="dot" aria-hidden="true"></span>Abierto a nuevas oportunidades</div></div>
+        <h2 id="contacto">Contacto</h2>
+        <p class="cta-title">Abierto a cargos de ERP, backend e IA aplicada.</p>
+        <p class="cta-sub">La forma más rápida de contactarme es por correo. El CV tiene el detalle completo.</p>
+        <div class="links cta-actions" role="group" aria-label="Formas de contacto">
+          <a class="primary" href="mailto:sallendec@outlook.com"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m2 7 10 6 10-6"/></svg>Escríbeme</a>
+          <a href="https://www.linkedin.com/in/sebastianallende/" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5zM3 9h4v12H3zM9 9h3.8v1.7h.05c.53-.95 1.83-1.95 3.77-1.95 4.03 0 4.78 2.5 4.78 5.76V21h-4v-5.6c0-1.34-.02-3.06-1.9-3.06-1.9 0-2.2 1.45-2.2 2.96V21H9z"/></svg>LinkedIn</a>
+          <a href="../cv-es.pdf" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 3v12"/><path d="m7 11 5 5 5-5"/><path d="M4 20h16"/></svg>Descargar el CV</a>
+        </div>
+        <p class="cta-mail"><a href="mailto:sallendec@outlook.com">sallendec@outlook.com</a><button class="copy" type="button" data-copy="sallendec@outlook.com" hidden>Copiar</button><span class="copy-msg" role="status"></span></p>
+      </div>
     </section>
 
   </main>
 
   <footer>
-    <span>Abierto a nuevas oportunidades — <a href="mailto:sallendec@outlook.com">sallendec@outlook.com</a></span>
+    <span>© 2026 Sebastián Allende Cuello</span>
     <span>Santiago, Chile</span>
   </footer>
 
@@ -555,11 +569,7 @@
     }, 30);
   }
 
-  /* Las cifras no se animan a propósito. El bloque .stats ya entra con el
-     fade de [data-reveal]; contar desde cero encima significaba que durante
-     ~900 ms la página afirmaba "1 empresas soportadas" y "1 versiones
-     mayores". Son las afirmaciones más fuertes del sitio, y quien mira de
-     reojo — o hace una captura — se lleva la versión falsa. */
+  /* Las cifras del inicio se animan en home.js sin mostrar nunca un número distinto del real. */
 
   /* --- barra de progreso de lectura (solo artículos) --- */
   if (!reduce && document.querySelector('article')) {
