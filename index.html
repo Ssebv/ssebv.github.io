@@ -96,11 +96,7 @@
       </a>
       <a href="./cv.pdf" target="_blank" rel="noopener">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 3v12"/><path d="m7 11 5 5 5-5"/><path d="M4 20h16"/></svg>
-        CV (EN)
-      </a>
-      <a href="./cv-es.pdf" target="_blank" rel="noopener" hreflang="es">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 3v12"/><path d="m7 11 5 5 5-5"/><path d="M4 20h16"/></svg>
-        CV (ES)
+        CV
       </a>
     </nav>
 
@@ -111,11 +107,18 @@
       <div><div class="stat-n">5</div><div class="stat-l">major versions,<br>zero data loss</div></div>
     </div>
     <nav class="jump" aria-label="Jump to a section"><a href="#projects">Projects</a><a href="#experience">Experience</a><a href="#writing">Writing</a><a href="#skills">Skills</a><a href="#education">Education</a></nav>
-  <a class="mosaic" href="#projects" aria-label="See the projects">
-      <img src="./img/flagforge-dark.webp" srcset="./img/flagforge-dark-700.webp 700w, ./img/flagforge-dark.webp 1400w" sizes="(max-width: 640px) 60vw, 450px" alt="" width="1400" height="875">
-      <img src="./img/modomax-product.webp" srcset="./img/modomax-product-700.webp 700w, ./img/modomax-product.webp 1400w" sizes="(max-width: 640px) 30vw, 220px" alt="" width="1400" height="875" loading="lazy">
-      <img src="./img/modomax-catalog.webp" srcset="./img/modomax-catalog-700.webp 700w, ./img/modomax-catalog.webp 1400w" sizes="(max-width: 640px) 30vw, 220px" alt="" width="1400" height="875" loading="lazy">
-    </a>
+    <figure class="hero-erp">
+      <div class="mig-pair">
+        <div><b>Odoo 14</b><div class="mig-dots old" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><span>41 custom modules</span></div>
+        <div class="mig-arrow" aria-hidden="true">→</div>
+        <div><b>Odoo 19</b><div class="mig-dots new" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><span>18 custom modules</span></div>
+      </div>
+      <figcaption>
+        <span class="hero-erp-t">Production ERP migration, Odoo 14 → 19</span>
+        <span class="hero-erp-s">June 2026 · no data loss · e-invoicing re-certified for SII, DIAN and SUNAT</span>
+        <a href="./writing/erp-migration.html">Read the article →</a>
+      </figcaption>
+    </figure>
     <div class="ribbon"><div class="ribbon-track"><ul class="ribbon-list" aria-label="Main technologies"><li>Python</li><li>Odoo</li><li>PostgreSQL</li><li>TypeScript</li><li>Next.js</li><li>React</li><li>Rust</li><li>WebAssembly</li><li>SwiftUI</li><li>React Native</li><li>FastAPI</li><li>pgvector</li><li>Supabase</li><li>Docker</li><li>Playwright</li><li>LangChain</li><li>MCP</li><li>Cloudflare Workers</li><li>GitHub Actions</li></ul></div></div>
   </header>
 
@@ -155,11 +158,6 @@
 
       <div class="feature">
         <div class="feature-media"><div class="mig">
-          <div class="mig-pair">
-            <div><b>Odoo 14</b><div class="mig-dots old" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><span>41 custom modules</span></div>
-            <div class="mig-arrow">→</div>
-            <div><b>Odoo 19</b><div class="mig-dots new" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><span>18 custom modules</span></div>
-          </div>
           <ol class="mig-steps"><li><b>Audit</b><span>Read every custom module among 228 installed</span></li><li><b>Consolidate</b><span>41 custom modules into 18</span></li><li><b>Rewrite</b><span>Against the changed API, with e-invoicing re-certified</span></li><li><b>Rehearse</b><span>Native upgrade on a copy of production</span></li><li><b>Cut over</b><span>June 2026: no data loss, no rollback</span></li><li><b>Watch</b><span>Fix silent failures, then 40+ daily checks</span></li></ol>
           <div class="mig-reg"><span>Chile · SII</span><span>Colombia · DIAN</span><span>Peru · SUNAT</span></div>
         </div></div>
@@ -440,22 +438,25 @@
     <section aria-labelledby="education">
       <h2 id="education">Education</h2>
 
-      <div class="job">
+      <ol class="timeline">
+
+      <li class="job">
         <div class="when">2024</div>
         <div class="what">
           <h3>Computer &amp; Telecommunications Engineering</h3>
           <p class="org">Universidad Finis Terrae · Santiago, Chile</p>
           <p>Coursework completed.</p>
         </div>
-      </div>
+      </li>
 
-      <div class="job">
+      <li class="job">
         <div class="when">2020 — 2021</div>
         <div class="what">
           <h3>English as a Second Language</h3>
           <p class="org">Mississauga Secondary Academy · Ontario, Canada</p>
         </div>
-      </div>
+      </li>
+      </ol>
     </section>
 
     <section aria-labelledby="contact">
@@ -469,7 +470,7 @@
           <a href="https://www.linkedin.com/in/sebastianallende/" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5zM3 9h4v12H3zM9 9h3.8v1.7h.05c.53-.95 1.83-1.95 3.77-1.95 4.03 0 4.78 2.5 4.78 5.76V21h-4v-5.6c0-1.34-.02-3.06-1.9-3.06-1.9 0-2.2 1.45-2.2 2.96V21H9z"/></svg>LinkedIn</a>
           <a href="./cv.pdf" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 3v12"/><path d="m7 11 5 5 5-5"/><path d="M4 20h16"/></svg>Download the CV</a>
         </div>
-        <p class="cta-mail"><a href="mailto:sallendec@outlook.com">sallendec@outlook.com</a><button class="copy" type="button" data-copy="sallendec@outlook.com" hidden>Copy</button><span class="copy-msg" role="status"></span></p>
+        <p class="cta-mail"><a href="mailto:sallendec@outlook.com">sallendec@outlook.com</a><button class="copy" type="button" data-copy="sallendec@outlook.com" hidden>Copy</button><span class="copy-msg" role="status"></span><a class="cta-alt" href="./cv-es.pdf" target="_blank" rel="noopener" hreflang="es">CV in Spanish (PDF)</a></p>
       </div>
     </section>
 

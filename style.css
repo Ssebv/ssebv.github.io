@@ -627,10 +627,6 @@ article .guards li { margin-bottom: 6px; font-size: 15.5px; }
 .stats .stat-n { color: var(--accent); }
 .feature p.feature-cap { font-size: 13px; margin-bottom: 10px; color: var(--faint); }
 
-.mosaic { display: grid; grid-template-columns: 2fr 1fr; grid-template-rows: 1fr 1fr; gap: 10px; margin-top: var(--s5); text-decoration: none; }
-.mosaic img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: top left; border: 1px solid var(--line); border-radius: 12px; box-shadow: var(--shadow); transition: transform .2s ease; }
-.mosaic img:first-child { grid-row: span 2; aspect-ratio: 16 / 10; }
-.mosaic:hover img { transform: translateY(-2px); }
 @media (max-width: 860px) { header::before { inset: -64px 0 -24px; } }
 
 /* ---------------- Print ---------------- */
@@ -1060,7 +1056,6 @@ article pre code { background: none; padding: 0; font-size: 13.5px; line-height:
   animation: now-pulse 2.4s ease-out 2; /* under 5 s: WCAG 2.2.2 */
 }
 .timeline .job.is-now .when { color: var(--accent); font-weight: 600; }
-.timeline .job:hover h3 { color: var(--accent); }
 @keyframes now-pulse {
   0%   { box-shadow: 0 0 0 0 color-mix(in srgb, var(--accent) 40%, transparent); }
   70%  { box-shadow: 0 0 0 9px color-mix(in srgb, var(--accent) 0%, transparent); }
@@ -1117,6 +1112,35 @@ article pre code { background: none; padding: 0; font-size: 13.5px; line-height:
 }
 .copy:hover { border-color: var(--accent); color: var(--accent); }
 .copy-msg { font-size: 13px; color: var(--ok); }
+.cta-mail .cta-alt {
+  margin-left: auto; padding: 3px 0;
+  font-family: var(--sans); font-size: 13.5px; color: var(--muted); text-decoration: none;
+}
+.cta-mail .cta-alt:hover { color: var(--accent); text-decoration: underline; }
+
+/* Phones: the four hero buttons as a 2×2 grid instead of 3 + 1 */
+@media (max-width: 440px) {
+  header .links { display: grid; grid-template-columns: 1fr 1fr; }
+  header .links a { justify-content: center; }
+}
+
+/* --- Hero: the ERP migration, the work most roles ask about. The whole card opens the
+       article through a stretched link, so its accessible name stays the link text. --- */
+.hero-erp {
+  position: relative; margin: var(--s5) 0 0; padding: var(--s4);
+  background-color: var(--surface); border: 1px solid var(--line); border-radius: 16px;
+  box-shadow: var(--card-shadow);
+}
+.hero-erp .mig-pair { margin-bottom: var(--s4); }
+.hero-erp figcaption {
+  display: grid; gap: 2px; margin: 0; padding-top: var(--s3);
+  border-top: 1px solid var(--line); font-size: inherit; color: inherit;
+}
+.hero-erp-t { font-family: var(--display); font-size: 17px; font-weight: 600; letter-spacing: -0.015em; color: var(--fg); }
+.hero-erp-s { font-size: 13.5px; line-height: 1.5; color: var(--muted); }
+.hero-erp a { justify-self: start; margin-top: 6px; padding: 2px 0; font-size: 14.5px; font-weight: 500; text-decoration: none; }
+.hero-erp a::after { content: ""; position: absolute; inset: 0; border-radius: inherit; }
+.hero-erp:hover a { text-decoration: underline; }
 @media (max-width: 580px) {
   .cta { padding: var(--s5) var(--s4) var(--s4); border-radius: 16px; }
 }

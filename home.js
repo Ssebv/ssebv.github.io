@@ -71,7 +71,7 @@
 
   /* --- Cursor spotlight on cards: only where there is a real hover. --- */
   if (matchMedia('(hover: hover) and (pointer: fine)').matches) {
-    var cards = document.querySelectorAll('.feature, .proj:not(.proj-static), .path, .cta');
+    var cards = document.querySelectorAll('.hero-erp, .feature, .proj:not(.proj-static), .path, .cta');
     [].forEach.call(cards, function (c) { c.classList.add('spot'); });
     var last = null, pending = false;
     var paint = function () {
@@ -88,10 +88,9 @@
     }, { passive: true });
   }
 
-  /* --- Experience timeline: the rail fills with scroll and lights each role it reaches.
+  /* --- Timelines (experience, education): the rail fills with scroll and lights each role it reaches.
      With reduced motion the rail stays plain; the current role is marked either way. --- */
-  var tl = document.querySelector('.timeline');
-  if (tl && !reduce) {
+  if (!reduce) [].forEach.call(document.querySelectorAll('.timeline'), function (tl) {
     var jobs = [].slice.call(tl.querySelectorAll('.job'));
     var queued = false;
     /* Reads first, writes after: one layout per frame. The rail is drawn from 10px to
@@ -103,8 +102,11 @@
       var tops = jobs.map(function (j) { return j.getBoundingClientRect().top; });
       var probe = window.innerHeight * 0.62;
       var p = Math.max(0, Math.min(1, (probe - r.top - 10) / (r.height - 20)));
+      /* At the bottom of the page the probe can never pass the last node: fill it all. */
+      var end = window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 2;
+      if (end && r.bottom <= window.innerHeight) p = 1;
       tl.style.setProperty('--tl', p.toFixed(4));
-      jobs.forEach(function (j, i) { j.classList.toggle('lit', tops[i] + 14 <= probe); });
+      jobs.forEach(function (j, i) { j.classList.toggle('lit', p === 1 || tops[i] + 14 <= probe); });
     };
     var queue = function () { if (!queued) { queued = true; requestAnimationFrame(update); } };
     var listening = false;
@@ -124,7 +126,7 @@
       listen(true);
     }
     update();
-  }
+  });
 
   /* --- Copy the address. Shown only where the Clipboard API exists (HTTPS or localhost). --- */
   var cp = document.querySelector('.copy[data-copy]');
